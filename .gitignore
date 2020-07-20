@@ -1,0 +1,7 @@
+# Project exclude paths
+/jeethink-admin/target/
+/jeethink-common/target/
+/jeethink-framework/target/
+/jeethink-generator/target/
+/jeethink-quartz/target/
+/jeethink-system/target/
