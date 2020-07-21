@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeethink.basicInfo.mapper.FPositionMapper">
+    
+    <resultMap type="FPosition" id="FPositionResult">
+        <result property="fPositionid"    column="f_positionid"    />
+        <result property="fPositionname"    column="f_positionname"    />
+        <result property="fPositioncode"    column="f_positioncode"    />
+        <result property="fUseuserid"    column="f_useuserid"    />
+        <result property="fUseusername"    column="f_useusername"    />
+        <result property="fBoxid"    column="f_boxid"    />
+        <result property="fLockerid"    column="f_lockerid"    />
+    </resultMap>
+
+    <sql id="selectFPositionVo">
+        select f_positionid, f_positionname, f_positioncode, f_useuserid, f_useusername, f_boxid, f_lockerid from f_position
+    </sql>
+
+    <select id="selectFPositionList" parameterType="FPosition" resultMap="FPositionResult">
+        <include refid="selectFPositionVo"/>
+        <where>  
+            <if test="fPositionname != null  and fPositionname != ''"> and f_positionname like concat('%', #{fPositionname}, '%')</if>
+            <if test="fLockerid != null  and fLockerid != ''"> and f_lockerid =#{fLockerid}</if>
+        </where>
+    </select>
+    
+    <select id="selectFPositionById" parameterType="String" resultMap="FPositionResult">
+        <include refid="selectFPositionVo"/>
+        where f_positionid = #{fPositionid}
+    </select>
+        
+    <insert id="insertFPosition" parameterType="FPosition">
+        insert into f_position
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="fPositionid != null">f_positionid,</if>
+            <if test="fPositionname != null">f_positionname,</if>
+            <if test="fPositioncode != null">f_positioncode,</if>
+            <if test="fUseuserid != null">f_useuserid,</if>
+            <if test="fUseusername != null">f_useusername,</if>
+            <if test="fBoxid != null">f_boxid,</if>
+            <if test="fLockerid != null">f_lockerid,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="fPositionid != null">#{fPositionid},</if>
+            <if test="fPositionname != null">#{fPositionname},</if>
+            <if test="fPositioncode != null">#{fPositioncode},</if>
+            <if test="fUseuserid != null">#{fUseuserid},</if>
+            <if test="fUseusername != null">#{fUseusername},</if>
+            <if test="fBoxid != null">#{fBoxid},</if>
+            <if test="fLockerid != null">#{fLockerid},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFPosition" parameterType="FPosition">
+        update f_position
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="fPositionname != null">f_positionname = #{fPositionname},</if>
+            <if test="fPositioncode != null">f_positioncode = #{fPositioncode},</if>
+            <if test="fUseuserid != null">f_useuserid = #{fUseuserid},</if>
+            <if test="fUseusername != null">f_useusername = #{fUseusername},</if>
+            <if test="fBoxid != null">f_boxid = #{fBoxid},</if>
+            <if test="fLockerid != null">f_lockerid = #{fLockerid},</if>
+        </trim>
+        where f_positionid = #{fPositionid}
+    </update>
+
+    <delete id="deleteFPositionById" parameterType="String">
+        delete from f_position where f_positionid = #{fPositionid}
+    </delete>
+
+    <delete id="deleteFPositionByIds" parameterType="String">
+        delete from f_position where f_positionid in 
+        <foreach item="fPositionid" collection="array" open="(" separator="," close=")">
+            #{fPositionid}
+        </foreach>
+    </delete>
+
+</mapper>

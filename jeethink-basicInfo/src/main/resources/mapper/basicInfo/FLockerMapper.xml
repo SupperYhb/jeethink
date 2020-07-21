@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeethink.basicInfo.mapper.FLockerMapper">
+
+    <resultMap type="FLocker" id="FLockerResult">
+        <result property="fLockerid"    column="f_lockerId"    />
+        <result property="fLockername"    column="f_lockername"    />
+        <result property="fLockercode"    column="f_lockercode"    />
+        <result property="fLockerip"    column="f_lockerip"    />
+        <result property="fRemark"    column="f_remark"    />
+        <result property="fCount"    column="f_count"    />
+    </resultMap>
+
+    <sql id="selectFLockerVo">
+        select f_lockerId, f_lockername, f_lockercode, f_lockerip, f_remark, f_count from f_locker
+    </sql>
+
+    <select id="selectFLockerList" parameterType="FLocker" resultMap="FLockerResult">
+        <include refid="selectFLockerVo"/>
+        <where>
+            <if test="fLockername != null  and fLockername != ''"> and f_lockername like concat('%', #{fLockername}, '%')</if>
+            <if test="fLockercode != null  and fLockercode != ''"> and f_lockercode = #{fLockercode}</if>
+            <if test="fLockerip != null  and fLockerip != ''"> and f_lockerip = #{fLockerip}</if>
+            <if test="fRemark != null  and fRemark != ''"> and f_remark = #{fRemark}</if>
+            <if test="fCount != null "> and f_count = #{fCount}</if>
+        </where>
+    </select>
+
+    <select id="selectFLockerById" parameterType="String" resultMap="FLockerResult">
+        <include refid="selectFLockerVo"/>
+        where f_lockerId = #{fLockerid}
+    </select>
+
+    <insert id="insertFLocker" parameterType="FLocker">
+        insert into f_locker
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="fLockerid != null">f_lockerId,</if>
+            <if test="fLockername != null and fLockername != ''">f_lockername,</if>
+            <if test="fLockercode != null and fLockercode != ''">f_lockercode,</if>
+            <if test="fLockerip != null">f_lockerip,</if>
+            <if test="fRemark != null">f_remark,</if>
+            <if test="fCount != null">f_count,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="fLockerid != null">#{fLockerid},</if>
+            <if test="fLockername != null and fLockername != ''">#{fLockername},</if>
+            <if test="fLockercode != null and fLockercode != ''">#{fLockercode},</if>
+            <if test="fLockerip != null">#{fLockerip},</if>
+            <if test="fRemark != null">#{fRemark},</if>
+            <if test="fCount != null">#{fCount},</if>
+        </trim>
+    </insert>
+
+    <update id="updateFLocker" parameterType="FLocker">
+        update f_locker
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="fLockername != null and fLockername != ''">f_lockername = #{fLockername},</if>
+            <if test="fLockercode != null and fLockercode != ''">f_lockercode = #{fLockercode},</if>
+            <if test="fLockerip != null">f_lockerip = #{fLockerip},</if>
+            <if test="fRemark != null">f_remark = #{fRemark},</if>
+            <if test="fCount != null">f_count = #{fCount},</if>
+        </trim>
+        where f_lockerId = #{fLockerid}
+    </update>
+
+    <delete id="deleteFLockerById" parameterType="String">
+        delete from f_locker where f_lockerId = #{fLockerid}
+    </delete>
+
+    <delete id="deleteFLockerByIds" parameterType="String">
+        delete from f_locker where f_lockerId in
+        <foreach item="fLockerid" collection="array" open="(" separator="," close=")">
+            #{fLockerid}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -202,6 +202,18 @@
 	            <artifactId>jeethink-common</artifactId>
 	            <version>${jeethink.version}</version>
 	        </dependency>
+			<!-- 基础信息-->
+			<dependency>
+				<groupId>com.jeethink</groupId>
+				<artifactId>jeethink-basicInfo</artifactId>
+				<version>${jeethink.version}</version>
+			</dependency>
+			<!-- 案卷业务-->
+			<dependency>
+				<groupId>com.jeethink</groupId>
+				<artifactId>jeethink-business</artifactId>
+				<version>${jeethink.version}</version>
+			</dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -212,6 +224,8 @@
 		<module>jeethink-quartz</module>
 		<module>jeethink-generator</module>
         <module>jeethink-common</module>
+        <module>jeethink-basicInfo</module>
+		<module>jeethink-business</module>
 	</modules>
     <packaging>pom</packaging>
 

@@ -1030,6 +1030,9 @@ var table = {
             	var url = $.common.isEmpty(id) ? table.options.createUrl : table.options.createUrl.replace("{id}", id);
                 $.modal.openFull("添加" + table.options.modalName, url);
             },
+			openFullForm:function(name,url){
+				$.modal.openFull(name, url);
+			},
             // 添加访问地址
             addUrl: function(id) {
             	var url = $.common.isEmpty(id) ? table.options.createUrl.replace("{id}", "") : table.options.createUrl.replace("{id}", id);
@@ -1037,6 +1040,7 @@ var table = {
             },
             // 修改信息
             edit: function(id) {
+				debugger
             	table.set();
             	if($.common.isEmpty(id) && table.options.type == table_type.bootstrapTreeTable) {
             		var row = $("#" + table.options.id).bootstrapTreeTable('getSelections')[0];
@@ -1091,6 +1095,14 @@ var table = {
             	}
                 return url;
             },
+			getSelectTableId:function(){
+				var id = $.common.isEmpty(table.options.uniqueId) ? $.table.selectFirstColumns() : $.table.selectColumns(table.options.uniqueId);
+				if (id.length == 0) {
+					$.modal.alertWarning("请至少选择一条记录");
+					return;
+				}
+				return id;
+			},
             // 保存信息 刷新表格
             save: function(url, data, callback) {
             	var config = {

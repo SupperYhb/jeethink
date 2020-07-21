@@ -78,6 +78,16 @@
             <groupId>com.jeethink</groupId>
             <artifactId>jeethink-generator</artifactId>
         </dependency>
+        <!-- 基础信息-->
+        <dependency>
+            <groupId>com.jeethink</groupId>
+            <artifactId>jeethink-basicInfo</artifactId>
+        </dependency>
+        <!-- 案卷业务-->
+        <dependency>
+            <groupId>com.jeethink</groupId>
+            <artifactId>jeethink-business</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
