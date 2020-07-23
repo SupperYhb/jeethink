@@ -84,6 +84,23 @@
 		            	return $.table.selectDictLabel(datas, item.status);
 		            }
 		        },
+					{
+						field: 'type',
+						title: '类型',
+						align: "left",
+						formatter: function(value, item, index) {
+							var name="";
+							var classstyle="btn-info";
+							debugger
+							if(value=="0")
+							{
+								name="机构";
+							}else{
+								name="部门";
+							}
+							return name;
+						}
+					},
 		        {
 		            field: 'createTime',
 		            title: '创建时间',

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('案卷列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <label>案件编号：</label>
+                                <input type="text" name="fCasecode"/>
+                            </li>
+                            <li>
+                                <label>案件名称：</label>
+                                <input type="text" name="fCasename"/>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="business:cases:add">
+                    <i class="fa fa-plus"></i> 添加
+                </a>
+                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="business:cases:edit">
+                    <i class="fa fa-edit"></i> 修改
+                </a>
+                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="business:cases:remove">
+                    <i class="fa fa-remove"></i> 删除
+                </a>
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="business:cases:export">
+                    <i class="fa fa-download"></i> 导出
+                </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('business:cases:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('business:cases:remove')}]];
+        var fCasetypeDatas = [[${@dict.getType('casetype')}]];
+        var fCasebriefDatas = [[${@dict.getType('casecause')}]];
+        var prefix = ctx + "business/cases";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "案卷",
+                columns: [{
+                    checkbox: true
+                },
+                {
+                    field: 'fId',
+                    title: '主键',
+                    visible: false
+                },
+                {
+                    field: 'fCasecode',
+                    title: '案件编号'
+                },
+                {
+                    field: 'fCasename',
+                    title: '案件名称'
+                },
+                {
+                    field: 'fCasebriefdetail',
+                    title: '简要案情'
+                },
+                {
+                    field: 'fPutdate',
+                    title: '立案日期'
+                },
+                {
+                    field: 'fPolice1id',
+                    title: '民警编号'
+                },
+                {
+                    field: 'fPolice1name',
+                    title: '民警名称'
+                },
+                {
+                    field: 'fDepartmentid',
+                    title: '办案单位编号'
+                },
+                {
+                    field: 'fCasetype',
+                    title: '案件类别',
+                    formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(fCasetypeDatas, value);
+                    }
+                },
+                {
+                    field: 'fCasebrief',
+                    title: '案由',
+                    formatter: function(value, row, index) {
+                       return $.table.selectDictLabel(fCasebriefDatas, value);
+                    }
+                },
+                {
+                    field: 'fLockername',
+                    title: '卷宗柜名称'
+                },
+                {
+                    field: 'fPositioncode',
+                    title: '货位编号'
+                },
+                {
+                    field: 'fCriminalcode',
+                    title: '嫌疑人编号'
+                },
+                {
+                    field: 'fCriminalname',
+                    title: '嫌疑人名称'
+                },
+                {
+                    field: 'fCrimeaddress',
+                    title: '案发地址'
+                },
+                {
+                    field: 'fCreatedate',
+                    title: '创建日期'
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.fId + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.fId + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+    </script>
+</body>
+</html>

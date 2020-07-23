@@ -43,7 +43,7 @@ public class SysUser extends BaseEntity
     @Excel(name = "用户名称")
     private String userName;
 
-    /** 用户类型 */
+    /** 用户类型(0工作人员，1民警) */
     private String userType;
 
     /** 用户邮箱 */

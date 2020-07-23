@@ -92,7 +92,6 @@
 			<groupId>net.java.dev.jna</groupId>
 			<artifactId>jna-platform</artifactId>
 		</dependency>
-
     </dependencies>
     
 </project>

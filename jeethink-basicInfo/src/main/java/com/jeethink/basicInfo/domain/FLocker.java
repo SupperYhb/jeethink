@@ -5,6 +5,8 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import com.jeethink.common.annotation.Excel;
 import com.jeethink.common.core.domain.BaseEntity;
 
+import java.util.List;
+
 /**
  * 卷宗柜对象 f_locker
  * 
@@ -37,6 +39,7 @@ public class FLocker extends BaseEntity
     /** 货位数量 */
     @Excel(name = "货位数量")
     private Integer fCount;
+    private List<FPosition> fPositionList;
 
     public void setfLockerid(String fLockerid) 
     {
@@ -91,6 +94,14 @@ public class FLocker extends BaseEntity
     public Integer getfCount() 
     {
         return fCount;
+    }
+
+    public void setfPositionList(List<FPosition> fPositionList) {
+        this.fPositionList = fPositionList;
+    }
+
+    public List<FPosition> getfPositionList() {
+        return fPositionList;
     }
 
     @Override

@@ -15,7 +15,7 @@ public interface SysDeptMapper
     /**
      * 查询部门人数
      * 
-     * @param dept 部门信息
+     * @param dept 部门信息d
      * @return 结果
      */
     public int selectDeptCount(SysDept dept);

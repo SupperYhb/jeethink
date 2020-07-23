@@ -30,6 +30,7 @@ public class DictService
      */
     public List<SysDictData> getType(String dictType)
     {
+        List<SysDictData> data=dictTypeService.selectDictDataByType(dictType);
         return dictTypeService.selectDictDataByType(dictType);
     }
 

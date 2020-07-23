@@ -2,6 +2,7 @@ package com.jeethink.basicInfo.service;
 
 import java.util.List;
 import com.jeethink.basicInfo.domain.FLocker;
+import com.jeethink.common.core.domain.CxSelect;
 
 /**
  * 卷宗柜Service接口
@@ -26,6 +27,10 @@ public interface IFLockerService
      * @return 卷宗柜集合
      */
     public List<FLocker> selectFLockerList(FLocker fLocker);
+    /**
+     * 获取卷宗柜级联数据
+     * */
+    public List<CxSelect> lockerSelect();
 
     /**
      * 新增卷宗柜

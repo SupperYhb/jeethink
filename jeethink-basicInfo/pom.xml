@@ -21,7 +21,10 @@
             <groupId>com.jeethink</groupId>
             <artifactId>jeethink-common</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>com.jeethink</groupId>
+            <artifactId>jeethink-framework</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

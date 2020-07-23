@@ -2,6 +2,9 @@ package com.jeethink.web.controller.basicInfo;
 
 import java.util.List;
 
+import com.alibaba.fastjson.JSON;
+import com.jeethink.basicInfo.domain.FPosition;
+import com.jeethink.common.core.domain.CxSelect;
 import com.jeethink.common.extend.createId;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,6 +59,8 @@ public class FLockerController extends BaseController
         return getDataTable(list);
     }
 
+
+
     /**
      * 导出卷宗柜列表
      */
@@ -92,6 +97,18 @@ public class FLockerController extends BaseController
         return toAjax(fLockerService.insertFLocker(fLocker));
     }
 
+    /**
+     * 获取卷宗柜级联下拉数据
+     */
+    @RequiresPermissions("basicInfo:locker:lockerSelect")
+    @GetMapping("/lockerSelect")
+    @ResponseBody
+    public String lockerSelect(FLocker fLocker)
+    {
+        List<CxSelect> list=fLockerService.lockerSelect();
+        String str= JSON.toJSON(list).toString();
+        return str;
+    }
     /**
      * 修改卷宗柜
      */

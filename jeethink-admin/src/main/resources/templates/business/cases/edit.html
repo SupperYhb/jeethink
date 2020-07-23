@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('修改案卷')" />
+    <th:block th:include="include :: datetimepicker-css" />
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <form class="form-horizontal m" id="form-cases-edit" th:object="${fCases}">
+            <input name="fId" th:field="*{fId}" type="hidden">
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">案件编号：</label>
+                <div class="col-sm-8">
+                    <input name="fCasecode" th:field="*{fCasecode}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">案件名称：</label>
+                <div class="col-sm-8">
+                    <input name="fCasename" th:field="*{fCasename}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">简要案情：</label>
+                <div class="col-sm-8">
+                    <input name="fCasebriefdetail" th:field="*{fCasebriefdetail}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">立案日期：</label>
+                <div class="col-sm-8">
+                    <div class="input-group date">
+                        <input name="fPutdate" th:value="${#dates.format(fCases.fPutdate, 'yyyy-MM-dd')}" class="form-control" placeholder="yyyy-MM-dd" type="text">
+                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">民警编号：</label>
+                <div class="col-sm-8">
+                    <input name="fPolice1id" th:field="*{fPolice1id}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">民警名称：</label>
+                <div class="col-sm-8">
+                    <input name="fPolice1name" th:field="*{fPolice1name}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">办案单位编号：</label>
+                <div class="col-sm-8">
+                    <input name="fDepartmentid" th:field="*{fDepartmentid}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">案件类别：</label>
+                <div class="col-sm-8">
+                    <select name="fCasetype" class="form-control m-b" th:with="type=${@dict.getType('casetype')}">
+                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}" th:field="*{fCasetype}"></option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">案由：</label>
+                <div class="col-sm-8">
+                    <select name="fCasebrief" class="form-control m-b" th:with="type=${@dict.getType('casecause')}">
+                        <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
+                    </select>
+                </div>
+            </div>
+            <div id="element" >
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">卷宗柜：</label>
+                    <div class="col-sm-8">
+                        <select class="locker form-control m-b" name="fLockerid"  data-first-title="请选择">
+                            <option value="">请选择</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-3 control-label">货位：</label>
+                    <div class="col-sm-8">
+                        <select class="position form-control m-b" name="fPositionid"  data-first-title="请选择">
+                            <option value="">请选择</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">嫌疑人编号：</label>
+                <div class="col-sm-8">
+                    <input name="fCriminalcode" th:field="*{fCriminalcode}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">嫌疑人名称：</label>
+                <div class="col-sm-8">
+                    <input name="fCriminalname" th:field="*{fCriminalname}" class="form-control" type="text">
+                </div>
+            </div>
+            <div class="form-group">    
+                <label class="col-sm-3 control-label">案发地址：</label>
+                <div class="col-sm-8">
+                    <input name="fCrimeaddress" th:field="*{fCrimeaddress}" class="form-control" type="text">
+                </div>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <th:block th:include="include :: datetimepicker-js" />
+    <th:block th:include="include :: jquery-cxselect-js" />
+    <script th:inline="javascript">
+        var data = [[${data}]];
+
+        $('#element').cxSelect({
+            selects: ['locker', 'position'],
+            jsonValue: 'v',
+            url:'/basicInfo/locker/lockerSelect',
+            data: data
+        });
+        var prefix = ctx + "business/cases";
+        $("#form-cases-edit").validate({
+            focusCleanup: true
+        });
+
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/edit", $('#form-cases-edit').serialize());
+            }
+        }
+
+        $("input[name='fPutdate']").datetimepicker({
+            format: "yyyy-mm-dd",
+            minView: "month",
+            autoclose: true
+        });
+
+        $("input[name='fCreatedate']").datetimepicker({
+            format: "yyyy-mm-dd",
+            minView: "month",
+            autoclose: true
+        });
+    </script>
+</body>
+</html>

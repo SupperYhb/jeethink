@@ -24,29 +24,45 @@
 				</div>
 			</div>
 			<div class="form-group">
+				<label class="col-sm-3 control-label is-required">部门编号：</label>
+				<div class="col-sm-8">
+					<input class="form-control" type="text" name="code" id="code"  th:field="*{code}" required>
+				</div>
+			</div>
+			<div class="form-group">
 				<label class="col-sm-3 control-label is-required">显示排序：</label>
 				<div class="col-sm-8">
 					<input class="form-control" type="text" name="orderNum" th:field="*{orderNum}" required>
 				</div>
 			</div>
 			<div class="form-group">
-				<label class="col-sm-3 control-label">负责人：</label>
+				<label class="col-sm-3 control-label is-required">类型：</label>
 				<div class="col-sm-8">
-					<input class="form-control" type="text" name="leader" th:field="*{leader}">
+					<select class="form-control" name="type" id="type" th:field="*{type}">
+						<option value="">--请选择类型--</option>
+						<option value="0">机构</option>
+						<option value="1">部门</option>
+					</select>
 				</div>
 			</div>
-			<div class="form-group">
-				<label class="col-sm-3 control-label">联系电话：</label>
-				<div class="col-sm-8">
-					<input class="form-control" type="text" name="phone" th:field="*{phone}">
-				</div>
-			</div>
-			<div class="form-group">
-				<label class="col-sm-3 control-label">邮箱：</label>
-				<div class="col-sm-8">
-					<input class="form-control" type="text" name="email" th:field="*{email}">
-				</div>
-			</div>
+<!--			<div class="form-group">-->
+<!--				<label class="col-sm-3 control-label">负责人：</label>-->
+<!--				<div class="col-sm-8">-->
+<!--					<input class="form-control" type="text" name="leader" th:field="*{leader}">-->
+<!--				</div>-->
+<!--			</div>-->
+<!--			<div class="form-group">-->
+<!--				<label class="col-sm-3 control-label">联系电话：</label>-->
+<!--				<div class="col-sm-8">-->
+<!--					<input class="form-control" type="text" name="phone" th:field="*{phone}">-->
+<!--				</div>-->
+<!--			</div>-->
+<!--			<div class="form-group">-->
+<!--				<label class="col-sm-3 control-label">邮箱：</label>-->
+<!--				<div class="col-sm-8">-->
+<!--					<input class="form-control" type="text" name="email" th:field="*{email}">-->
+<!--				</div>-->
+<!--			</div>-->
 			<div class="form-group">
 				<label class="col-sm-3 control-label">部门状态：</label>
 				<div class="col-sm-8">

@@ -47,6 +47,16 @@ public class SysDept extends BaseEntity
 
     /** 父部门名称 */
     private String parentName;
+    /** 类型（0机构，1部门） */
+    private String type;
+    /** 科达uuid */
+    private String uuid;
+    /** 部门类型 */
+    private String departcodetype;
+    /** 编号 */
+    private String code;
+    /** 机构Id */
+    private String orgid;
 
     public Long getDeptId()
     {
@@ -162,6 +172,46 @@ public class SysDept extends BaseEntity
     public void setParentName(String parentName)
     {
         this.parentName = parentName;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    public String getDepartcodetype() {
+        return departcodetype;
+    }
+
+    public void setDepartcodetype(String departcodetype) {
+        this.departcodetype = departcodetype;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getOrgid() {
+        return orgid;
+    }
+
+    public void setOrgid(String orgid) {
+        this.orgid = orgid;
     }
 
     @Override

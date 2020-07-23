@@ -9,8 +9,8 @@
     <version>4.3.0</version>
 
     <name>jeethink</name>
-	<url>http://www.jeethink.vip</url>
-    <description>吉想管理系统</description>
+	<url></url>
+    <description>案卷管理系统</description>
     
     <properties>
 	    <jeethink.version>4.3.0</jeethink.version>
@@ -214,6 +214,12 @@
 				<artifactId>jeethink-business</artifactId>
 				<version>${jeethink.version}</version>
 			</dependency>
+			<!-- 访问第三方接口模块-->
+			<dependency>
+				<groupId>com.jeethink</groupId>
+				<artifactId>jeethink-requestutil</artifactId>
+				<version>${jeethink.version}</version>
+			</dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -226,7 +232,8 @@
         <module>jeethink-common</module>
         <module>jeethink-basicInfo</module>
 		<module>jeethink-business</module>
-	</modules>
+        <module>jeethink-requestutil</module>
+    </modules>
     <packaging>pom</packaging>
 
 

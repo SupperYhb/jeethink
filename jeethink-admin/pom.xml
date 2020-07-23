@@ -88,6 +88,10 @@
             <groupId>com.jeethink</groupId>
             <artifactId>jeethink-business</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.jeethink</groupId>
+            <artifactId>jeethink-basicInfo</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

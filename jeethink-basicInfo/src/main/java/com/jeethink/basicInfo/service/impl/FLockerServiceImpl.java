@@ -1,9 +1,11 @@
 package com.jeethink.basicInfo.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.jeethink.basicInfo.domain.FPosition;
 import com.jeethink.basicInfo.mapper.FPositionMapper;
+import com.jeethink.common.core.domain.CxSelect;
 import com.jeethink.common.extend.createId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,7 +20,7 @@ import com.jeethink.common.core.text.Convert;
  * @author yhb
  * @date 2020-07-21
  */
-@Service
+@Service("locker")
 public class FLockerServiceImpl implements IFLockerService 
 {
     @Autowired
@@ -50,6 +52,38 @@ public class FLockerServiceImpl implements IFLockerService
     {
         return fLockerMapper.selectFLockerList(fLocker);
     }
+    /**
+     * 获取卷宗柜级联数据
+     * */
+    @Override
+    public List<CxSelect> lockerSelect() {
+        List<FLocker> lockerList=fLockerMapper.selectFLockerList(null);
+        List<CxSelect> cxSelectList=new ArrayList<>();
+        for (FLocker locker:lockerList
+             ) {
+            //设置卷宗柜级别
+            CxSelect cxEntity=new CxSelect();
+            cxEntity.setN(locker.getfLockername());
+            cxEntity.setV(locker.getfLockerid());
+            //查询卷宗柜下的货位
+            FPosition fPosition=new FPosition();
+            fPosition.setfLockerid(locker.getfLockerid());
+            List<FPosition> positionList=fPositionMapper.selectFPositionList(fPosition);
+            //设置货位下拉
+            List<CxSelect> cxpList=new ArrayList<>();
+            for (FPosition pentity:positionList
+                 ) {
+                CxSelect cxpEntity=new CxSelect();
+                cxpEntity.setN(pentity.getfPositionname());
+                cxpEntity.setV(pentity.getfPositionid());
+                cxpList.add(cxpEntity);
+            }
+            cxEntity.setS(cxpList);
+            cxSelectList.add(cxEntity);
+        }
+        return cxSelectList;
+    }
+
 
     /**
      * 新增卷宗柜

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeethink.business.mapper.FCasesMapper">
+
+    <resultMap type="FCases" id="FCasesResult">
+        <result property="fId"    column="f_Id"    />
+        <result property="fCasecode"    column="f_casecode"    />
+        <result property="fCasename"    column="f_casename"    />
+        <result property="fCasebriefdetail"    column="f_casebriefdetail"    />
+        <result property="fPutdate"    column="f_putdate"    />
+        <result property="fCreatedate"    column="f_createdate"    />
+        <result property="fPolice1id"    column="f_police1id"    />
+        <result property="fPolice2id"    column="f_police2id"    />
+        <result property="fPolice1name"    column="f_police1name"    />
+        <result property="fPolice2name"    column="f_police2name"    />
+        <result property="fDepartmentid"    column="f_departmentid"    />
+        <result property="fCasetype"    column="f_casetype"    />
+        <result property="fCasebrief"    column="f_casebrief"    />
+        <result property="fLockerid"    column="f_lockerid"    />
+        <result property="fLockername"    column="f_lockername"    />
+        <result property="fPositionid"    column="f_positionid"    />
+        <result property="fPositioncode"    column="f_positioncode"    />
+        <result property="fCriminalcode"    column="f_criminalcode"    />
+        <result property="fCriminalname"    column="f_criminalname"    />
+        <result property="fCrimeaddress"    column="f_crimeaddress"    />
+        <result property="fState"    column="f_state"    />
+    </resultMap>
+
+    <sql id="selectFCasesVo">
+        select f_Id, f_casecode, f_casename, f_casebriefdetail, f_putdate, f_createdate, f_police1id, f_police2id, f_police1name, f_police2name, f_departmentid, f_casetype, f_casebrief, f_lockerid, f_lockername, f_positionid, f_positioncode, f_criminalcode, f_criminalname, f_crimeaddress,f_state from f_cases
+    </sql>
+
+    <select id="selectFCasesList" parameterType="FCases" resultMap="FCasesResult">
+        <include refid="selectFCasesVo"/>
+        <where>
+            <if test="fCasecode != null  and fCasecode != ''"> and f_casecode = #{fCasecode}</if>
+            <if test="fCasename != null  and fCasename != ''"> and f_casename like concat('%', #{fCasename}, '%')</if>
+        </where>
+    </select>
+
+    <select id="selectFCasesById" parameterType="String" resultMap="FCasesResult">
+        <include refid="selectFCasesVo"/>
+        where f_Id = #{fId}
+    </select>
+
+    <insert id="insertFCases" parameterType="FCases">
+        insert into f_cases
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="fId != null">f_Id,</if>
+            <if test="fCasecode != null">f_casecode,</if>
+            <if test="fCasename != null">f_casename,</if>
+            <if test="fCasebriefdetail != null">f_casebriefdetail,</if>
+            <if test="fPutdate != null">f_putdate,</if>
+            <if test="fCreatedate != null">f_createdate,</if>
+            <if test="fPolice1id != null">f_police1id,</if>
+            <if test="fPolice2id != null">f_police2id,</if>
+            <if test="fPolice1name != null">f_police1name,</if>
+            <if test="fPolice2name != null">f_police2name,</if>
+            <if test="fDepartmentid != null">f_departmentid,</if>
+            <if test="fCasetype != null">f_casetype,</if>
+            <if test="fCasebrief != null">f_casebrief,</if>
+            <if test="fLockerid != null">f_lockerid,</if>
+            <if test="fLockername != null">f_lockername,</if>
+            <if test="fPositionid != null">f_positionid,</if>
+            <if test="fPositioncode != null">f_positioncode,</if>
+            <if test="fCriminalcode != null">f_criminalcode,</if>
+            <if test="fCriminalname != null">f_criminalname,</if>
+            <if test="fCrimeaddress != null">f_crimeaddress,</if>
+            <if test="fState != null">f_state,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="fId != null">#{fId},</if>
+            <if test="fCasecode != null">#{fCasecode},</if>
+            <if test="fCasename != null">#{fCasename},</if>
+            <if test="fCasebriefdetail != null">#{fCasebriefdetail},</if>
+            <if test="fPutdate != null">#{fPutdate},</if>
+            <if test="fCreatedate != null">#{fCreatedate},</if>
+            <if test="fPolice1id != null">#{fPolice1id},</if>
+            <if test="fPolice2id != null">#{fPolice2id},</if>
+            <if test="fPolice1name != null">#{fPolice1name},</if>
+            <if test="fPolice2name != null">#{fPolice2name},</if>
+            <if test="fDepartmentid != null">#{fDepartmentid},</if>
+            <if test="fCasetype != null">#{fCasetype},</if>
+            <if test="fCasebrief != null">#{fCasebrief},</if>
+            <if test="fLockerid != null">#{fLockerid},</if>
+            <if test="fLockername != null">#{fLockername},</if>
+            <if test="fPositionid != null">#{fPositionid},</if>
+            <if test="fPositioncode != null">#{fPositioncode},</if>
+            <if test="fCriminalcode != null">#{fCriminalcode},</if>
+            <if test="fCriminalname != null">#{fCriminalname},</if>
+            <if test="fCrimeaddress != null">#{fCrimeaddress},</if>
+            <if test="fState != null">#{fState},</if>
+        </trim>
+    </insert>
+
+    <update id="updateFCases" parameterType="FCases">
+        update f_cases
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="fCasecode != null">f_casecode = #{fCasecode},</if>
+            <if test="fCasename != null">f_casename = #{fCasename},</if>
+            <if test="fCasebriefdetail != null">f_casebriefdetail = #{fCasebriefdetail},</if>
+            <if test="fPutdate != null">f_putdate = #{fPutdate},</if>
+            <if test="fCreatedate != null">f_createdate = #{fCreatedate},</if>
+            <if test="fPolice1id != null">f_police1id = #{fPolice1id},</if>
+            <if test="fPolice2id != null">f_police2id = #{fPolice2id},</if>
+            <if test="fPolice1name != null">f_police1name = #{fPolice1name},</if>
+            <if test="fPolice2name != null">f_police2name = #{fPolice2name},</if>
+            <if test="fDepartmentid != null">f_departmentid = #{fDepartmentid},</if>
+            <if test="fCasetype != null">f_casetype = #{fCasetype},</if>
+            <if test="fCasebrief != null">f_casebrief = #{fCasebrief},</if>
+            <if test="fLockerid != null">f_lockerid = #{fLockerid},</if>
+            <if test="fLockername != null">f_lockername = #{fLockername},</if>
+            <if test="fPositionid != null">f_positionid = #{fPositionid},</if>
+            <if test="fPositioncode != null">f_positioncode = #{fPositioncode},</if>
+            <if test="fCriminalcode != null">f_criminalcode = #{fCriminalcode},</if>
+            <if test="fCriminalname != null">f_criminalname = #{fCriminalname},</if>
+            <if test="fCrimeaddress != null">f_crimeaddress = #{fCrimeaddress},</if>
+            <if test="fState != null">f_state = #{fState},</if>
+        </trim>
+        where f_Id = #{fId}
+    </update>
+
+    <delete id="deleteFCasesById" parameterType="String">
+        delete from f_cases where f_Id = #{fId}
+    </delete>
+
+    <delete id="deleteFCasesByIds" parameterType="String">
+        delete from f_cases where f_Id in
+        <foreach item="fId" collection="array" open="(" separator="," close=")">
+            #{fId}
+        </foreach>
+    </delete>
+
+</mapper>

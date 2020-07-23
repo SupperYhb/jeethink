@@ -10,6 +10,7 @@
         <module name="jeethink-basicInfo" />
         <module name="jeethink-framework" />
         <module name="jeethink-system" />
+        <module name="jeethink-requestutil" />
         <module name="jeethink-quartz" />
         <module name="jeethink-generator" />
         <module name="jeethink-business" />
@@ -27,6 +28,7 @@
       <module name="jeethink-framework" target="1.8" />
       <module name="jeethink-generator" target="1.8" />
       <module name="jeethink-quartz" target="1.8" />
+      <module name="jeethink-requestutil" target="1.8" />
       <module name="jeethink-system" target="1.8" />
     </bytecodeTargetLevel>
   </component>

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeethink.basicInfo.mapper.FCardMapper">
+    
+    <resultMap type="FCard" id="FCardResult">
+        <result property="fCardid"    column="f_cardid"    />
+        <result property="fCardcode"    column="f_cardcode"    />
+        <result property="fState"    column="f_state"    />
+        <result property="fUserid"    column="f_userid"    />
+        <result property="fUsername"    column="f_username"    />
+        <result property="fCreateuserid"    column="f_createuserid"    />
+        <result property="fCreateusername"    column="f_createusername"    />
+        <result property="fCreatedate"    column="f_createdate"    />
+    </resultMap>
+
+    <sql id="selectFCardVo">
+        select f_cardid, f_cardcode, f_state, f_userid, f_username, f_createuserid, f_createusername, f_createdate from f_card
+    </sql>
+
+    <select id="selectFCardList" parameterType="FCard" resultMap="FCardResult">
+        <include refid="selectFCardVo"/>
+        <where>  
+            <if test="fCardcode != null  and fCardcode != ''"> and f_cardcode = #{fCardcode}</if>
+        </where>
+    </select>
+    
+    <select id="selectFCardById" parameterType="String" resultMap="FCardResult">
+        <include refid="selectFCardVo"/>
+        where f_cardid = #{fCardid}
+    </select>
+        
+    <insert id="insertFCard" parameterType="FCard">
+        insert into f_card
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="fCardid != null">f_cardid,</if>
+            <if test="fCardcode != null">f_cardcode,</if>
+            <if test="fState != null">f_state,</if>
+            <if test="fUserid != null">f_userid,</if>
+            <if test="fUsername != null">f_username,</if>
+            <if test="fCreateuserid != null">f_createuserid,</if>
+            <if test="fCreateusername != null">f_createusername,</if>
+            <if test="fCreatedate != null">f_createdate,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="fCardid != null">#{fCardid},</if>
+            <if test="fCardcode != null">#{fCardcode},</if>
+            <if test="fState != null">#{fState},</if>
+            <if test="fUserid != null">#{fUserid},</if>
+            <if test="fUsername != null">#{fUsername},</if>
+            <if test="fCreateuserid != null">#{fCreateuserid},</if>
+            <if test="fCreateusername != null">#{fCreateusername},</if>
+            <if test="fCreatedate != null">#{fCreatedate},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFCard" parameterType="FCard">
+        update f_card
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="fCardcode != null">f_cardcode = #{fCardcode},</if>
+            <if test="fState != null">f_state = #{fState},</if>
+            <if test="fUserid != null">f_userid = #{fUserid},</if>
+            <if test="fUsername != null">f_username = #{fUsername},</if>
+            <if test="fCreateuserid != null">f_createuserid = #{fCreateuserid},</if>
+            <if test="fCreateusername != null">f_createusername = #{fCreateusername},</if>
+            <if test="fCreatedate != null">f_createdate = #{fCreatedate},</if>
+        </trim>
+        where f_cardid = #{fCardid}
+    </update>
+
+    <delete id="deleteFCardById" parameterType="String">
+        delete from f_card where f_cardid = #{fCardid}
+    </delete>
+
+    <delete id="deleteFCardByIds" parameterType="String">
+        delete from f_card where f_cardid in 
+        <foreach item="fCardid" collection="array" open="(" separator="," close=")">
+            #{fCardid}
+        </foreach>
+    </delete>
+
+</mapper>
