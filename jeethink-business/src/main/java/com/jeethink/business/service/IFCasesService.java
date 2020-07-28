@@ -28,6 +28,10 @@ public interface IFCasesService
     public List<FCases> selectFCasesList(FCases fCases);
 
     /**
+     * 查询入库的案卷
+     * */
+    public List<FCases> selectBydepositId(String depositId);
+    /**
      * 新增案卷
      *
      * @param fCases 案卷

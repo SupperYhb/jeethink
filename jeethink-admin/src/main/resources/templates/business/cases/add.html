@@ -74,7 +74,7 @@
                     <div class="form-group">
                         <label class="col-sm-3 control-label is-required">民警类型：</label>
                         <div class="col-sm-8">
-                            <select name="fCasebrief" class="form-control m-b" th:with="type=${@dict.getType('policeType')}" required>
+                            <select name="policeType" class="form-control m-b" th:with="type=${@dict.getType('policeType')}" required onchange="policeTypeChange()">
                                 <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
                             </select>
                         </div>
@@ -160,8 +160,8 @@
                     <div class="form-group">
                         <label class="col-sm-3 control-label">发卡：</label>
                         <div class="col-sm-8">
-                            <input name="fCardcode" class="form-control" type="text" readonly onclick="openSwipingForm()">
-                            <input name="fCardId" hidden="hidden">
+                            <input name="cardCode" class="form-control" type="text" readonly onclick="openSwipingForm()">
+                            <input name="cardId" hidden="hidden">
                         </div>
                     </div>
                 </div>
@@ -190,7 +190,7 @@
             debugger
             var data=$('#form-cases-add').serialize();
             if ($.validate.form()) {
-                //$.operate.save(prefix + "/add", $('#form-cases-add').serialize());
+                $.operate.save(prefix + "/add", $('#form-cases-add').serialize());
             }
         }
 
@@ -206,7 +206,65 @@
             autoclose: true
         });
         function openSwipingForm(){
-            $.modal.open("添加" ,"/basicInfo/card/swipingform",500);
+            layer.open({
+                type: 2,
+                area: ['500px', '500px'],
+                fix: false,
+                //不固定
+                maxmin: true,
+                shade: 0.3,
+                title: '刷卡',
+                content: "/basicInfo/card/swipingform",
+                btn: ['确定', '关闭'],
+                // 弹层外区域关闭
+                shadeClose: true,
+                yes: function(index,layero){
+                   //  debugger
+                    var iframeWin = layero.find('iframe')[0];
+                    var str= iframeWin.contentWindow.submitHandler(index, layero);
+                    var cardCode=str.split(';')[0];
+                    var cardId=str.split(';')[1];
+                    $("[name=cardCode]").val(cardCode);
+                    $("[name=cardId]").val(cardId);
+                    layer.close(index);
+                },
+                cancel: function(index) {
+                    return true;
+                }
+            });
+        }
+        function policeTypeChange()
+        {
+            var type=$("[name=policeType]").val();
+            if(type=="1")
+            {
+                layer.open({
+                    type: 2,
+                    area: ['1000px', '600px'],
+                    fix: false,
+                    //不固定
+                    maxmin: true,
+                    shade: 0.3,
+                    title: '已录入人员',
+                    content: "/business/cases/localform",
+                    btn: ['确定', '关闭'],
+                    // 弹层外区域关闭
+                    shadeClose: true,
+                    yes: function(index,layero){
+                          debugger
+                        var iframeWin = layero.find('iframe')[0];
+                        var data= iframeWin.contentWindow.submitHandler(index, layero);
+                        $("[name=fPolice1id]").val(data[0].loginName);
+                        $("[name=fPolice1name]").val(data[0].userName);
+                        $("[name=cardCode]").val(data[0].cardcode);
+                        $("[name=cardId]").val(data[0].cardid);
+                        layer.close(index);
+                    },
+                    cancel: function(index) {
+                        return true;
+                    }
+                });
+            }
         }
     </script>
 </body>

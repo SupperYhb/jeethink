@@ -69,12 +69,31 @@ public class FCardController extends BaseController
     }
 
     /**
+     * 验证卡是否可用
+     * */
+    @RequiresPermissions("basicInfo:card:verificationCard")
+    @PostMapping("/verificationCard")
+    @ResponseBody
+    public AjaxResult verificationCard(FCard fCard){
+    List<FCard> list=fCardService.verificationCard(fCard);
+    return success(list.size()>0?list.get(0).getfCardid():"");
+    }
+
+    /**
      * 新增卡
      */
     @GetMapping("/add")
     public String add()
     {
         return prefix + "/add";
+    }
+    /**
+     * 刷卡页面
+     */
+    @GetMapping("/swipingform")
+    public String swipingform()
+    {
+        return prefix + "/swipingform";
     }
 
     /**

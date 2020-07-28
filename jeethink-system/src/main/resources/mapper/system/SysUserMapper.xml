@@ -16,6 +16,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		<result property="avatar"       column="avatar"       />
 		<result property="password"     column="password"     />
 		<result property="salt"         column="salt"         />
+		<result property="source"       column="source"       />
+		<result property="cardid"       column="cardid"       />
+		<result property="cardcode"       column="cardcode"       />
 		<result property="status"       column="status"       />
 		<result property="delFlag"      column="del_flag"     />
 		<result property="loginIp"      column="login_ip"     />
@@ -48,7 +51,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</resultMap>
 	
 	<sql id="selectUserVo">
-        select  u.user_id, u.dept_id, u.login_name, u.user_name, u.user_type, u.email, u.avatar, u.phonenumber, u.sex, u.password, u.salt, u.status, u.del_flag, u.login_ip, u.login_date, u.create_time, u.remark,
+        select  u.user_id, u.dept_id, u.login_name, u.user_name, u.user_type, u.email, u.avatar, u.phonenumber, u.sex, u.password, u.salt,u.source,u.cardid,u.cardcode, u.status, u.del_flag, u.login_ip, u.login_date, u.create_time, u.remark,
        		    d.dept_id, d.parent_id, d.dept_name, d.order_num, d.leader, d.status as dept_status,
        		    r.role_id, r.role_name, r.role_key, r.role_sort, r.data_scope, r.status as role_status
 		from sys_user u
@@ -101,7 +104,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	</select>
 	
 	<select id="selectUnallocatedList" parameterType="SysUser" resultMap="SysUserResult">
-	    select distinct u.user_id, u.dept_id, u.login_name, u.user_name, u.user_type, u.email, u.avatar, u.phonenumber, u.status, u.create_time
+	    select distinct u.user_id, u.dept_id, u.login_name, u.source,u.user_name, u.user_type, u.email, u.avatar, u.phonenumber, u.status, u.create_time
 	    from sys_user u
 			 left join sys_dept d on u.dept_id = d.dept_id
 			 left join sys_user_role ur on u.user_id = ur.user_id
@@ -121,6 +124,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 	<select id="selectUserByLoginName" parameterType="String" resultMap="SysUserResult">
 	    <include refid="selectUserVo"/>
 		where u.login_name = #{userName}
+	</select>
+
+	<select id="selectUserByNoAndName" parameterType="SysUser" resultMap="SysUserResult">
+		<include refid="selectUserVo"/>
+		where source IS NOT NULL
+		<if test="loginName != null and loginName != ''"> AND login_name like concat('%',#{loginName},'%')</if>
+		<if test="userName != null and userName != ''"> AND user_name like concat('%',#{userName},'%')</if>
 	</select>
 	
 	<select id="selectUserByPhoneNumber" parameterType="String" resultMap="SysUserResult">
@@ -174,6 +184,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			<if test="avatar != null and avatar != ''">avatar = #{avatar},</if>
  			<if test="password != null and password != ''">password = #{password},</if>
  			<if test="salt != null and salt != ''">salt = #{salt},</if>
+			<if test="cardid != null and cardid != ''">cardid = #{cardid},</if>
+			<if test="cardcode != null and cardcode != ''">cardcode = #{cardcode},</if>
  			<if test="status != null and status != ''">status = #{status},</if>
  			<if test="loginIp != null and loginIp != ''">login_ip = #{loginIp},</if>
  			<if test="loginDate != null">login_date = #{loginDate},</if>
@@ -197,6 +209,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			<if test="sex != null and sex != ''">sex,</if>
  			<if test="password != null and password != ''">password,</if>
  			<if test="salt != null and salt != ''">salt,</if>
+			<if test="cardid != null and cardid != ''">cardid,</if>
+			<if test="cardcode != null and cardcode != ''">cardcode,</if>
+			<if test="source != null and source != ''">source,</if>
  			<if test="status != null and status != ''">status,</if>
  			<if test="createBy != null and createBy != ''">create_by,</if>
  			<if test="remark != null and remark != ''">remark,</if>
@@ -213,6 +228,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			<if test="sex != null and sex != ''">#{sex},</if>
  			<if test="password != null and password != ''">#{password},</if>
  			<if test="salt != null and salt != ''">#{salt},</if>
+			<if test="cardid != null and cardid != ''">#{cardid},</if>
+			<if test="cardcode != null and cardcode != ''">#{cardcode},</if>
+			<if test="source != null and source != ''">#{source},</if>
  			<if test="status != null and status != ''">#{status},</if>
  			<if test="createBy != null and createBy != ''">#{createBy},</if>
  			<if test="remark != null and remark != ''">#{remark},</if>

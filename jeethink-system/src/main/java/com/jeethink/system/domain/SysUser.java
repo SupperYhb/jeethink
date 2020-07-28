@@ -43,7 +43,7 @@ public class SysUser extends BaseEntity
     @Excel(name = "用户名称")
     private String userName;
 
-    /** 用户类型(0工作人员，1民警) */
+    /** 用户类型(00管理员工作人员，1民警) */
     private String userType;
 
     /** 用户邮箱 */
@@ -66,6 +66,12 @@ public class SysUser extends BaseEntity
 
     /** 盐加密 */
     private String salt;
+    /** 数据来源（0填写，1平台拉取） */
+    private String source;
+    /** 卡id */
+    private String cardid;
+    /** 卡编号 */
+    private String cardcode;
 
     /** 帐号状态（0正常 1停用） */
     @Excel(name = "帐号状态", readConverterExp = "0=正常,1=停用")
@@ -253,6 +259,22 @@ public class SysUser extends BaseEntity
         this.salt = salt;
     }
 
+    public void setCardid(String cardid) {
+        this.cardid = cardid;
+    }
+
+    public String getCardid() {
+        return cardid;
+    }
+
+    public void setCardcode(String cardcode) {
+        this.cardcode = cardcode;
+    }
+
+    public String getCardcode() {
+        return cardcode;
+    }
+
     public String getStatus()
     {
         return status;
@@ -335,6 +357,14 @@ public class SysUser extends BaseEntity
     public void setPostIds(Long[] postIds)
     {
         this.postIds = postIds;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
+    public String getSource() {
+        return source;
     }
 
     @Override

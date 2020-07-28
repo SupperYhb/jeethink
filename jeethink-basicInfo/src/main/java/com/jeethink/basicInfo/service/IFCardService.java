@@ -26,6 +26,10 @@ public interface IFCardService
      * @return 卡集合
      */
     public List<FCard> selectFCardList(FCard fCard);
+    /**
+     * 验证卡是否可用
+     * */
+    public List<FCard> verificationCard(FCard fCard);
 
     /**
      * 新增卡

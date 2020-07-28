@@ -16,7 +16,7 @@ public class createId {
      * */
     public static String getCode(codeType code){
 
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+        SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");//设置日期格式
         return code.getName()+df.format(new Date());
     }
 }

@@ -19,6 +19,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select f_cardid, f_cardcode, f_state, f_userid, f_username, f_createuserid, f_createusername, f_createdate from f_card
     </sql>
 
+    <select id="verificationCard" parameterType="FCard" resultMap="FCardResult">
+        select f_cardid, f_cardcode, f_state, f_userid, f_username, f_createuserid, f_createusername, f_createdate from f_card
+        where f_cardcode=#{fCardcode} and f_state=0
+    </select>
+
     <select id="selectFCardList" parameterType="FCard" resultMap="FCardResult">
         <include refid="selectFCardVo"/>
         <where>  

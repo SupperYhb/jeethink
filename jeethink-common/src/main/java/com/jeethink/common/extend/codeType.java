@@ -4,15 +4,15 @@ public enum codeType {
     /**
      * 空闲
      * */
-    Leisure(0,"空闲"),
+    Leisure(0,"KX"),
     /**
      * 存入
      * */
-    In(1,"存入"),
+    In(1,"CR"),
     /**
      * 取出
      * */
-    Out(2,"取出");
+    Out(2,"QC");
 
     private final int id;
     private final String name;

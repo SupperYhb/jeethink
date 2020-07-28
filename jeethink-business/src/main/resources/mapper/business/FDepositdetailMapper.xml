@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeethink.business.mapper.FDepositdetailMapper">
+    
+    <resultMap type="FDepositdetail" id="FDepositdetailResult">
+        <result property="fDepositdetailid"    column="f_depositdetailid"    />
+        <result property="fDepositid"    column="f_depositId"    />
+        <result property="fCasecode"    column="f_casecode"    />
+        <result property="fLockerid"    column="f_lockerid"    />
+        <result property="fBoxid"    column="f_boxid"    />
+        <result property="fPositionid"    column="f_positionid"    />
+        <result property="state"    column="state"    />
+        <result property="createby"    column="createby"    />
+        <result property="createdate"    column="createdate"    />
+    </resultMap>
+
+    <sql id="selectFDepositdetailVo">
+        select f_depositdetailid,f_depositId, f_casecode, f_lockerid, f_boxid, f_positionid, state, createby, createdate from f_depositdetail
+    </sql>
+
+    <select id="selectFDepositdetailList" parameterType="FDepositdetail" resultMap="FDepositdetailResult">
+        <include refid="selectFDepositdetailVo"/>
+        <where>
+            <if test="fDepositid != null  and fDepositid != ''"> and f_depositId = #{fDepositid}</if>
+            <if test="fCasecode != null  and fCasecode != ''"> and f_casecode = #{fCasecode}</if>
+            <if test="fLockerid != null  and fLockerid != ''"> and f_lockerid = #{fLockerid}</if>
+            <if test="fBoxid != null  and fBoxid != ''"> and f_boxid = #{fBoxid}</if>
+            <if test="fPositionid != null  and fPositionid != ''"> and f_positionid = #{fPositionid}</if>
+            <if test="state != null "> and state = #{state}</if>
+            <if test="createby != null  and createby != ''"> and createby = #{createby}</if>
+            <if test="createdate != null "> and createdate = #{createdate}</if>
+        </where>
+    </select>
+    
+    <select id="selectFDepositdetailById" parameterType="String" resultMap="FDepositdetailResult">
+        <include refid="selectFDepositdetailVo"/>
+        where f_depositdetailid = #{fDepositdetailid}
+    </select>
+        
+    <insert id="insertFDepositdetail" parameterType="FDepositdetail">
+        insert into f_depositdetail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="fDepositdetailid != null">f_depositdetailid,</if>
+            <if test="fDepositid != null">f_depositId,</if>
+            <if test="fCasecode != null">f_casecode,</if>
+            <if test="fLockerid != null">f_lockerid,</if>
+            <if test="fBoxid != null">f_boxid,</if>
+            <if test="fPositionid != null">f_positionid,</if>
+            <if test="state != null">state,</if>
+            <if test="createby != null">createby,</if>
+            <if test="createdate != null">createdate,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="fDepositdetailid != null">#{fDepositdetailid},</if>
+            <if test="fDepositid != null">#{fDepositid},</if>
+            <if test="fCasecode != null">#{fCasecode},</if>
+            <if test="fLockerid != null">#{fLockerid},</if>
+            <if test="fBoxid != null">#{fBoxid},</if>
+            <if test="fPositionid != null">#{fPositionid},</if>
+            <if test="state != null">#{state},</if>
+            <if test="createby != null">#{createby},</if>
+            <if test="createdate != null">#{createdate},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFDepositdetail" parameterType="FDepositdetail">
+        update f_depositdetail
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="fCasecode != null">f_casecode = #{fCasecode},</if>
+            <if test="fLockerid != null">f_lockerid = #{fLockerid},</if>
+            <if test="fBoxid != null">f_boxid = #{fBoxid},</if>
+            <if test="fPositionid != null">f_positionid = #{fPositionid},</if>
+            <if test="state != null">state = #{state},</if>
+            <if test="createby != null">createby = #{createby},</if>
+            <if test="createdate != null">createdate = #{createdate},</if>
+        </trim>
+        where f_depositdetailid = #{fDepositdetailid}
+    </update>
+
+    <delete id="deleteFDepositdetailById" parameterType="String">
+        delete from f_depositdetail where f_depositdetailid = #{fDepositdetailid}
+    </delete>
+
+    <delete id="deleteFDepositdetailByIds" parameterType="String">
+        delete from f_depositdetail where f_depositdetailid in 
+        <foreach item="fDepositdetailid" collection="array" open="(" separator="," close=")">
+            #{fDepositdetailid}
+        </foreach>
+    </delete>
+
+</mapper>

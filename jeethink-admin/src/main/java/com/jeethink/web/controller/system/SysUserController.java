@@ -69,7 +69,14 @@ public class SysUserController extends BaseController
         List<SysUser> list = userService.selectUserList(user);
         return getDataTable(list);
     }
-
+    @RequiresPermissions("system:user:selectUserByNoAndName")
+    @PostMapping("/selectUserByNoAndName")
+    @ResponseBody
+    public  TableDataInfo selectUserByNoAndName(SysUser user){
+        startPage();
+        List<SysUser> list = userService.selectUserByNoAndName(user);
+        return getDataTable(list);
+    }
     @Log(title = "用户管理", businessType = BusinessType.EXPORT)
     @RequiresPermissions("system:user:export")
     @PostMapping("/export")

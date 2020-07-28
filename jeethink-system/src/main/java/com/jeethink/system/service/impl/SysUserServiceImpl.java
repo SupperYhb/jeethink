@@ -155,6 +155,14 @@ public class SysUserServiceImpl implements ISysUserService
     }
 
     /**
+     * 根据登录警号及名称查询录入过的民警信息
+     * */
+    @Override
+    public List<SysUser> selectUserByNoAndName(SysUser sysUser) {
+        return userMapper.selectUserByNoAndName(sysUser);
+    }
+
+    /**
      * 通过用户ID删除用户
      * 
      * @param userId 用户ID

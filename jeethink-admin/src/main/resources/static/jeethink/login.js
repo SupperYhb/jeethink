@@ -15,7 +15,6 @@ $.validator.setDefaults({
 });
 
 function login() {
-    debugger
 	$.modal.loading($("#btnSubmit").data("loading"));
 	var username = $.common.trim($("input[name='username']").val());
     var password = $.common.trim($("input[name='password']").val());
@@ -31,7 +30,6 @@ function login() {
             "rememberMe": rememberMe
         },
         success: function(r) {
-            debugger
             if (r.code == 0) {
                 location.href = ctx + 'index';
             } else {

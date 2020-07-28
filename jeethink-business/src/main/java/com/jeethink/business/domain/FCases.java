@@ -96,6 +96,20 @@ public class FCases extends BaseEntity
     private String fCrimeaddress;
     /** 状态（0登记，1存入，2取出） */
     private Integer fState;
+    /** 保存业务字段Begin */
+    /**
+     * 民警类型（0未录入，1已录入，2平台拉取）
+     * */
+    private Integer policeType;
+    /**
+     * 卡号
+     * */
+    private String cardCode;
+    /**
+     * 卡Id
+     * */
+    private String cardId;
+    /** 保存业务字段End */
 
     public void setfId(String fId)
     {
@@ -284,6 +298,30 @@ public class FCases extends BaseEntity
 
     public Integer getfState() {
         return fState;
+    }
+
+    public void setCardCode(String cardCode) {
+        this.cardCode = cardCode;
+    }
+
+    public String getCardCode() {
+        return cardCode;
+    }
+
+    public void setCardId(String cardId) {
+        this.cardId = cardId;
+    }
+
+    public String getCardId() {
+        return cardId;
+    }
+
+    public void setPoliceType(Integer policeType) {
+        this.policeType = policeType;
+    }
+
+    public Integer getPoliceType() {
+        return policeType;
     }
 
     @Override

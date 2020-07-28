@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('存放案卷列表')" />
+</head>
+<body class="gray-bg">
+<div class="container-div">
+    <div class="row">
+        <div class="col-sm-12 search-collapse">
+            <form id="formId">
+                <div class="select-list">
+                    <ul>
+                        <li>
+                            <label>警号：</label>
+                            <input type="text" name="loginName"/>
+                        </li>
+                        <li>
+                            <label>名称：</label>
+                            <input type="text" name="userName"/>
+                        </li>
+                        <li>
+                            <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                            <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+
+        <!--        <div class="btn-group-sm" id="toolbar" role="group">-->
+        <!--            <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="business:deposit:add">-->
+        <!--                <i class="fa fa-plus"></i> 添加-->
+        <!--            </a>-->
+        <!--            <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="business:deposit:edit">-->
+        <!--                <i class="fa fa-edit"></i> 修改-->
+        <!--            </a>-->
+        <!--            <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="business:deposit:remove">-->
+        <!--                <i class="fa fa-remove"></i> 删除-->
+        <!--            </a>-->
+        <!--            <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="business:deposit:export">-->
+        <!--                <i class="fa fa-download"></i> 导出-->
+        <!--            </a>-->
+        <!--        </div>-->
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table"></table>
+        </div>
+    </div>
+</div>
+<th:block th:include="include :: footer" />
+<script th:inline="javascript">
+    var editFlag = [[${@permission.hasPermi('business:deposit:edit')}]];
+    var removeFlag = [[${@permission.hasPermi('business:deposit:remove')}]];
+    var prefix = ctx + "system/user";
+
+    $(function() {
+        var options = {
+            url: prefix + "/selectUserByNoAndName",
+            modalName: "已录入民警",
+            pagination:false,
+            singleSelect:true,
+            columns: [{
+                checkbox: true
+            },
+                {
+                    field: 'loginName',
+                    title: '民警编号'
+                },
+                {
+                    field: 'userName',
+                    title: '民警名称'
+                },
+                {
+                    field: 'cardcode',
+                    title: '卡号'
+                },
+                {
+                    field: 'cardid',
+                    title: '卡id',
+                    visible: false
+                }]
+        };
+        $.table.init(options);
+    });
+    function submitHandler() {
+        return  $("#" + table.options.id).bootstrapTable('getSelections');
+    }
+</script>
+</body>
+</html>

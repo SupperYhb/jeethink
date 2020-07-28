@@ -49,6 +49,14 @@ public class FCardServiceImpl implements IFCardService
     }
 
     /**
+     * 验证卡是否可用
+     * */
+    @Override
+    public List<FCard> verificationCard(FCard fCard) {
+        return fCardMapper.verificationCard(fCard);
+    }
+
+    /**
      * 新增卡
      * 
      * @param fCard 卡

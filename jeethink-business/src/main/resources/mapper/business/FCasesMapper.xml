@@ -45,6 +45,15 @@
         where f_Id = #{fId}
     </select>
 
+    <select id="selectBydepositId" parameterType="String" resultMap="FCasesResult">
+        SELECT
+            B.*
+        FROM
+            f_depositdetail A
+            LEFT JOIN f_cases B ON A.f_casecode = B.f_casecode
+            where A.f_depositId=#{depositId}
+    </select>
+
     <insert id="insertFCases" parameterType="FCases">
         insert into f_cases
         <trim prefix="(" suffix=")" suffixOverrides=",">

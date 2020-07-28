@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('新增卡')" />
+    <th:block th:include="include :: datetimepicker-css" />
+</head>
+<body class="white-bg">
+<div class="wrapper wrapper-content animated fadeInRight ibox-content">
+        <img th:src="@{/img/cardimg.png}" style="margin-top: 90px;width: 200px;margin-left: 130px;">
+        <div style="font-size: 20px;width: 100%;text-align: center;margin-top: 30px;">
+            请将卡放置到读卡器上
+        </div>
+        <div style="font-size: 20px;width: 100%;text-align: center;">
+            刷卡完成后请点击确认
+        </div>
+        <input id="cardCode" class="form-control" type="text">
+</div>
+<th:block th:include="include :: footer" />
+<th:block th:include="include :: datetimepicker-js" />
+<script th:inline="javascript">
+    var cardCode="";
+    var cardId="";
+    var prefix = ctx + "basicInfo/card"
+    $("#form-card-add").validate({
+        focusCleanup: true
+    });
+
+    function submitHandler() {
+       return cardCode+";"+cardId;
+        // if ($.validate.form()) {
+        //     $.operate.save(prefix + "/add", $('#form-card-add').serialize());
+        // }
+    }
+
+    $("input[name='fCreatedate']").datetimepicker({
+        format: "yyyy-mm-dd",
+        minView: "month",
+        autoclose: true
+    });
+    $("#cardCode").focus();
+    $('#cardCode').bind('keypress',function(event){
+        if(event.keyCode == "13")
+        {
+            var code=$("#cardCode").val();
+            if(code!="") {
+                $.ajax({
+                    cache : true,
+                    type : "POST",
+                    url : ctx + "basicInfo/card/verificationCard",
+                    data : {
+                        "fCardcode": code,
+                    },
+                    async : false,
+                    error : function(request) {
+                        $.modal.alertError("系统错误");
+                    },
+                    success : function(data) {
+                        if(data.msg!="") {
+                            $.modal.msg("刷卡成功",modal_status.SUCCESS);
+                            cardCode=code;
+                            cardId=data.msg;
+                        }else{
+                            $.modal.msg("当前卡被占用或卡不存在",modal_status.FAIL);
+                            $("#cardCode").focus();
+                        }
+                    }
+                });
+            }
+        }
+    });
+</script>
+</body>
+</html>

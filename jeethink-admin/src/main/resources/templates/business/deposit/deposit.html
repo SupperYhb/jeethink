@@ -27,17 +27,11 @@
                 <a class="btn btn-warning" onclick="addCase()">
                     <i class="fa fa-keyboard-o"></i> 登记
                 </a>
-                <a class="btn btn-success" onclick="$.operate.add('',1300)" shiro:hasPermission="business:deposit:add">
-                    <i class="fa fa-plus"></i> 添加
+                <a class="btn btn-success" onclick="openBigForm()" shiro:hasPermission="business:deposit:add">
+                    <i class="fa fa-plus"></i> 平台拉取
                 </a>
-                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="business:deposit:edit">
-                    <i class="fa fa-edit"></i> 修改
-                </a>
-                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="business:deposit:remove">
-                    <i class="fa fa-remove"></i> 删除
-                </a>
-                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="business:deposit:export">
-                    <i class="fa fa-download"></i> 导出
+                <a class="btn btn-success" onclick="openBigForm()" shiro:hasPermission="business:deposit:add">
+                    <i class="fa fa-plus"></i> 案卷归还
                 </a>
             </div>
             <div class="col-sm-12 select-table table-striped">
@@ -59,6 +53,10 @@
                 removeUrl: prefix + "/remove",
                 exportUrl: prefix + "/export",
                 modalName: "存放案卷",
+                detailView: true,
+                onExpandRow : function(index, row, $detail) {
+                    initChildTable(index, row, $detail);
+                },
                 columns: [{
                     checkbox: false
                 },
@@ -118,9 +116,75 @@
             };
             $.table.init(options);
         });
+        initChildTable = function(index, row, $detail) {
+            debugger
+            var childTable = $detail.html('<table style="table-layout:fixed"></table>').find('table');
+            $(childTable).bootstrapTable({
+                url: "/business/cases/selectBydepositId?depositId="+row.fDepositid,
+                method: 'post',
+                sidePagination: "server",
+                contentType: "application/x-www-form-urlencoded",
+                queryParams : {
+                    userName: '案卷'
+                },
+                columns: [
+                    {
+                        field: 'fCasecode',
+                        title: '案件编号'
+                    },
+                    {
+                        field: 'fCasename',
+                        title: '案件名称'
+                    },
+                    {
+                        field: 'fCasebriefdetail',
+                        title: '简要案情'
+                    },
+                    {
+                        field: 'fPutdate',
+                        title: '立案日期'
+                    },
+                    {
+                        field: 'fPolice1id',
+                        title: '民警编号'
+                    },
+                    {
+                        field: 'fPolice1name',
+                        title: '民警名称'
+                    },
+                    {
+                        field: 'fDepartmentid',
+                        title: '办案单位编号'
+                    },
+                    {
+                        field: 'fLockername',
+                        title: '卷宗柜名称'
+                    },
+                    {
+                        field: 'fPositioncode',
+                        title: '货位编号'
+                    },
+                    {
+                        field: 'fCriminalcode',
+                        title: '嫌疑人编号'
+                    },
+                    {
+                        field: 'fCriminalname',
+                        title: '嫌疑人名称'
+                    },
+                    {
+                        field: 'fCrimeaddress',
+                        title: '案发地址'
+                    }]
+            });
+        };
         function addCase()
         {
             $.modal.open("添加" ,"/business/cases/add",1000);
+        }
+        function openBigForm()
+        {
+            $.modal.openTab("添加案卷","/business/deposit/add");
         }
     </script>
 </body>

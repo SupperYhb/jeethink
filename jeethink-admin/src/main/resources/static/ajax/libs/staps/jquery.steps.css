@@ -150,6 +150,9 @@
 .wizard-big.wizard > .content {
     min-height: 320px;
 }
+.wizard-custombig.wizard > .content {
+    min-height: 680px;
+}
 .wizard.vertical > .content
 {
     display: inline;

@@ -66,7 +66,10 @@ public interface SysUserMapper
      * @return 用户对象信息
      */
     public SysUser selectUserById(Long userId);
-
+    /**
+     * 根据登录警号及名称查询录入过的民警信息
+     * */
+    public List<SysUser> selectUserByNoAndName(SysUser sysUser);
     /**
      * 通过用户ID删除用户
      * 

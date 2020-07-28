@@ -53,6 +53,16 @@ public class FCasesController extends BaseController
         List<FCases> list = fCasesService.selectFCasesList(fCases);
         return getDataTable(list);
     }
+    /**
+     * 查询入库申请的案卷
+     */
+    @RequiresPermissions("business:cases:selectBydepositId")
+    @PostMapping("/selectBydepositId")
+    @ResponseBody
+    public TableDataInfo selectBydepositId(String depositId){
+        List<FCases> list=fCasesService.selectBydepositId(depositId);
+        return getDataTable(list);
+    }
 
     /**
      * 导出案卷列表
@@ -75,6 +85,13 @@ public class FCasesController extends BaseController
     public String add()
     {
         return prefix + "/add";
+    }
+
+    /** 查询录入过的在区人员 */
+    @GetMapping("/localform")
+    public String localform()
+    {
+        return prefix + "/localform";
     }
 
     /**
