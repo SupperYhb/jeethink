@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
 <head>
-    <th:block th:include="include :: header('存放案卷列表')" />
+    <th:block th:include="include :: header('借阅列表')" />
 </head>
 <body class="gray-bg">
      <div class="container-div">
@@ -14,6 +14,7 @@
                                 <label>编号：</label>
                                 <input type="text" name="fCode"/>
                             </li>
+
                             <li>
                                 <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
                                 <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
@@ -24,14 +25,17 @@
             </div>
 
             <div class="btn-group-sm" id="toolbar" role="group">
-                <a class="btn btn-warning" onclick="addCase()">
-                    <i class="fa fa-keyboard-o"></i> 登记
+                <a class="btn btn-success" onclick="openBigForm()" shiro:hasPermission="business:borrow:add">
+                    <i class="fa fa-plus"></i> 添加
                 </a>
-                <a class="btn btn-success" onclick="openBigForm()" shiro:hasPermission="business:deposit:add">
-                    <i class="fa fa-plus"></i> 平台拉取
+                <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="business:borrow:edit">
+                    <i class="fa fa-edit"></i> 修改
                 </a>
-                <a class="btn btn-success" onclick="openReturnForm()">
-                    <i class="fa fa-plus"></i> 案卷归还
+                <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="business:borrow:remove">
+                    <i class="fa fa-remove"></i> 删除
+                </a>
+                <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="business:borrow:export">
+                    <i class="fa fa-download"></i> 导出
                 </a>
             </div>
             <div class="col-sm-12 select-table table-striped">
@@ -41,9 +45,9 @@
     </div>
     <th:block th:include="include :: footer" />
     <script th:inline="javascript">
-        var editFlag = [[${@permission.hasPermi('business:deposit:edit')}]];
-        var removeFlag = [[${@permission.hasPermi('business:deposit:remove')}]];
-        var prefix = ctx + "business/deposit";
+        var editFlag = [[${@permission.hasPermi('business:borrow:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('business:borrow:remove')}]];
+        var prefix = ctx + "business/borrow";
 
         $(function() {
             var options = {
@@ -52,9 +56,7 @@
                 updateUrl: prefix + "/edit/{id}",
                 removeUrl: prefix + "/remove",
                 exportUrl: prefix + "/export",
-                modalName: "存放案卷",
-                pagination:true,
-                pageSize:10,
+                modalName: "借阅",
                 detailView: true,
                 onExpandRow : function(index, row, $detail) {
                     initChildTable(index, row, $detail);
@@ -63,8 +65,8 @@
                     checkbox: false
                 },
                 {
-                    field: 'fDepositid',
-                    title: '存入主键',
+                    field: 'fBorrowid',
+                    title: '出库主键',
                     visible: false
                 },
                 {
@@ -72,20 +74,16 @@
                     title: '编号'
                 },
                 {
-                    field: 'fCardcode',
-                    title: '卡编号'
+                    field: 'fUserid',
+                    title: '操作用户Id'
                 },
                 {
                     field: 'fUsername',
-                    title: '存入用户名称'
-                },
-                {
-                    field: 'fUsername',
-                    title: '存入用户名称'
+                    title: '操作用户名称'
                 },
                 {
                     field: 'fCreatedate',
-                    title: '创建时间'
+                    title: '操作时间'
                 },
                 {
                     field: 'fType',
@@ -112,8 +110,16 @@
                     }
                 },
                 {
-                    field: 'fRemark',
-                    title: '备注'
+                    field: 'fCardcode',
+                    title: '卡编号'
+                },
+                {
+                    field: 'fOpendate',
+                    title: '开门时间'
+                },
+                {
+                    field: 'fEnddate',
+                    title: '关门时间'
                 }]
             };
             $.table.init(options);
@@ -122,7 +128,7 @@
             debugger
             var childTable = $detail.html('<table style="table-layout:fixed"></table>').find('table');
             $(childTable).bootstrapTable({
-                url: "/business/cases/selectBydepositId?depositId="+row.fDepositid,
+                url: "/business/cases/selectByborrowId?borrowId="+row.fBorrowid,
                 method: 'post',
                 sidePagination: "server",
                 contentType: "application/x-www-form-urlencoded",
@@ -180,17 +186,9 @@
                     }]
             });
         };
-        function addCase()
-        {
-            $.modal.open("添加" ,"/business/cases/add",1000);
-        }
         function openBigForm()
         {
-            $.modal.openTab("添加案卷","/business/deposit/add");
-        }
-        function openReturnForm()
-        {
-            $.modal.openTab("归还案卷","/business/deposit/returnadd");
+            $.modal.openTab("借阅案卷","/business/borrow/add");
         }
     </script>
 </body>

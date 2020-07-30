@@ -36,6 +36,8 @@
         <include refid="selectFCasesVo"/>
         <where>
             <if test="fCasecode != null  and fCasecode != ''"> and f_casecode = #{fCasecode}</if>
+            <if test="fState != null  and fState != ''"> and f_state = #{fState}</if>
+            <if test="fPolice1id != null  and fPolice1id != ''"> and f_police1id = #{fPolice1id}</if>
             <if test="fCasename != null  and fCasename != ''"> and f_casename like concat('%', #{fCasename}, '%')</if>
         </where>
     </select>
@@ -52,6 +54,16 @@
             f_depositdetail A
             LEFT JOIN f_cases B ON A.f_casecode = B.f_casecode
             where A.f_depositId=#{depositId}
+    </select>
+
+    <select id="selectByborrowId" parameterType="String" resultMap="FCasesResult">
+        SELECT
+            B.*
+        FROM
+            f_borrowdetail A
+            LEFT JOIN f_cases B ON A.f_casecode = B.f_casecode
+        WHERE
+            A.f_borrowid = #{borrowId}
     </select>
 
     <insert id="insertFCases" parameterType="FCases">

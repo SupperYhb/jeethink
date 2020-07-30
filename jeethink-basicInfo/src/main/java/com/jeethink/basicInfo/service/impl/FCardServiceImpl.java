@@ -57,6 +57,14 @@ public class FCardServiceImpl implements IFCardService
     }
 
     /**
+     * 根据用户查询使用的卡
+     * */
+    @Override
+    public List<FCard> selectCardByUserId(String fUserId) {
+        return fCardMapper.selectCardByUserId(fUserId);
+    }
+
+    /**
      * 新增卡
      * 
      * @param fCard 卡

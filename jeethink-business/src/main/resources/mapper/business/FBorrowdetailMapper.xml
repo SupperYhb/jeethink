@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeethink.business.mapper.FBorrowdetailMapper">
+    
+    <resultMap type="FBorrowdetail" id="FBorrowdetailResult">
+        <result property="fBorrowdetailid"    column="f_borrowdetailid"    />
+        <result property="fBorrowid"    column="f_borrowid"    />
+        <result property="fCasecode"    column="f_casecode"    />
+        <result property="fState"    column="f_state"    />
+        <result property="createby"    column="createby"    />
+        <result property="createdate"    column="createdate"    />
+    </resultMap>
+
+    <sql id="selectFBorrowdetailVo">
+        select f_borrowdetailid, f_borrowid, f_casecode, f_state, createby, createdate from f_borrowdetail
+    </sql>
+
+    <select id="selectFBorrowdetailList" parameterType="FBorrowdetail" resultMap="FBorrowdetailResult">
+        <include refid="selectFBorrowdetailVo"/>
+        <where>  
+            <if test="fBorrowid != null  and fBorrowid != ''"> and f_borrowid = #{fBorrowid}</if>
+            <if test="fCasecode != null  and fCasecode != ''"> and f_casecode = #{fCasecode}</if>
+            <if test="fState != null "> and f_state = #{fState}</if>
+            <if test="createby != null  and createby != ''"> and createby = #{createby}</if>
+            <if test="createdate != null "> and createdate = #{createdate}</if>
+        </where>
+    </select>
+    
+    <select id="selectFBorrowdetailById" parameterType="String" resultMap="FBorrowdetailResult">
+        <include refid="selectFBorrowdetailVo"/>
+        where f_borrowdetailid = #{fBorrowdetailid}
+    </select>
+        
+    <insert id="insertFBorrowdetail" parameterType="FBorrowdetail">
+        insert into f_borrowdetail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="fBorrowdetailid != null">f_borrowdetailid,</if>
+            <if test="fBorrowid != null">f_borrowid,</if>
+            <if test="fCasecode != null">f_casecode,</if>
+            <if test="fState != null">f_state,</if>
+            <if test="createby != null">createby,</if>
+            <if test="createdate != null">createdate,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="fBorrowdetailid != null">#{fBorrowdetailid},</if>
+            <if test="fBorrowid != null">#{fBorrowid},</if>
+            <if test="fCasecode != null">#{fCasecode},</if>
+            <if test="fState != null">#{fState},</if>
+            <if test="createby != null">#{createby},</if>
+            <if test="createdate != null">#{createdate},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFBorrowdetail" parameterType="FBorrowdetail">
+        update f_borrowdetail
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="fBorrowid != null">f_borrowid = #{fBorrowid},</if>
+            <if test="fCasecode != null">f_casecode = #{fCasecode},</if>
+            <if test="fState != null">f_state = #{fState},</if>
+            <if test="createby != null">createby = #{createby},</if>
+            <if test="createdate != null">createdate = #{createdate},</if>
+        </trim>
+        where f_borrowdetailid = #{fBorrowdetailid}
+    </update>
+
+    <delete id="deleteFBorrowdetailById" parameterType="String">
+        delete from f_borrowdetail where f_borrowdetailid = #{fBorrowdetailid}
+    </delete>
+
+    <delete id="deleteFBorrowdetailByIds" parameterType="String">
+        delete from f_borrowdetail where f_borrowdetailid in 
+        <foreach item="fBorrowdetailid" collection="array" open="(" separator="," close=")">
+            #{fBorrowdetailid}
+        </foreach>
+    </delete>
+
+</mapper>

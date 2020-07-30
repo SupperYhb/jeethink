@@ -54,6 +54,17 @@ public class FCardController extends BaseController
         return getDataTable(list);
     }
 
+
+    /**
+     * 根据用户Id查询使用的卡
+     */
+    @PostMapping("/selectCardByUserId")
+    @ResponseBody
+    public TableDataInfo selectCardByUserId(FCard fCard)
+    {
+        List<FCard> list = fCardService.selectCardByUserId(fCard.getfUserid());
+        return getDataTable(list);
+    }
     /**
      * 导出卡列表
      */
@@ -71,7 +82,6 @@ public class FCardController extends BaseController
     /**
      * 验证卡是否可用
      * */
-    @RequiresPermissions("basicInfo:card:verificationCard")
     @PostMapping("/verificationCard")
     @ResponseBody
     public AjaxResult verificationCard(FCard fCard){

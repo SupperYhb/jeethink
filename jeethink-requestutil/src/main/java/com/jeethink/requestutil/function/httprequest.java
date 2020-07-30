@@ -19,7 +19,7 @@ public class httprequest {
      * */
     public static List<kdcaseentity> getCase(){
         List<kdcaseentity> list=new ArrayList<kdcaseentity>();
-        for (int i=0;i<30;i++)
+        for (int i=0;i<11;i++)
         {
             kdcaseentity entity=new kdcaseentity();
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
@@ -28,7 +28,7 @@ public class httprequest {
             entity.setBriefCase("简要案情"+i);
             entity.setCrimeAddress("地址");
             entity.setName("测试案件"+df.format(new Date()));
-            entity.setPoliceCode("08321"+i);
+            entity.setPoliceCode("083210");
             entity.setPoliceName("A"+i);
             entity.setSuspectCode("涉案人员编号");
             entity.setSuspectName("涉案人员名称:"+i);

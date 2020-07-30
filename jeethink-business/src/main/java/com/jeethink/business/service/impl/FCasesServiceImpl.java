@@ -1,5 +1,6 @@
 package com.jeethink.business.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -17,6 +18,9 @@ import com.jeethink.common.extend.codeType;
 import com.jeethink.common.extend.createId;
 import com.jeethink.framework.util.ShiroUtils;
 import com.jeethink.system.domain.SysUser;
+import com.jeethink.system.domain.SysUserRole;
+import com.jeethink.system.mapper.SysUserMapper;
+import com.jeethink.system.mapper.SysUserRoleMapper;
 import com.jeethink.system.service.ISysUserService;
 import org.apache.shiro.crypto.hash.Md5Hash;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,9 +50,11 @@ public class FCasesServiceImpl implements IFCasesService
     @Autowired
     private IFDepositService fDepositService;
     @Autowired
-    private ISysUserService sysUserService;
+    private SysUserMapper sysUserService;
     @Autowired
     private IFDepositdetailService ifDepositdetailService;
+    @Autowired
+    private SysUserRoleMapper userRoleMapper;
 
     /**
      * 查询案卷
@@ -71,6 +77,10 @@ public class FCasesServiceImpl implements IFCasesService
     @Override
     public List<FCases> selectFCasesList(FCases fCases)
     {
+        String type=ShiroUtils.getType();
+        if("1".equals(type)) {
+            fCases.setfPolice1id(ShiroUtils.getLoginName());
+        }
         return fCasesMapper.selectFCasesList(fCases);
     }
 
@@ -80,6 +90,31 @@ public class FCasesServiceImpl implements IFCasesService
     @Override
     public List<FCases> selectBydepositId(String depositId) {
         return fCasesMapper.selectBydepositId(depositId);
+    }
+
+    /**
+     * 查询借阅明细
+     * */
+    @Override
+    public List<FCases> selectByborrowId(String borrowId) {
+        return fCasesMapper.selectByborrowId(borrowId);
+    }
+
+    /**
+     * 查询待归还案卷
+     * */
+    @Override
+    public List<FCases> selectByOut(String caseCode, String policeNo, String caseName) {
+        FCases cases=new FCases();
+        cases.setfCasecode(caseCode);
+        cases.setfPolice1id(policeNo);
+        cases.setfCasename(caseName);
+        cases.setfState(2);
+        if("1".equals(ShiroUtils.getType()))
+        {
+            cases.setfPolice1id(ShiroUtils.getLoginName());
+        }
+        return fCasesMapper.selectFCasesList(cases);
     }
 
     /**
@@ -98,7 +133,7 @@ public class FCasesServiceImpl implements IFCasesService
         //存入案卷信息
         fCases.setfId(createId.getID());
         fCases.setfCreatedate(new Date());
-        fCases.setfState(0);
+        fCases.setfState(1);
         fCases.setfLockername(locker.getfLockername());
         fCases.setfPositioncode(position.getfPositioncode());
         //存入主表信息
@@ -108,6 +143,7 @@ public class FCasesServiceImpl implements IFCasesService
         fDeposit.setfCreatedate(new Date());
         fDeposit.setfUserid(ShiroUtils.getUserId().toString());
         fDeposit.setfUsername(ShiroUtils.getLoginName());
+        fDeposit.setfBusinesstype("1");
         //记录开门的方式，暂时待定
         if(fCases.getCardCode().isEmpty()) {
             fDeposit.setfType(0);
@@ -169,6 +205,14 @@ public class FCasesServiceImpl implements IFCasesService
             user.setSource(source);
             user.setCreateBy(source=="0"?"填写":"平台拉取");
             sysUserService.insertUser(user);
+
+            //设置用户角色
+            List<SysUserRole> userRolesList=new ArrayList<>();
+            SysUserRole userRole=new SysUserRole();
+            userRole.setRoleId((long)3);
+            userRole.setUserId(user.getUserId());
+            userRolesList.add(userRole);
+            userRoleMapper.batchUserRole(userRolesList);
         }
         //存入民警信息
         return fCasesMapper.insertFCases(fCases);

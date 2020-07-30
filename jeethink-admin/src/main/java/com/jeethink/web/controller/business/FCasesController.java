@@ -44,19 +44,18 @@ public class FCasesController extends BaseController
     /**
      * 查询案卷列表
      */
-    @RequiresPermissions("business:cases:list")
     @PostMapping("/list")
     @ResponseBody
     public TableDataInfo list(FCases fCases)
     {
         startPage();
+        fCases.setfState(1);
         List<FCases> list = fCasesService.selectFCasesList(fCases);
         return getDataTable(list);
     }
     /**
      * 查询入库申请的案卷
      */
-    @RequiresPermissions("business:cases:selectBydepositId")
     @PostMapping("/selectBydepositId")
     @ResponseBody
     public TableDataInfo selectBydepositId(String depositId){
@@ -65,9 +64,26 @@ public class FCasesController extends BaseController
     }
 
     /**
+     * 查询借阅的案卷
+     */
+    @PostMapping("/selectByborrowId")
+    @ResponseBody
+    public TableDataInfo selectByborrowId(String borrowId){
+        List<FCases> list=fCasesService.selectByborrowId(borrowId);
+        return getDataTable(list);
+    }
+    /**
+     * 查询待归还的案卷
+     */
+    @PostMapping("/selectByOut")
+    @ResponseBody
+    public TableDataInfo selectByOut(String caseCode, String policeNo, String caseName){
+        List<FCases> list=fCasesService.selectByOut(caseCode,policeNo,caseName);
+        return getDataTable(list);
+    }
+    /**
      * 导出案卷列表
      */
-    @RequiresPermissions("business:cases:export")
     @Log(title = "案卷", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     @ResponseBody
@@ -97,7 +113,6 @@ public class FCasesController extends BaseController
     /**
      * 新增保存案卷
      */
-    @RequiresPermissions("business:cases:add")
     @Log(title = "案卷", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody

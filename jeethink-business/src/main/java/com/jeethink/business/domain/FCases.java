@@ -33,7 +33,7 @@ public class FCases extends BaseEntity
 
     /** 立案日期 */
     @Excel(name = "立案日期", width = 30, dateFormat = "yyyy-MM-dd")
-    private Date fPutdate;
+    private String fPutdate;
 
     /** 创建日期 */
     @Excel(name = "创建日期", width = 30, dateFormat = "yyyy-MM-dd")
@@ -147,12 +147,12 @@ public class FCases extends BaseEntity
     {
         return fCasebriefdetail;
     }
-    public void setfPutdate(Date fPutdate)
+    public void setfPutdate(String fPutdate)
     {
         this.fPutdate = fPutdate;
     }
 
-    public Date getfPutdate()
+    public String getfPutdate()
     {
         return fPutdate;
     }

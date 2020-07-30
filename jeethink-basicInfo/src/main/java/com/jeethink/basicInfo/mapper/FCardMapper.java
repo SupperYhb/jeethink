@@ -30,6 +30,11 @@ public interface FCardMapper
      * 验证卡是否可用
      * */
     public List<FCard> verificationCard(FCard fCard);
+
+    /**
+     * 根据用户查询使用的卡
+     * */
+    public List<FCard> selectCardByUserId(String fUserId);
     /**
      * 新增卡
      * 

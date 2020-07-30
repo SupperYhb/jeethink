@@ -1,6 +1,8 @@
 package com.jeethink.business.service;
 
 import java.util.List;
+
+import com.jeethink.business.domain.FCases;
 import com.jeethink.business.domain.FDeposit;
 import com.jeethink.requestutil.entity.kdcaseentity;
 
@@ -31,7 +33,14 @@ public interface IFDepositService
      * 获取科达接口案卷数据
      * */
     public List<kdcaseentity> getkdCase();
-
+    /**
+     * 添加入库信息（平台拉取）
+     * */
+    public int addCaseIn(List<kdcaseentity> list,String lockerId,String positionId,String cardCode,String cardId,String remark);
+    /**
+     * 添加归还信息
+     * */
+    public int addCaseReturn(List<FCases> list, String lockerId, String positionId, String cardCode, String cardId, String remark);
     /**
      * 新增存放案卷
      * 

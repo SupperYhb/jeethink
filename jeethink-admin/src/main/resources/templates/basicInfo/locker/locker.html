@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('卷宗柜列表')" />
+</head>
+<body class="gray-bg">
+<div class="container-div">
+    <div class="row">
+        <div class="col-sm-12 search-collapse">
+            <form id="formId">
+                <div class="select-list">
+                    <ul>
+                        <li>
+                            <label>名称：</label>
+                            <input type="text" name="fLockername"/>
+                        </li>
+                        <li>
+                            <label>编号：</label>
+                            <input type="text" name="fLockercode"/>
+                        </li>
+                        <li>
+                            <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                            <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+
+        <div class="btn-group-sm" id="toolbar" role="group">
+            <a class="btn btn-success" onclick="$.operate.add()" shiro:hasPermission="basicInfo:locker:add">
+                <i class="fa fa-plus"></i> 添加
+            </a>
+            <a class="btn btn-primary single disabled" onclick="$.operate.edit()" shiro:hasPermission="basicInfo:locker:edit">
+                <i class="fa fa-edit"></i> 修改
+            </a>
+            <a class="btn btn-danger multiple disabled" onclick="$.operate.removeAll()" shiro:hasPermission="basicInfo:locker:remove">
+                <i class="fa fa-remove"></i> 删除
+            </a>
+            <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="basicInfo:locker:export">
+                <i class="fa fa-download"></i> 导出
+            </a>
+        </div>
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table"></table>
+        </div>
+    </div>
+</div>
+<th:block th:include="include :: footer" />
+<script th:inline="javascript">
+    var editFlag = [[${@permission.hasPermi('basicInfo:locker:edit')}]];
+    var removeFlag = [[${@permission.hasPermi('basicInfo:locker:remove')}]];
+    var prefix = ctx + "basicInfo/locker";
+
+    $(function() {
+        var options = {
+            url: prefix + "/list",
+            createUrl: prefix + "/add",
+            updateUrl: prefix + "/edit/{id}",
+            removeUrl: prefix + "/remove",
+            exportUrl: prefix + "/export",
+            modalName: "卷宗柜",
+            showColumns: false,
+            detailView: true,
+            onExpandRow : function(index, row, $detail) {
+                initChildTable(index, row, $detail);
+            },
+            columns: [{
+                checkbox: false
+            },
+                {
+                    field: 'fLockerid',
+                    title: '卷宗柜Id',
+                    visible: false
+                },
+                {
+                    field: 'fLockername',
+                    title: '卷宗柜名称'
+                },
+                {
+                    field: 'fLockercode',
+                    title: '卷宗柜编号'
+                },
+                {
+                    field: 'fLockerip',
+                    title: '卷宗柜IP'
+                },
+                {
+                    field: 'fRemark',
+                    title: '备注'
+                },
+                {
+                    field: 'fCount',
+                    title: '货位数量'
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="$.operate.edit(\'' + row.fLockerid + '\')"><i class="fa fa-edit"></i>编辑</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.fLockerid + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+        };
+        $.table.init(options);
+    });
+    initChildTable = function(index, row, $detail) {
+        var childTable = $detail.html('<table style="table-layout:fixed"></table>').find('table');
+        $(childTable).bootstrapTable({
+            url: "/basicInfo/position/list?fLockerid="+row.fLockerid,
+            method: 'post',
+            sidePagination: "server",
+            contentType: "application/x-www-form-urlencoded",
+            queryParams : {
+                userName: '货位'
+            },
+            columns: [{
+                field : 'fPositionid',
+                title : '货位Id',
+                visible: false
+            },
+                {
+                    field : 'fPositionname',
+                    title : '货位名称'
+                },
+                {
+                    field : 'fUseusername',
+                    title : '使用人员名称'
+                }]
+        });
+    };
+</script>
+</body>
+</html>

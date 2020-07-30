@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <th:block th:include="include :: header('基本表单')" />
+    <th:block th:include="include :: jquery-steps-css" />
+</head>
+<body class="gray-bg">
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="ibox float-e-margins">
+        <div class="ibox-content" style="height: 800px;">
+            <div id="wizard" class="wizard-custombig">
+                <h1>选择案卷</h1>
+                <fieldset class="step-content" style="overflow-x:scroll;padding-top: 0.5%;background-color: white; width: 100%">
+                    <div class="col-sm-12 search-collapse">
+                        <form id="formId">
+                            <div class="select-list">
+                                <ul>
+                                    <li>
+                                        <label>警号：</label>
+                                        <input type="text" name="fPolice1id"/>
+                                    </li>
+                                    <li>
+                                        <label>案卷名称：</label>
+                                        <input type="text" name="fCasename"/>
+                                    </li>
+                                    <li>
+                                        <label>案卷编号：</label>
+                                        <input type="text" name="fCasecode"/>
+                                    </li>
+                                    <li>
+                                        <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                        <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </form>
+                    </div>
+                    <table id="bootstrap-table" ></table>
+                </fieldset>
+
+                <h1>发卡</h1>
+                <fieldset class="step-content" style="background-color: white;">
+                    <div class="row">
+                        <div class="row" id="element">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">发卡：</label>
+                                    <div class="col-sm-8">
+                                        <input name="cardCode" class="form-control" type="text" readonly onclick="openSwipingForm()">
+                                        <input style="visibility: hidden;" name="cardId">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">备注：</label>
+                                    <div class="col-sm-8">
+                                        <input name="fRemark" class="form-control" type="text">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+        </div>
+    </div>
+</div>
+<th:block th:include="include :: footer" />
+<th:block th:include="include :: jquery-steps-js" />
+<th:block th:include="include :: jquery-cxselect-js" />
+<style>
+    .table{
+        table-layout: fixed;
+    }
+    .pull-right{
+        margin-right: 2%;
+    }
+</style>
+<script>
+    var prefix = ctx + "business/cases";
+
+    $(document).ready(function () {
+        $("#wizard").steps({
+            bodyTag:"fieldset", onStepChanging: function (event, currentIndex, newIndex){
+                debugger
+                var data=$("#" + table.options.id).bootstrapTable('getSelections');
+                if(data.length>0) {
+                   //  var pass=true;
+                   // var policeno="";
+                   // for(var i=0;i<data.length;i++)
+                   // {
+                   //     if(policeno=="") {
+                   //         policeno = data[i].fPolice1id;
+                   //     }
+                   //     if(policeno!=data[i].fPolice1id){
+                   //          pass=false;
+                   //          return ;
+                   //     }
+                   // }
+                    return true;
+                }else{
+                    $.modal.msg("请选择案卷信息",modal_status.FAIL);
+                    return false;
+                }
+            },onFinished:function (event, currentIndex) {
+                debugger
+                var cardCode=$("[name=cardCode]").val();
+                var cardId=$("[name=cardId]").val();
+                var fRemark=$("[name=fRemark]").val();
+                var data=$("#" + table.options.id).bootstrapTable('getSelections');
+                debugger
+                var Data={
+                    list:JSON.stringify(data),
+                    cardCode:cardCode,
+                    cardId:cardId,
+                    remark:fRemark
+                };
+                $.operate.save("/business/borrow/outCase", Data);
+            }
+        });
+
+
+        loadTable();
+    });
+    function openSwipingForm(){
+        debugger
+        var data=$("#" + table.options.id).bootstrapTable('getSelections');
+        if(data.length>0) {
+            var pass = true;
+            var policeno = "";
+            for (var i = 0; i < data.length; i++) {
+                if (policeno == "") {
+                    policeno = data[i].fPolice1id;
+                }
+                if (policeno != data[i].fPolice1id) {
+                    pass = false;
+                    $.modal.msg("同一民警的案卷才能发卡",modal_status.FAIL);
+                    return;
+                }
+            }
+            if(pass)
+            {
+                debugger
+                var userid=data[0].fPolice1id;
+                $.ajax({
+                    cache : true,
+                    type : "POST",
+                    url : ctx + "basicInfo/card/selectCardByUserId",
+                    data : {
+                        "fUserid":userid,
+                    },
+                    async : false,
+                    error : function(request) {
+                        $.modal.alertError("系统错误");
+                    },
+                    success : function(data) {
+                        debugger
+                        if( data.rows.length>0) {
+                           var card= data.rows;
+                           $("[name=cardCode]").val(card[0].fCardcode);
+                            $("[name=cardId]").val(card[0].fCardid);
+                        }else{
+                            layer.open({
+                                type: 2,
+                                area: ['500px', '500px'],
+                                fix: false,
+                                //不固定
+                                maxmin: true,
+                                shade: 0.3,
+                                title: '刷卡',
+                                content: "/basicInfo/card/swipingform",
+                                btn: ['确定', '关闭'],
+                                // 弹层外区域关闭
+                                shadeClose: true,
+                                yes: function(index,layero){
+                                    //  debugger
+                                    var iframeWin = layero.find('iframe')[0];
+                                    var str= iframeWin.contentWindow.submitHandler(index, layero);
+                                    var cardCode=str.split(';')[0];
+                                    var cardId=str.split(';')[1];
+                                    $("[name=cardCode]").val(cardCode);
+                                    $("[name=cardId]").val(cardId);
+                                    layer.close(index);
+                                },
+                                cancel: function(index) {
+                                    return true;
+                                }
+                            });
+                        }
+                    }
+                });
+
+            }else{
+                $.modal.msg("同一民警的案卷才能发卡",modal_status.FAIL);
+            }
+        }
+
+
+    }
+    function loadTable()
+    {
+        var options = {
+            url: prefix + "/list",
+            modalName: "存放案卷",
+            pagination:false,
+            columns: [{
+                checkbox: true
+            },
+                {
+                    field: 'fId',
+                    title: '主键',
+                    visible: false
+                },
+                {
+                    field: 'fCasecode',
+                    title: '案件编号'
+                },
+                {
+                    field: 'fCasename',
+                    title: '案件名称'
+                },
+                {
+                    field: 'fCasebriefdetail',
+                    title: '简要案情'
+                },
+                {
+                    field: 'fPutdate',
+                    title: '立案日期'
+                },
+                {
+                    field: 'fPolice1id',
+                    title: '民警编号'
+                },
+                {
+                    field: 'fPolice1name',
+                    title: '民警名称'
+                },
+                {
+                    field: 'fLockername',
+                    title: '卷宗柜名称'
+                },
+                {
+                    field: 'fPositioncode',
+                    title: '货位编号'
+                },
+                {
+                    field: 'fCriminalcode',
+                    title: '嫌疑人编号'
+                },
+                {
+                    field: 'fCriminalname',
+                    title: '嫌疑人名称'
+                },
+                {
+                    field: 'fCrimeaddress',
+                    title: '案发地址'
+                },
+                {
+                    field: 'fCreatedate',
+                    title: '创建日期'
+                },]
+        };
+        $.table.init(options);
+    }
+</script>
+<script th:inline="javascript">
+    function getlocker() {
+        var data = [[${data}]];
+        $('#element').cxSelect({
+            selects: ['locker', 'position'],
+            jsonValue: 'v',
+            url: '/basicInfo/locker/lockerSelect',
+            data: data
+        });
+    }
+</script>
+</body>
+</html>

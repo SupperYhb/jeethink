@@ -174,7 +174,7 @@
     <th:block th:include="include :: jquery-cxselect-js" />
     <script th:inline="javascript">
         var data = [[${data}]];
-
+debugger
         $('#element').cxSelect({
             selects: ['locker', 'position'],
             jsonValue: 'v',
@@ -206,32 +206,60 @@
             autoclose: true
         });
         function openSwipingForm(){
-            layer.open({
-                type: 2,
-                area: ['500px', '500px'],
-                fix: false,
-                //不固定
-                maxmin: true,
-                shade: 0.3,
-                title: '刷卡',
-                content: "/basicInfo/card/swipingform",
-                btn: ['确定', '关闭'],
-                // 弹层外区域关闭
-                shadeClose: true,
-                yes: function(index,layero){
-                   //  debugger
-                    var iframeWin = layero.find('iframe')[0];
-                    var str= iframeWin.contentWindow.submitHandler(index, layero);
-                    var cardCode=str.split(';')[0];
-                    var cardId=str.split(';')[1];
-                    $("[name=cardCode]").val(cardCode);
-                    $("[name=cardId]").val(cardId);
-                    layer.close(index);
+            var userid=$("[name=fPolice1id]").val();
+            if(userid==""||userid==null||userid==undefined)
+            {
+                $.modal.alertError("请输入警号");
+                return false;
+            }
+            $.ajax({
+                cache : true,
+                type : "POST",
+                url : ctx + "basicInfo/card/selectCardByUserId",
+                data : {
+                    "fUserid":userid,
                 },
-                cancel: function(index) {
-                    return true;
+                async : false,
+                error : function(request) {
+                    $.modal.alertError("系统错误");
+                },
+                success : function(data) {
+                    debugger
+                    if( data.rows.length>0) {
+                        var card= data.rows;
+                        $("[name=cardCode]").val(card[0].fCardcode);
+                        $("[name=cardId]").val(card[0].fCardid);
+                    }else{
+                        layer.open({
+                            type: 2,
+                            area: ['500px', '500px'],
+                            fix: false,
+                            //不固定
+                            maxmin: true,
+                            shade: 0.3,
+                            title: '刷卡',
+                            content: "/basicInfo/card/swipingform",
+                            btn: ['确定', '关闭'],
+                            // 弹层外区域关闭
+                            shadeClose: true,
+                            yes: function(index,layero){
+                                //  debugger
+                                var iframeWin = layero.find('iframe')[0];
+                                var str= iframeWin.contentWindow.submitHandler(index, layero);
+                                var cardCode=str.split(';')[0];
+                                var cardId=str.split(';')[1];
+                                $("[name=cardCode]").val(cardCode);
+                                $("[name=cardId]").val(cardId);
+                                layer.close(index);
+                            },
+                            cancel: function(index) {
+                                return true;
+                            }
+                        });
+                    }
                 }
             });
+
         }
         function policeTypeChange()
         {

@@ -28,9 +28,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectFCardVo"/>
         <where>  
             <if test="fCardcode != null  and fCardcode != ''"> and f_cardcode = #{fCardcode}</if>
+            <if test="fUserid != null  and fUserid != ''"> and f_userid = #{fUserid}</if>
         </where>
     </select>
-    
+
+    <select id="selectCardByUserId" parameterType="String" resultMap="FCardResult">
+        select * from f_card where f_userid=#{fUserId}
+    </select>
+
     <select id="selectFCardById" parameterType="String" resultMap="FCardResult">
         <include refid="selectFCardVo"/>
         where f_cardid = #{fCardid}

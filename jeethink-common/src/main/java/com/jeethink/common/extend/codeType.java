@@ -6,13 +6,21 @@ public enum codeType {
      * */
     Leisure(0,"KX"),
     /**
-     * 存入
+     * 填写存入
      * */
     In(1,"CR"),
     /**
+     * 拉取存入
+     * */
+    LQIn(1,"LQ"),
+    /**
      * 取出
      * */
-    Out(2,"QC");
+    Out(2,"QC"),
+    /**
+     * 归还
+     * */
+    GiveBack(3,"GH");
 
     private final int id;
     private final String name;

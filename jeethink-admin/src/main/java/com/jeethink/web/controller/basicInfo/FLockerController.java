@@ -100,7 +100,6 @@ public class FLockerController extends BaseController
     /**
      * 获取卷宗柜级联下拉数据
      */
-    @RequiresPermissions("basicInfo:locker:lockerSelect")
     @GetMapping("/lockerSelect")
     @ResponseBody
     public String lockerSelect(FLocker fLocker)

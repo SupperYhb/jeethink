@@ -2,6 +2,8 @@ package com.jeethink.web.controller.business;
 
 import java.util.List;
 
+import com.alibaba.fastjson.JSON;
+import com.jeethink.business.domain.FCases;
 import com.jeethink.requestutil.entity.kdcaseentity;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,7 @@ import com.jeethink.common.core.controller.BaseController;
 import com.jeethink.common.core.domain.AjaxResult;
 import com.jeethink.common.utils.poi.ExcelUtil;
 import com.jeethink.common.core.page.TableDataInfo;
+import springfox.documentation.spring.web.json.Json;
 
 /**
  * 存放案卷Controller
@@ -46,7 +49,6 @@ public class FDepositController extends BaseController
     /**
      * 查询存放案卷列表
      */
-    @RequiresPermissions("business:deposit:list")
     @PostMapping("/list")
     @ResponseBody
     public TableDataInfo list(FDeposit fDeposit)
@@ -58,7 +60,6 @@ public class FDepositController extends BaseController
     /**
      * 查询科达案卷数据列表
      */
-    @RequiresPermissions("basicInfo:deposit:getkdCaselist")
     @PostMapping("/getkdCaselist")
     @ResponseBody
     public TableDataInfo getkdCaselist()
@@ -70,7 +71,6 @@ public class FDepositController extends BaseController
     /**
      * 导出存放案卷列表
      */
-    @RequiresPermissions("business:deposit:export")
     @Log(title = "存放案卷", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     @ResponseBody
@@ -90,10 +90,28 @@ public class FDepositController extends BaseController
         return prefix + "/add";
     }
 
+    @Log(title = "存放案卷（平台获取）", businessType = BusinessType.INSERT)
+    @PostMapping("/addCaseIn")
+    @ResponseBody
+    public AjaxResult addCaseIn(String list,String lockerId,String positionId,String cardCode,String cardId,String remark)
+    {
+        List<kdcaseentity> kdList= JSON.parseArray(list, kdcaseentity.class);
+        fDepositService.addCaseIn(kdList,lockerId,positionId,cardCode,cardId,remark);
+        return success("");
+    }
+
+    @Log(title = "归还案卷", businessType = BusinessType.INSERT)
+    @PostMapping("/addCaseReturn")
+    @ResponseBody
+    public AjaxResult addCaseReturn(String list, String lockerId, String positionId, String cardCode, String cardId, String remark){
+        List<FCases> List= JSON.parseArray(list, FCases.class);
+        fDepositService.addCaseReturn(List,lockerId,positionId,cardCode,cardId,remark);
+        return success("");
+    }
+
     /**
      * 新增保存存放案卷
      */
-    @RequiresPermissions("business:deposit:add")
     @Log(title = "存放案卷", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
@@ -101,7 +119,14 @@ public class FDepositController extends BaseController
     {
         return toAjax(fDepositService.insertFDeposit(fDeposit));
     }
-
+    /**
+     * 案卷归还
+     */
+    @GetMapping("/returnadd")
+    public String returnadd()
+    {
+        return prefix+"/returnadd";
+    }
     /**
      * 修改存放案卷
      */

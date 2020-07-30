@@ -31,6 +31,17 @@ public interface IFCasesService
      * 查询入库的案卷
      * */
     public List<FCases> selectBydepositId(String depositId);
+
+    /**
+     * 查询借阅明细
+     * */
+    public List<FCases> selectByborrowId(String borrowId);
+
+    /**
+     * 查询可归还的数据
+     * */
+    public List<FCases> selectByOut(String caseCode,String policeNo,String caseName);
+
     /**
      * 新增案卷
      *

@@ -141,7 +141,7 @@
                      remark:fRemark,
                      businessType:"2"
                  };
-                 $.operate.save(prefix + "/addCaseIn", Data);
+                 $.operate.save(prefix + "/addCaseReturn", Data);
              }
          });
 
@@ -149,9 +149,8 @@
         loadTable();
     });
     function openSwipingForm(){
-
         var data=$("#" + table.options.id).bootstrapTable('getSelections');
-        var userid=data[0].policeCode;
+        var userid=data[0].fPolice1id;
         $.ajax({
             cache : true,
             type : "POST",
@@ -204,48 +203,64 @@
     function loadTable()
     {
         var options = {
-            url: prefix + "/getkdCaselist",
+            url: "/business/cases/selectByOut",
             modalName: "存放案卷",
             pagination:false,
             columns: [{
                 checkbox: true
             },
-
                 {
-                    field: 'no',
-                    title: '案卷编号'
+                    field: 'fId',
+                    title: '存入主键',
+                    visible: false
                 },
                 {
-                    field: 'name',
-                    title: '案卷名称'
+                    field: 'fCasecode',
+                    title: '案件编号'
                 },
                 {
-                    field: 'crimeAddress',
-                    title: '案发地址'
+                    field: 'fCasename',
+                    title: '案件名称'
                 },
                 {
-                    field: 'acceptanceTime',
-                    title: '受理时间'
-                },
-                {
-                    field: 'briefCase',
+                    field: 'fCasebriefdetail',
                     title: '简要案情'
                 },
                 {
-                    field: 'suspectName',
-                    title: '涉案人员名称'
+                    field: 'fPutdate',
+                    title: '立案日期'
                 },
                 {
-                    field: 'suspectCode',
-                    title: '涉案人员编号'
-                },
-                {
-                    field: 'policeCode',
+                    field: 'fPolice1id',
                     title: '民警编号'
                 },
                 {
-                    field: 'policeName',
+                    field: 'fPolice1name',
                     title: '民警名称'
+                },
+                {
+                    field: 'fDepartmentid',
+                    title: '办案单位编号'
+                },
+                {
+                    field: 'fLockername',
+                    title: '卷宗柜名称'
+                },
+                {
+                    field: 'fPositioncode',
+                    title: '货位编号'
+                },
+                {
+                    field: 'fCriminalcode',
+                    title: '嫌疑人编号'
+                },
+                {
+                    field: 'fCriminalname',
+                    title: '嫌疑人名称'
+                },
+                {
+                    field: 'fCrimeaddress',
+                    title: '案发地址'
                 }]
         };
         $.table.init(options);

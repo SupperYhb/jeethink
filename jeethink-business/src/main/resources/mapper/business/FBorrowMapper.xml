@@ -2,29 +2,28 @@
 <!DOCTYPE mapper
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.jeethink.business.mapper.FDepositMapper">
+<mapper namespace="com.jeethink.business.mapper.FBorrowMapper">
     
-    <resultMap type="FDeposit" id="FDepositResult">
-        <result property="fDepositid"    column="f_depositid"    />
+    <resultMap type="FBorrow" id="FBorrowResult">
+        <result property="fBorrowid"    column="f_borrowid"    />
         <result property="fCode"    column="f_code"    />
         <result property="fUserid"    column="f_userid"    />
         <result property="fUsername"    column="f_username"    />
         <result property="fCreatedate"    column="f_createdate"    />
         <result property="fType"    column="f_type"    />
         <result property="fState"    column="f_state"    />
-        <result property="fRemark"    column="f_remark"    />
         <result property="fCardcode"    column="f_cardcode"    />
         <result property="fOpendate"    column="f_opendate"    />
         <result property="fEnddate"    column="f_enddate"    />
-        <result property="fBusinesstype"    column="f_businesstype"    />
+        <result property="fRemark"    column="f_remark"    />
     </resultMap>
 
-    <sql id="selectFDepositVo">
-        select f_depositid, f_code, f_userid, f_username, f_createdate, f_type, f_state, f_remark, f_cardcode,f_opendate,f_enddate from f_deposit
+    <sql id="selectFBorrowVo">
+        select f_borrowid, f_code, f_userid, f_username, f_createdate, f_type, f_state, f_cardcode, f_opendate, f_enddate from f_borrow
     </sql>
 
-    <select id="selectFDepositList" parameterType="FDeposit" resultMap="FDepositResult">
-        <include refid="selectFDepositVo"/>
+    <select id="selectFBorrowList" parameterType="FBorrow" resultMap="FBorrowResult">
+        <include refid="selectFBorrowVo"/>
         <where>  
             <if test="fCode != null  and fCode != ''"> and f_code = #{fCode}</if>
             <if test="fUserid != null  and fUserid != ''"> and f_userid = #{fUserid}</if>
@@ -32,53 +31,50 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fCreatedate != null "> and f_createdate = #{fCreatedate}</if>
             <if test="fType != null "> and f_type = #{fType}</if>
             <if test="fState != null "> and f_state = #{fState}</if>
-            <if test="fRemark != null  and fRemark != ''"> and f_remark = #{fRemark}</if>
             <if test="fCardcode != null  and fCardcode != ''"> and f_cardcode = #{fCardcode}</if>
             <if test="fOpendate != null  and fOpendate != ''"> and f_opendate = #{fOpendate}</if>
             <if test="fEnddate != null  and fEnddate != ''"> and f_enddate = #{fEnddate}</if>
-            <if test="fBusinesstype != null  and fBusinesstype != ''"> and f_businesstype = #{fBusinesstype}</if>
+            <if test="fRemark != null  and fRemark != ''"> and f_remark = #{fRemark}</if>
         </where>
     </select>
-    
-    <select id="selectFDepositById" parameterType="String" resultMap="FDepositResult">
-        <include refid="selectFDepositVo"/>
-        where f_depositid = #{fDepositid}
+
+    <select id="selectFBorrowById" parameterType="String" resultMap="FBorrowResult">
+        <include refid="selectFBorrowVo"/>
+        where f_borrowid = #{fBorrowid}
     </select>
         
-    <insert id="insertFDeposit" parameterType="FDeposit">
-        insert into f_deposit
+    <insert id="insertFBorrow" parameterType="FBorrow">
+        insert into f_borrow
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="fDepositid != null">f_depositid,</if>
+            <if test="fBorrowid != null">f_borrowid,</if>
             <if test="fCode != null">f_code,</if>
             <if test="fUserid != null">f_userid,</if>
             <if test="fUsername != null">f_username,</if>
             <if test="fCreatedate != null">f_createdate,</if>
             <if test="fType != null">f_type,</if>
             <if test="fState != null">f_state,</if>
-            <if test="fRemark != null">f_remark,</if>
             <if test="fCardcode != null">f_cardcode,</if>
             <if test="fOpendate != null">f_opendate,</if>
             <if test="fEnddate != null">f_enddate,</if>
-            <if test="fBusinesstype != null">f_businesstype,</if>
+            <if test="fRemark != null">f_remark,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="fDepositid != null">#{fDepositid},</if>
+            <if test="fBorrowid != null">#{fBorrowid},</if>
             <if test="fCode != null">#{fCode},</if>
             <if test="fUserid != null">#{fUserid},</if>
             <if test="fUsername != null">#{fUsername},</if>
             <if test="fCreatedate != null">#{fCreatedate},</if>
             <if test="fType != null">#{fType},</if>
             <if test="fState != null">#{fState},</if>
-            <if test="fRemark != null">#{fRemark},</if>
             <if test="fCardcode != null">#{fCardcode},</if>
             <if test="fOpendate != null">#{fOpendate},</if>
             <if test="fEnddate != null">#{fEnddate},</if>
-            <if test="fBusinesstype != null">#{fBusinesstype},</if>
+            <if test="fRemark != null">#{fRemark},</if>
          </trim>
     </insert>
 
-    <update id="updateFDeposit" parameterType="FDeposit">
-        update f_deposit
+    <update id="updateFBorrow" parameterType="FBorrow">
+        update f_borrow
         <trim prefix="SET" suffixOverrides=",">
             <if test="fCode != null">f_code = #{fCode},</if>
             <if test="fUserid != null">f_userid = #{fUserid},</if>
@@ -86,23 +82,22 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fCreatedate != null">f_createdate = #{fCreatedate},</if>
             <if test="fType != null">f_type = #{fType},</if>
             <if test="fState != null">f_state = #{fState},</if>
-            <if test="fRemark != null">f_remark = #{fRemark},</if>
             <if test="fCardcode != null">f_cardcode = #{fCardcode},</if>
             <if test="fOpendate != null">f_opendate = #{fOpendate},</if>
             <if test="fEnddate != null">f_enddate = #{fEnddate},</if>
-            <if test="fBusinesstype != null">f_businesstype = #{fBusinesstype},</if>
+            <if test="fRemark != null">f_remark = #{fRemark},</if>
         </trim>
-        where f_depositid = #{fDepositid}
+        where f_borrowid = #{fBorrowid}
     </update>
 
-    <delete id="deleteFDepositById" parameterType="String">
-        delete from f_deposit where f_depositid = #{fDepositid}
+    <delete id="deleteFBorrowById" parameterType="String">
+        delete from f_borrow where f_borrowid = #{fBorrowid}
     </delete>
 
-    <delete id="deleteFDepositByIds" parameterType="String">
-        delete from f_deposit where f_depositid in 
-        <foreach item="fDepositid" collection="array" open="(" separator="," close=")">
-            #{fDepositid}
+    <delete id="deleteFBorrowByIds" parameterType="String">
+        delete from f_borrow where f_borrowid in 
+        <foreach item="fBorrowid" collection="array" open="(" separator="," close=")">
+            #{fBorrowid}
         </foreach>
     </delete>
 

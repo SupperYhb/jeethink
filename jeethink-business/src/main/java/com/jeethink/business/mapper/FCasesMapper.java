@@ -30,6 +30,12 @@ public interface FCasesMapper
      * 查询入库的案卷
      * */
     public List<FCases> selectBydepositId(String depositId);
+
+    /**
+     * 查询借阅明细
+     * */
+    public List<FCases> selectByborrowId(String borrowId);
+
     /**
      * 新增案卷
      *
