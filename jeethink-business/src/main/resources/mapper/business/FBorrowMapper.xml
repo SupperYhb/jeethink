@@ -16,10 +16,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="fOpendate"    column="f_opendate"    />
         <result property="fEnddate"    column="f_enddate"    />
         <result property="fRemark"    column="f_remark"    />
+        <result property="fPeopletype"    column="f_peopletype"    />
     </resultMap>
 
     <sql id="selectFBorrowVo">
-        select f_borrowid, f_code, f_userid, f_username, f_createdate, f_type, f_state, f_cardcode, f_opendate, f_enddate from f_borrow
+        select f_borrowid, f_code, f_userid, f_username, f_createdate, f_type, f_state, f_cardcode, f_opendate, f_enddate,f_peopletype from f_borrow
     </sql>
 
     <select id="selectFBorrowList" parameterType="FBorrow" resultMap="FBorrowResult">
@@ -35,6 +36,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fOpendate != null  and fOpendate != ''"> and f_opendate = #{fOpendate}</if>
             <if test="fEnddate != null  and fEnddate != ''"> and f_enddate = #{fEnddate}</if>
             <if test="fRemark != null  and fRemark != ''"> and f_remark = #{fRemark}</if>
+            <if test="fPeopletype != null  and fRemark != ''"> and f_peopletype = #{fPeopletype}</if>
         </where>
     </select>
 
@@ -57,6 +59,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fOpendate != null">f_opendate,</if>
             <if test="fEnddate != null">f_enddate,</if>
             <if test="fRemark != null">f_remark,</if>
+            <if test="fPeopletype != null">f_peopletype,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="fBorrowid != null">#{fBorrowid},</if>
@@ -70,6 +73,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fOpendate != null">#{fOpendate},</if>
             <if test="fEnddate != null">#{fEnddate},</if>
             <if test="fRemark != null">#{fRemark},</if>
+            <if test="fPeopletype != null">#{fPeopletype},</if>
          </trim>
     </insert>
 
@@ -86,6 +90,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fOpendate != null">f_opendate = #{fOpendate},</if>
             <if test="fEnddate != null">f_enddate = #{fEnddate},</if>
             <if test="fRemark != null">f_remark = #{fRemark},</if>
+            <if test="fPeopletype != null">f_peopletype = #{fPeopletype},</if>
         </trim>
         where f_borrowid = #{fBorrowid}
     </update>

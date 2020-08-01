@@ -109,6 +109,10 @@ public class FCases extends BaseEntity
      * 卡Id
      * */
     private String cardId;
+    /**
+     * 0主办，1辅办
+     * */
+    private String peopleType;
     /** 保存业务字段End */
 
     public void setfId(String fId)
@@ -322,6 +326,14 @@ public class FCases extends BaseEntity
 
     public Integer getPoliceType() {
         return policeType;
+    }
+
+    public void setPeopleType(String peopleType) {
+        this.peopleType = peopleType;
+    }
+
+    public String getPeopleType() {
+        return peopleType;
     }
 
     @Override

@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.alibaba.fastjson.JSON;
 import com.jeethink.business.domain.FCases;
+import com.jeethink.framework.util.ShiroUtils;
 import com.jeethink.requestutil.entity.kdcaseentity;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,10 +63,10 @@ public class FDepositController extends BaseController
      */
     @PostMapping("/getkdCaselist")
     @ResponseBody
-    public TableDataInfo getkdCaselist()
+    public TableDataInfo getkdCaselist(String caseName,String caseNumber,String policeCode)
     {
         startPage();
-        List<kdcaseentity> list = fDepositService.getkdCase();
+        List<kdcaseentity> list = fDepositService.getkdCase(caseName,caseNumber,policeCode);
         return getDataTable(list);
     }
     /**
@@ -85,30 +86,38 @@ public class FDepositController extends BaseController
      * 新增存放案卷
      */
     @GetMapping("/add")
-    public String add()
+    public String add( ModelMap mmap)
     {
+        mmap.put("peopleTypes", ShiroUtils.getType());
         return prefix + "/add";
     }
 
     @Log(title = "存放案卷（平台获取）", businessType = BusinessType.INSERT)
     @PostMapping("/addCaseIn")
     @ResponseBody
-    public AjaxResult addCaseIn(String list,String lockerId,String positionId,String cardCode,String cardId,String remark)
+    public AjaxResult addCaseIn(String list,String lockerId,String positionId,String cardCode,String cardId,String remark,String peopleType)
     {
         List<kdcaseentity> kdList= JSON.parseArray(list, kdcaseentity.class);
-        fDepositService.addCaseIn(kdList,lockerId,positionId,cardCode,cardId,remark);
-        return success("");
+        String msg= fDepositService.addCaseIn(kdList,lockerId,positionId,cardCode,cardId,remark,peopleType);
+        return msg.isEmpty()?success("打开成功"):error("打卡柜门失败");
     }
 
     @Log(title = "归还案卷", businessType = BusinessType.INSERT)
     @PostMapping("/addCaseReturn")
     @ResponseBody
-    public AjaxResult addCaseReturn(String list, String lockerId, String positionId, String cardCode, String cardId, String remark){
+    public AjaxResult addCaseReturn(String list, String lockerId, String positionId, String cardCode, String cardId, String remark,String peopleType){
         List<FCases> List= JSON.parseArray(list, FCases.class);
-        fDepositService.addCaseReturn(List,lockerId,positionId,cardCode,cardId,remark);
+        fDepositService.addCaseReturn(List,lockerId,positionId,cardCode,cardId,remark,peopleType);
         return success("");
     }
 
+    @Log(title = "再次打开柜门(入库或者归还)", businessType = BusinessType.INSERT)
+    @PostMapping("/OpenBox")
+    @ResponseBody
+    public AjaxResult OpenBox(String id,String type){
+        String msg=fDepositService.OpenBox(id,type);
+        return msg.isEmpty()?success("true"):error("false");
+    }
     /**
      * 新增保存存放案卷
      */

@@ -37,7 +37,7 @@
         <where>
             <if test="fCasecode != null  and fCasecode != ''"> and f_casecode = #{fCasecode}</if>
             <if test="fState != null  and fState != ''"> and f_state = #{fState}</if>
-            <if test="fPolice1id != null  and fPolice1id != ''"> and f_police1id = #{fPolice1id}</if>
+            <if test="fPolice1id != null  and fPolice1id != '' and fPolice2id != null  and fPolice2id != ''"> and (f_police1id = #{fPolice1id} or f_police2id=#{fPolice2id})</if>
             <if test="fCasename != null  and fCasename != ''"> and f_casename like concat('%', #{fCasename}, '%')</if>
         </where>
     </select>

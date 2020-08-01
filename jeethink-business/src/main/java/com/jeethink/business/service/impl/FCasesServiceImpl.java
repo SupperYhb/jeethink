@@ -1,5 +1,6 @@
 package com.jeethink.business.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -17,6 +18,7 @@ import com.jeethink.business.service.IFDepositdetailService;
 import com.jeethink.common.extend.codeType;
 import com.jeethink.common.extend.createId;
 import com.jeethink.framework.util.ShiroUtils;
+import com.jeethink.requestutil.function.httprequest;
 import com.jeethink.system.domain.SysUser;
 import com.jeethink.system.domain.SysUserRole;
 import com.jeethink.system.mapper.SysUserMapper;
@@ -29,6 +31,7 @@ import com.jeethink.business.mapper.FCasesMapper;
 import com.jeethink.business.domain.FCases;
 import com.jeethink.business.service.IFCasesService;
 import com.jeethink.common.core.text.Convert;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 案卷Service业务层处理
@@ -80,6 +83,7 @@ public class FCasesServiceImpl implements IFCasesService
         String type=ShiroUtils.getType();
         if("1".equals(type)) {
             fCases.setfPolice1id(ShiroUtils.getLoginName());
+            fCases.setfPolice2id(ShiroUtils.getLoginName());
         }
         return fCasesMapper.selectFCasesList(fCases);
     }
@@ -113,6 +117,7 @@ public class FCasesServiceImpl implements IFCasesService
         if("1".equals(ShiroUtils.getType()))
         {
             cases.setfPolice1id(ShiroUtils.getLoginName());
+            cases.setfPolice2id(ShiroUtils.getLoginName());
         }
         return fCasesMapper.selectFCasesList(cases);
     }
@@ -124,7 +129,8 @@ public class FCasesServiceImpl implements IFCasesService
      * @return 结果
      */
     @Override
-    public int insertFCases(FCases fCases)
+    @Transactional
+    public String insertFCases(FCases fCases,String peopleType)
     {
         //获取卷宗柜
         FLocker locker=fLockerService.selectFLockerById(fCases.getfLockerid());
@@ -141,9 +147,10 @@ public class FCasesServiceImpl implements IFCasesService
         fDeposit.setfDepositid(createId.getID());
         fDeposit.setfCode(createId.getCode(codeType.In));
         fDeposit.setfCreatedate(new Date());
-        fDeposit.setfUserid(ShiroUtils.getUserId().toString());
-        fDeposit.setfUsername(ShiroUtils.getLoginName());
+        fDeposit.setfUserid(ShiroUtils.getLoginName());
+        fDeposit.setfUsername(ShiroUtils.getSysUser().getUserName());
         fDeposit.setfBusinesstype("1");
+        fDeposit.setfPeopletype(peopleType);
         //记录开门的方式，暂时待定
         if(fCases.getCardCode().isEmpty()) {
             fDeposit.setfType(0);
@@ -152,14 +159,13 @@ public class FCasesServiceImpl implements IFCasesService
             fDeposit.setfType(1);
             FCard card=new FCard();
             card.setfCardid(fCases.getCardId());
-            card.setfUserid(fCases.getfPolice1id());
-            card.setfUsername(fCases.getfPolice1name());
+            card.setfUserid(peopleType=="0"? fCases.getfPolice1id():fCases.getfPolice2id());
+            card.setfUsername(peopleType=="0"? fCases.getfPolice1name():fCases.getfPolice2name());
             card.setfState("1");
             fCardService.updateFCard(card);
         }
         //设置存入记录的状态，不知道是不是保存就调用，暂时默认为已入库
-        fDeposit.setfState(codeType.In.getId());
-        fDepositService.insertFDeposit(fDeposit);
+        fDeposit.setfState(1);
 
         //存入明细信息
         FDepositdetail detail=new FDepositdetail();
@@ -180,18 +186,14 @@ public class FCasesServiceImpl implements IFCasesService
         List<SysUser> userList= sysUserService.selectUserList(Sysuser);
         SysUser user=new SysUser();
         //判断民警是否存在，存在赋值卡信息
-        if(userList.size()>0&&!fCases.getCardId().isEmpty())
+        if(userList.size()>0&&!fCases.getCardId().isEmpty()&&"0".equals(peopleType))
         {
             user=userList.get(0);
             user.setCardid(fCases.getCardId());
             user.setCardcode(fCases.getCardCode());
             sysUserService.updateUser(user);
-        }else{
-            String source="";
-            if(fCases.getPoliceType()==0||fCases.getPoliceType()==1)
-                source="0";
-            else
-                source="1";
+        }else if(userList.size()==0){
+            String source="0";
             user.setCardid(fCases.getCardId());
             user.setCardcode(fCases.getCardCode());
             user.setLoginName(fCases.getfPolice1id());
@@ -213,10 +215,72 @@ public class FCasesServiceImpl implements IFCasesService
             userRole.setUserId(user.getUserId());
             userRolesList.add(userRole);
             userRoleMapper.batchUserRole(userRolesList);
-        }
-        //存入民警信息
-        return fCasesMapper.insertFCases(fCases);
+           }
+        //验证辅办民警信息
+        SysUser Sysuser1=new SysUser();
+        Sysuser1.setLoginName(fCases.getfPolice2id());
+        Sysuser1.setUserName(fCases.getfPolice2name());
+        List<SysUser> userList1= sysUserService.selectUserList(Sysuser1);
+        SysUser user1=new SysUser();
+        //判断民警是否存在，存在赋值卡信息
+        if(userList1.size()>0&&!fCases.getCardId().isEmpty()&&"1".equals(peopleType))
+        {
+            user1=userList1.get(0);
+            user1.setCardid(fCases.getCardId());
+            user1.setCardcode(fCases.getCardCode());
+            sysUserService.updateUser(user1);
+        }else if(userList1.size()==0){
+            user1.setCardid(fCases.getCardId());
+            user1.setCardcode(fCases.getCardCode());
+            user1.setLoginName(fCases.getfPolice2id());
+            user1.setUserName(fCases.getfPolice2name());
+            user1.setSalt(ShiroUtils.randomSalt());
+            user1.setUserType("1");
+            user1.setDeptId((long)110);
+            String password1= new Md5Hash(fCases.getfPolice2id()+"123456"+user1.getSalt()).toHex();
+            user1.setPassword(password1);
+            user1.setCreateBy(ShiroUtils.getLoginName());
+            user1.setSource("0");
+            user1.setCreateBy("填写");
+            sysUserService.insertUser(user1);
 
+            //设置用户角色
+            List<SysUserRole> userRolesList1=new ArrayList<>();
+            SysUserRole userRole1=new SysUserRole();
+            userRole1.setRoleId((long)3);
+            userRole1.setUserId(user.getUserId());
+            userRolesList1.add(userRole1);
+            userRoleMapper.batchUserRole(userRolesList1);
+        }
+        String userName=peopleType=="0"?fCases.getfPolice1id():fCases.getfPolice2id();
+        //存入民警信息
+        fCasesMapper.insertFCases(fCases);
+
+        //发送命令
+        String apiToken= httprequest.login();
+        String result="";
+        if(fCases.getCardId().isEmpty()) {
+            result= httprequest.openBox(locker.getfLockercode(), position.getfPositioncode(), apiToken);
+        }else{
+            result=httprequest.openBoxByCard(fCases.getCardCode(),position.getfPositioncode(),locker.getfLockercode(),userName,apiToken);
+        }
+        if(result.indexOf("控制成功")==-1) {
+            fDeposit.setfState(0);
+        }else{
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            fDeposit.setfOpendate( sdf.format(new Date()));
+            Date now = new Date();
+            Date afterDate = new Date(now.getTime() + 300000);
+            fDeposit.setfEnddate(sdf.format(afterDate));
+        }
+        //保存入库主表信息
+        fDepositService.insertFDeposit(fDeposit);
+        if(result.indexOf("控制成功")!=-1)
+        {
+            return "";
+        }else{
+            return "发送命令失败";
+        }
     }
 
     /**

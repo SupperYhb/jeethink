@@ -29,6 +29,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>  
             <if test="fCardcode != null  and fCardcode != ''"> and f_cardcode = #{fCardcode}</if>
             <if test="fUserid != null  and fUserid != ''"> and f_userid = #{fUserid}</if>
+            <if test="fState != null  and fState != ''"> and f_state = #{fState}</if>
         </where>
     </select>
 

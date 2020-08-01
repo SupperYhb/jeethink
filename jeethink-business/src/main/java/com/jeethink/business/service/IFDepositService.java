@@ -32,15 +32,19 @@ public interface IFDepositService
     /**
      * 获取科达接口案卷数据
      * */
-    public List<kdcaseentity> getkdCase();
+    public List<kdcaseentity> getkdCase(String caseName,String caseNumber,String policeCode);
     /**
      * 添加入库信息（平台拉取）
      * */
-    public int addCaseIn(List<kdcaseentity> list,String lockerId,String positionId,String cardCode,String cardId,String remark);
+    public String addCaseIn(List<kdcaseentity> list,String lockerId,String positionId,String cardCode,String cardId,String remark,String peopleType);
     /**
      * 添加归还信息
      * */
-    public int addCaseReturn(List<FCases> list, String lockerId, String positionId, String cardCode, String cardId, String remark);
+    public String addCaseReturn(List<FCases> list, String lockerId, String positionId, String cardCode, String cardId, String remark,String peopleType);
+    /**
+     * 再次打开柜门
+     * */
+    String OpenBox(String id,String type);
     /**
      * 新增存放案卷
      * 

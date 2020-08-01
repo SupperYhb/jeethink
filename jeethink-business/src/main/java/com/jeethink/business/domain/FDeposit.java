@@ -59,6 +59,9 @@ public class FDeposit extends BaseEntity
     /** 业务类型（1首次入库，2归还入库） */
     @Excel(name = "业务类型（1首次入库，2归还入库）")
     private String fBusinesstype;
+    /** 发卡人员类型（0主办民警，1辅办民警） */
+    @Excel(name = "发卡人员类型（0主办民警，1辅办民警）")
+    private String fPeopletype;
 
     public void setfDepositid(String fDepositid) 
     {
@@ -164,6 +167,14 @@ public class FDeposit extends BaseEntity
 
     public String getfBusinesstype() {
         return fBusinesstype;
+    }
+
+    public void setfPeopletype(String fPeopletype) {
+        this.fPeopletype = fPeopletype;
+    }
+
+    public String getfPeopletype() {
+        return fPeopletype;
     }
 
     @Override

@@ -31,7 +31,7 @@ public interface IFBorrowService
     /**
      * 借阅案卷
      * */
-    int outCase(List<FCases> list, String cardCode, String cardId, String remark);
+    String outCase(List<FCases> list, String cardCode, String cardId, String remark,String peopleType);
 
     /**
      * 新增借阅
@@ -40,6 +40,11 @@ public interface IFBorrowService
      * @return 结果
      */
     public int insertFBorrow(FBorrow fBorrow);
+
+    /**
+     * 再次打开货位
+     * */
+    String OpenBox(String id,String type);
 
     /**
      * 修改借阅

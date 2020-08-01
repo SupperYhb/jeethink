@@ -69,7 +69,6 @@ public class SysUserController extends BaseController
         List<SysUser> list = userService.selectUserList(user);
         return getDataTable(list);
     }
-    @RequiresPermissions("system:user:selectUserByNoAndName")
     @PostMapping("/selectUserByNoAndName")
     @ResponseBody
     public  TableDataInfo selectUserByNoAndName(SysUser user){

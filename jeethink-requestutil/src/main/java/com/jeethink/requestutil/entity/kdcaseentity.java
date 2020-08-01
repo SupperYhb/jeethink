@@ -12,8 +12,10 @@ public class kdcaseentity {
     private String acceptanceTime; //受理时间
     private String suspectName; //涉案人员名称
     private String suspectCode; //涉案人员编号
-    private String policeCode; //民警编号
-    private String policeName; //民警名称
+    private String mainPoliceName; //主办民警名称
+    private String mainPoliceCode; //主办民警编号
+    private String assistPoliceName; //辅办民警名称
+    private String assistPoliceCode; //辅办民警编号
 
     public void setNo(String no) {
         this.no = no;
@@ -71,19 +73,35 @@ public class kdcaseentity {
         return suspectName;
     }
 
-    public void setPoliceCode(String policeCode) {
-        this.policeCode = policeCode;
+    public void setMainPoliceCode(String mainPoliceCode) {
+        this.mainPoliceCode = mainPoliceCode;
     }
 
-    public String getPoliceCode() {
-        return policeCode;
+    public String getMainPoliceCode() {
+        return mainPoliceCode;
     }
 
-    public void setPoliceName(String policeName) {
-        this.policeName = policeName;
+    public void setMainPoliceName(String mainPoliceName) {
+        this.mainPoliceName = mainPoliceName;
     }
 
-    public String getPoliceName() {
-        return policeName;
+    public String getMainPoliceName() {
+        return mainPoliceName;
+    }
+
+    public void setAssistPoliceCode(String assistPoliceCode) {
+        this.assistPoliceCode = assistPoliceCode;
+    }
+
+    public String getAssistPoliceCode() {
+        return assistPoliceCode;
+    }
+
+    public void setAssistPoliceName(String assistPoliceName) {
+        this.assistPoliceName = assistPoliceName;
+    }
+
+    public String getAssistPoliceName() {
+        return assistPoliceName;
     }
 }

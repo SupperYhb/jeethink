@@ -48,7 +48,7 @@ public interface IFCasesService
      * @param fCases 案卷
      * @return 结果
      */
-    public int insertFCases(FCases fCases);
+    public String insertFCases(FCases fCases,String peopleType);
 
     /**
      * 修改案卷

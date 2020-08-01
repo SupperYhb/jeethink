@@ -116,9 +116,11 @@ public class FCasesController extends BaseController
     @Log(title = "案卷", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
-    public AjaxResult addSave(FCases fCases)
+    public AjaxResult addSave(FCases fCases,String peopleType)
     {
-        return toAjax(fCasesService.insertFCases(fCases));
+        peopleType=peopleType.length()>2?peopleType.substring(0,1):peopleType;
+        String msg=fCasesService.insertFCases(fCases,peopleType);
+        return msg.isEmpty()?success("打开成功"):error("打开柜门失败");
     }
 
     /**

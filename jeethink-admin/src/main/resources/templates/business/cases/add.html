@@ -46,67 +46,31 @@
                     </div>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-sm-6">
+<!--            <div class="row">-->
+<!--                <div class="col-sm-6">-->
 
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label is-required">案件类别：</label>
-                        <div class="col-sm-8">
-                            <select name="fCasetype" class="form-control m-b" th:with="type=${@dict.getType('casetype')}" required>
-                                <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label is-required">案由：</label>
-                        <div class="col-sm-8">
-                            <select name="fCasebrief" class="form-control m-b" th:with="type=${@dict.getType('casecause')}" required>
-                                <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<!--                    <div class="form-group">-->
+<!--                        <label class="col-sm-3 control-label is-required">案件类别：</label>-->
+<!--                        <div class="col-sm-8">-->
+<!--                            <select name="fCasetype" class="form-control m-b" th:with="type=${@dict.getType('casetype')}" required>-->
+<!--                                <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>-->
+<!--                            </select>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--                <div class="col-sm-6">-->
+<!--                    <div class="form-group">-->
+<!--                        <label class="col-sm-3 control-label is-required">案由：</label>-->
+<!--                        <div class="col-sm-8">-->
+<!--                            <select name="fCasebrief" class="form-control m-b" th:with="type=${@dict.getType('casecause')}" required>-->
+<!--                                <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>-->
+<!--                            </select>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            </div>-->
             <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label is-required">民警类型：</label>
-                        <div class="col-sm-8">
-                            <select name="policeType" class="form-control m-b" th:with="type=${@dict.getType('policeType')}" required onchange="policeTypeChange()">
-                                <option th:each="dict : ${type}" th:text="${dict.dictLabel}" th:value="${dict.dictValue}"></option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label">办案单位编号：</label>
-                        <div class="col-sm-8">
-                            <input name="fDepartmentid" class="form-control" type="text">
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label is-required">民警编号：</label>
-                        <div class="col-sm-8">
-                            <input name="fPolice1id" class="form-control" type="text" required>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-sm-6">
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label is-required">民警名称：</label>
-                        <div class="col-sm-8">
-                            <input name="fPolice1name" class="form-control" type="text" required>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
             <div class="row" id="element">
                 <div class="col-sm-6">
                     <div class="form-group">
@@ -129,20 +93,55 @@
                     </div>
                 </div>
             </div>
-            <div class="row" id="element">
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label class="col-sm-3 control-label">嫌疑人编号：</label>
+                        <label class="col-sm-3 control-label is-required">民警类型：</label>
                         <div class="col-sm-8">
-                            <input name="fCriminalcode" class="form-control" type="text">
+                            <a class="btn btn-default" onclick="policeTypeChange(1)">拉取主办民警</a> <a class="btn btn-default" onclick="policeTypeChange(2)">拉取辅办民警</a>
                         </div>
                     </div>
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label class="col-sm-3 control-label">嫌疑人名称：</label>
+                        <label class="col-sm-3 control-label">办案单位编号：</label>
                         <div class="col-sm-8">
-                            <input name="fCriminalname" class="form-control" type="text">
+                            <input name="fDepartmentid" class="form-control" type="text">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label is-required">主办民警编号：</label>
+                        <div class="col-sm-8">
+                            <input name="fPolice1id" class="form-control" type="text" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label is-required">主办民警名称：</label>
+                        <div class="col-sm-8">
+                            <input name="fPolice1name" class="form-control" type="text" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label is-required">辅办民警编号：</label>
+                        <div class="col-sm-8">
+                            <input name="fPolice2id" class="form-control" type="text" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label is-required">辅办民警名称：</label>
+                        <div class="col-sm-8">
+                            <input name="fPolice2name" class="form-control" type="text" required>
                         </div>
                     </div>
                 </div>
@@ -150,9 +149,10 @@
             <div class="row" id="element">
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label class="col-sm-3 control-label">案发地址：</label>
+                        <label class="col-sm-3 control-label">发卡分类：</label>
                         <div class="col-sm-8">
-                            <input name="fCrimeaddress" class="form-control" type="text">
+                            <label><input name="peopleType"  type="radio" value="0" checked />主办民警 </label>
+                            <label style="margin-left: 20px;"><input name="peopleType" type="radio" value="1" />副办民警 </label>
                         </div>
                     </div>
                 </div>
@@ -166,7 +166,17 @@
                     </div>
                 </div>
             </div>
+            <div class="row" id="element">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">案发地址：</label>
+                        <div class="col-sm-8">
+                            <input name="fCrimeaddress" style="width:770px;" class="form-control" type="text">
+                        </div>
+                    </div>
+                </div>
 
+            </div>
         </form>
     </div>
     <th:block th:include="include :: footer" />
@@ -189,8 +199,9 @@ debugger
         function submitHandler() {
             debugger
             var data=$('#form-cases-add').serialize();
+            data+="&peopleType="+$("[name=peopleType]:checked ").val();
             if ($.validate.form()) {
-                $.operate.save(prefix + "/add", $('#form-cases-add').serialize());
+                $.operate.save(prefix + "/add", data);
             }
         }
 
@@ -206,8 +217,26 @@ debugger
             autoclose: true
         });
         function openSwipingForm(){
-            var userid=$("[name=fPolice1id]").val();
-            if(userid==""||userid==null||userid==undefined)
+
+            var peopleType=$("[name=peopleType]:checked ").val();
+            var mainpoliceId=$("[name=fPolice1id]").val();
+            var asspoliceId=$("[name=fPolice2id]").val();
+            var userId="";
+            if(peopleType=="0"&&(mainpoliceId==""||mainpoliceId==undefined||mainpoliceId==null))
+            {
+                $.modal.msg("当前主办民警不存在，无法进行发卡",modal_status.FAIL);
+                return false;
+            }else if(peopleType=="0"&&(mainpoliceId!=""||mainpoliceId!=undefined||mainpoliceId!=null)){
+                userId=mainpoliceId;
+            }
+            if(peopleType=="1"&&(asspoliceId==""||asspoliceId==undefined||asspoliceId==null))
+            {
+                $.modal.msg("当前辅办民警不存在，无法进行发卡",modal_status.FAIL);
+                return false;
+            }else if(peopleType=="1"&&(asspoliceId!=""||asspoliceId!=undefined||asspoliceId!=null)){
+                userId=asspoliceId;
+            }
+            if(userId==""||userId==null||userId==undefined)
             {
                 $.modal.alertError("请输入警号");
                 return false;
@@ -217,7 +246,7 @@ debugger
                 type : "POST",
                 url : ctx + "basicInfo/card/selectCardByUserId",
                 data : {
-                    "fUserid":userid,
+                    "fUserid":userId,
                 },
                 async : false,
                 error : function(request) {
@@ -261,11 +290,8 @@ debugger
             });
 
         }
-        function policeTypeChange()
+        function policeTypeChange(peopletype)
         {
-            var type=$("[name=policeType]").val();
-            if(type=="1")
-            {
                 layer.open({
                     type: 2,
                     area: ['1000px', '600px'],
@@ -282,18 +308,27 @@ debugger
                           debugger
                         var iframeWin = layero.find('iframe')[0];
                         var data= iframeWin.contentWindow.submitHandler(index, layero);
-                        $("[name=fPolice1id]").val(data[0].loginName);
-                        $("[name=fPolice1name]").val(data[0].userName);
-                        $("[name=cardCode]").val(data[0].cardcode);
-                        $("[name=cardId]").val(data[0].cardid);
+                        if(peopletype=="1") {
+                            $("[name=fPolice1id]").val(data[0].loginName);
+                            $("[name=fPolice1name]").val(data[0].userName);
+                        }else{
+                            $("[name=fPolice2id]").val(data[0].loginName);
+                            $("[name=fPolice2name]").val(data[0].userName);
+                        }
                         layer.close(index);
                     },
                     cancel: function(index) {
                         return true;
                     }
                 });
-            }
         }
+
+        $("[name=peopleType]").change(function()
+        {
+            debugger
+            $("[name=cardCode]").val("");
+            $("[name=cardId]").val("");
+        })
     </script>
 </body>
 </html>

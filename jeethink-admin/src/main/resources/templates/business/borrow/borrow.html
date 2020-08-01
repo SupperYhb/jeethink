@@ -98,7 +98,7 @@
                     }
                 },
                 {
-                    field: 'fState',
+                    field: 'fPeopletype',
                     title: '状态',
                     formatter:function (value,row,index) {
                         if(row.fState=="0")
@@ -109,6 +109,19 @@
                         }
                     }
                 },
+                    {
+                        field: 'fState',
+                        title: '发卡类型',
+                        formatter:function (value,row,index) {
+                            debugger
+                            if(row.fPeopletype=="0")
+                            {
+                                return "主办民警";
+                            }else{
+                                return "辅办民警";
+                            }
+                        }
+                    },
                 {
                     field: 'fCardcode',
                     title: '卡编号'
@@ -120,7 +133,19 @@
                 {
                     field: 'fEnddate',
                     title: '关门时间'
-                }]
+                },
+                    {
+                        title: '操作',
+                        align: 'center',
+                        formatter: function(value, row, index) {
+                            var actions = [];
+                            debugger
+                            if(row.fState==0) {
+                                actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="openBox(\'' + row.fBorrowid + '\',\''+row.fType+'\')"><i class="fa fa-edit"></i>编辑</a> ');
+                            }
+                            return actions.join('');
+                        }
+                    }]
             };
             $.table.init(options);
         });
@@ -189,6 +214,27 @@
         function openBigForm()
         {
             $.modal.openTab("借阅案卷","/business/borrow/add");
+        }
+        function openBox(id,type)
+        {
+            $.ajax({
+                cache : true,
+                type : "POST",
+                url : ctx + "business/borrow/OpenBox",
+                data : {
+                    "id":id,
+                    "type":type
+                },
+                async : false,
+                error : function(request) {
+                    $.modal.alertError("系统错误");
+                },
+                success : function(data) {
+                    debugger
+                    $.modal.msg("打开柜门成功",modal_status.SUCCESS);
+                    $.table.search();
+                }
+            });
         }
     </script>
 </body>

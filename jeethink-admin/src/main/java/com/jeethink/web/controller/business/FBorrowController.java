@@ -81,9 +81,9 @@ public class FBorrowController extends BaseController
      */
     @PostMapping("/outCase")
     @ResponseBody
-    public AjaxResult outCase(String list,String cardCode,String cardId,String remark){
+    public AjaxResult outCase(String list,String cardCode,String cardId,String remark,String peopleType){
         List<FCases> casesList= JSON.parseArray(list, FCases.class);
-        fBorrowService.outCase(casesList,cardCode,cardId,remark);
+        fBorrowService.outCase(casesList,cardCode,cardId,remark,peopleType);
         return success("");
     }
     /**
@@ -106,6 +106,13 @@ public class FBorrowController extends BaseController
         return toAjax(fBorrowService.insertFBorrow(fBorrow));
     }
 
+    @Log(title = "再次打开柜门（借阅）", businessType = BusinessType.INSERT)
+    @PostMapping("/OpenBox")
+    @ResponseBody
+    public AjaxResult OpenBox(String id,String type){
+        String msg=fBorrowService.OpenBox(id,type);
+        return msg.isEmpty()?success("true"):error("false");
+    }
     /**
      * 修改借阅
      */

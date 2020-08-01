@@ -88,7 +88,17 @@ public class FCardController extends BaseController
     List<FCard> list=fCardService.verificationCard(fCard);
     return success(list.size()>0?list.get(0).getfCardid():"");
     }
-
+    /**
+     * 验证卡是否可归还
+     * */
+    @PostMapping("/findCard")
+    @ResponseBody
+    public AjaxResult findCard(FCard fCard)
+    {
+        fCard.setfState("1");
+        List<FCard> list=fCardService.selectFCardList(fCard);
+        return success(list.size()>0?list.get(0).getfCardid():"");
+    }
     /**
      * 新增卡
      */
@@ -96,6 +106,13 @@ public class FCardController extends BaseController
     public String add()
     {
         return prefix + "/add";
+    }
+    /**
+     * 还卡页面
+     */
+    @GetMapping("/returnform")
+    public String returnform(){
+        return prefix+"/returnform";
     }
     /**
      * 刷卡页面

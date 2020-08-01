@@ -17,7 +17,8 @@
                                         <ul>
                                             <li>
                                                 <label>警号：</label>
-                                                <input type="text" name="policeNo"/>
+                                                <input type="text" name="policeCode" />
+                                                <input id="peopleType" th:value="${peopleType}" style="display:none">
                                             </li>
                                             <li>
                                                 <label>案卷名称：</label>
@@ -25,10 +26,10 @@
                                             </li>
                                             <li>
                                                 <label>案卷编号：</label>
-                                                <input type="text" name="caseCode"/>
+                                                <input type="text" name="caseNumber"/>
                                             </li>
                                             <li>
-                                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                                <a class="btn btn-primary btn-rounded btn-sm" onclick="searce()"><i class="fa fa-search"></i>&nbsp;搜索</a>
                                                 <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
                                             </li>
                                         </ul>
@@ -64,6 +65,15 @@
                                 <div class="row" id="element">
                                     <div class="col-sm-6">
                                         <div class="form-group">
+                                            <label class="col-sm-3 control-label">发卡分类：</label>
+                                            <div class="col-sm-8">
+                                                <label><input name="peopleType"  type="radio" value="0" checked />主办民警 </label>
+                                                <label style="margin-left: 20px;"><input name="peopleType" type="radio" value="1" />副办民警 </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
                                             <label class="col-sm-3 control-label">发卡：</label>
                                             <div class="col-sm-8">
                                                 <input name="cardCode" class="form-control" type="text" readonly onclick="openSwipingForm()">
@@ -71,6 +81,8 @@
                                             </div>
                                         </div>
                                     </div>
+                                </div>
+                                <div class="row" id="element">
                                     <div class="col-sm-6">
                                         <div class="form-group">
                                             <label class="col-sm-3 control-label">备注：</label>
@@ -102,6 +114,7 @@
     var prefix = ctx + "business/deposit";
 
     $(document).ready(function () {
+
          $("#wizard").steps({
              bodyTag:"fieldset", onStepChanging: function (event, currentIndex, newIndex){
                  debugger
@@ -120,12 +133,12 @@
                  var cardCode=$("[name=cardCode]").val();
                  var cardId=$("[name=cardId]").val();
                  var fRemark=$("[name=fRemark]").val();
-                 if(fLockerid==""&&fLockerid==null&&fLockerid==undefined)
+                 if(fLockerid==""||fLockerid==null||fLockerid==undefined)
                  {
                      $.modal.msg("请选择案卷柜",modal_status.FAIL);
                      return false;
                  }
-                 if(fPositionid==""&&fPositionid==null&&fPositionid==undefined)
+                 if(fPositionid==""||fPositionid==null||fPositionid==undefined)
                  {
                      $.modal.msg("请选择货位",modal_status.FAIL);
                      return false;
@@ -139,25 +152,75 @@
                      cardCode:cardCode,
                      cardId:cardId,
                      remark:fRemark,
-                     businessType:"2"
+                     businessType:"2",
+                     peopleType:$("[name=peopleType]:checked ").val()
                  };
                  $.operate.save(prefix + "/addCaseIn", Data);
              }
          });
-
-
+        $("[name=peopleType]").change(function()
+        {
+            debugger
+            $("[name=cardCode]").val("");
+            $("[name=cardId]").val("");
+        })
         loadTable();
     });
+    function searce()
+    {
+        debugger
+        var peopleType=$("#peopleTypes").val();
+        if(peopleType=="0")
+        {
+            if($("[name=policeCode]").val()!="")
+            {
+                $.table.search()
+            }else{
+                $.modal.msg("请输入警号并查询",modal_status.FAIL);
+            }
+        }
+    }
     function openSwipingForm(){
 
+        debugger
         var data=$("#" + table.options.id).bootstrapTable('getSelections');
-        var userid=data[0].policeCode;
+        var peopleType=$("[name=peopleType]:checked ").val();
+        var userId="";
+        if(peopleType=="0"&&(data[0].mainPoliceCode==""||data[0].mainPoliceCode==undefined||data[0].mainPoliceCode==null))
+        {
+            $.modal.msg("当前主办民警不存在，无法进行发卡",modal_status.FAIL);
+            return false;
+        }else if(peopleType=="0"&&(data[0].mainPoliceCode!=""||data[0].mainPoliceCode!=undefined||data[0].mainPoliceCode!=null)){
+            userId=data[0].mainPoliceCode;
+        }
+        if(peopleType=="1"&&(data[0].assistPoliceCode==""||data[0].assistPoliceCode==undefined||data[0].assistPoliceCode==null))
+        {
+            $.modal.msg("当前辅办民警不存在，无法进行发卡",modal_status.FAIL);
+            return false;
+        }else if(peopleType=="1"&&(data[0].assistPoliceCode!=""||data[0].assistPoliceCode!=undefined||data[0].assistPoliceCode!=null)){
+            userId=data[0].assistPoliceCode;
+        }
+        if(peopleType=="1"){
+            var asscode="";
+            debugger
+            for(var i=0;i<data.length;i++)
+            {
+                if(asscode==""||asscode==null||asscode==undefined)
+                {
+                    asscode=data[i].assistPoliceCode;
+                }
+                if(asscode!=data[i].assistPoliceCode){
+                    $.modal.msg("一次只能存放同一民警及辅警的案卷",modal_status.FAIL);
+                    return false;
+                }
+            }
+        }
         $.ajax({
             cache : true,
             type : "POST",
             url : ctx + "basicInfo/card/selectCardByUserId",
             data : {
-                "fUserid":userid,
+                "fUserid":userId,
             },
             async : false,
             error : function(request) {
@@ -231,25 +294,35 @@
                     field: 'briefCase',
                     title: '简要案情'
                 },
+                // {
+                //     field: 'suspectName',
+                //     title: '涉案人员名称'
+                // },
+                // {
+                //     field: 'suspectCode',
+                //     title: '涉案人员编号'
+                // },
                 {
-                    field: 'suspectName',
-                    title: '涉案人员名称'
+                    field: 'mainPoliceCode',
+                    title: '主办民警编号'
                 },
                 {
-                    field: 'suspectCode',
-                    title: '涉案人员编号'
+                    field: 'mainPoliceName',
+                    title: '主办民警名称'
                 },
                 {
-                    field: 'policeCode',
-                    title: '民警编号'
+                    field: 'assistPoliceCode',
+                    title: '辅办民警编号'
                 },
                 {
-                    field: 'policeName',
-                    title: '民警名称'
-                }]
+                    field: 'assistPoliceName',
+                    title: '辅办民警名称'
+                },
+            ]
         };
         $.table.init(options);
     }
+
 </script>
 <script th:inline="javascript">
     function getlocker() {

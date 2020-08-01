@@ -58,6 +58,9 @@ public class FBorrow extends BaseEntity
      * 备注
      * */
     private String fRemark;
+    /** 发卡人员类型（0主办民警，1辅办民警） */
+    @Excel(name = "发卡人员类型（0主办民警，1辅办民警）")
+    private String fPeopletype;
 
     public void setfBorrowid(String fBorrowid) 
     {
@@ -156,6 +159,14 @@ public class FBorrow extends BaseEntity
 
     public String getfRemark() {
         return fRemark;
+    }
+
+    public void setfPeopletype(String fPeopletype) {
+        this.fPeopletype = fPeopletype;
+    }
+
+    public String getfPeopletype() {
+        return fPeopletype;
     }
 
     @Override

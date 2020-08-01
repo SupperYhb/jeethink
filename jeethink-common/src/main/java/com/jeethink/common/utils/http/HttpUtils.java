@@ -37,9 +37,9 @@ public class HttpUtils
      * @param param 请求参数，请求参数应该是 name1=value1&name2=value2 的形式。
      * @return 所代表远程资源的响应结果
      */
-    public static String sendGet(String url, String param)
+    public static String sendGet(String url, String param,String key,String token)
     {
-        return sendGet(url, param, Constants.UTF8);
+        return sendGet(url, param, Constants.UTF8,key,token);
     }
 
     /**
@@ -50,7 +50,7 @@ public class HttpUtils
      * @param contentType 编码类型
      * @return 所代表远程资源的响应结果
      */
-    public static String sendGet(String url, String param, String contentType)
+    public static String sendGet(String url, String param, String contentType,String key,String token)
     {
         StringBuilder result = new StringBuilder();
         BufferedReader in = null;
@@ -63,6 +63,12 @@ public class HttpUtils
             connection.setRequestProperty("accept", "*/*");
             connection.setRequestProperty("connection", "Keep-Alive");
             connection.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
+            if(!key.isEmpty()) {
+                connection.setRequestProperty("key", key);
+            }
+            if(!token.isEmpty()) {
+                connection.setRequestProperty("apiToken", token);
+            }
             connection.connect();
             in = new BufferedReader(new InputStreamReader(connection.getInputStream(), contentType));
             String line;
@@ -112,7 +118,7 @@ public class HttpUtils
      * @param param 请求参数，请求参数应该是 name1=value1&name2=value2 的形式。
      * @return 所代表远程资源的响应结果
      */
-    public static String sendPost(String url, String param)
+    public static String sendPost(String url, String param,String key,String apiToken)
     {
         PrintWriter out = null;
         BufferedReader in = null;
@@ -128,6 +134,12 @@ public class HttpUtils
             conn.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
             conn.setRequestProperty("Accept-Charset", "utf-8");
             conn.setRequestProperty("contentType", "utf-8");
+            if(!key.isEmpty())
+            {
+                conn.setRequestProperty("key",key);
+            }else if(!apiToken.isEmpty()){
+                conn.setRequestProperty("apiToken",apiToken);
+            }
             conn.setDoOutput(true);
             conn.setDoInput(true);
             out = new PrintWriter(conn.getOutputStream());
@@ -178,7 +190,7 @@ public class HttpUtils
         return result.toString();
     }
 
-    public static String sendSSLPost(String url, String param)
+    public static String sendSSLPost(String url, String param,String key,String token)
     {
         StringBuilder result = new StringBuilder();
         String urlNameString = url + "?" + param;
@@ -194,6 +206,12 @@ public class HttpUtils
             conn.setRequestProperty("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
             conn.setRequestProperty("Accept-Charset", "utf-8");
             conn.setRequestProperty("contentType", "utf-8");
+            if(!key.isEmpty()){
+                conn.setRequestProperty("key",key);
+            }else if(!token.isEmpty())
+            {
+                conn.setRequestProperty("token",token);
+            }
             conn.setDoOutput(true);
             conn.setDoInput(true);
 

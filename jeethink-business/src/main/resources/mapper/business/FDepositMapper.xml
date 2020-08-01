@@ -17,10 +17,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="fOpendate"    column="f_opendate"    />
         <result property="fEnddate"    column="f_enddate"    />
         <result property="fBusinesstype"    column="f_businesstype"    />
+        <result property="fPeopletype"    column="f_peopletype"    />
     </resultMap>
 
     <sql id="selectFDepositVo">
-        select f_depositid, f_code, f_userid, f_username, f_createdate, f_type, f_state, f_remark, f_cardcode,f_opendate,f_enddate from f_deposit
+        select f_depositid, f_code, f_userid, f_username, f_createdate, f_type, f_state, f_remark, f_cardcode,f_opendate,f_enddate,f_peopletype from f_deposit
     </sql>
 
     <select id="selectFDepositList" parameterType="FDeposit" resultMap="FDepositResult">
@@ -37,6 +38,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fOpendate != null  and fOpendate != ''"> and f_opendate = #{fOpendate}</if>
             <if test="fEnddate != null  and fEnddate != ''"> and f_enddate = #{fEnddate}</if>
             <if test="fBusinesstype != null  and fBusinesstype != ''"> and f_businesstype = #{fBusinesstype}</if>
+            <if test="fPeopletype != null  and fPeopletype != ''"> and f_peopletype = #{fPeopletype}</if>
         </where>
     </select>
     
@@ -60,6 +62,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fOpendate != null">f_opendate,</if>
             <if test="fEnddate != null">f_enddate,</if>
             <if test="fBusinesstype != null">f_businesstype,</if>
+            <if test="fPeopletype != null">f_peopletype,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="fDepositid != null">#{fDepositid},</if>
@@ -74,6 +77,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fOpendate != null">#{fOpendate},</if>
             <if test="fEnddate != null">#{fEnddate},</if>
             <if test="fBusinesstype != null">#{fBusinesstype},</if>
+            <if test="fPeopletype != null">#{fPeopletype},</if>
          </trim>
     </insert>
 
@@ -91,6 +95,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fOpendate != null">f_opendate = #{fOpendate},</if>
             <if test="fEnddate != null">f_enddate = #{fEnddate},</if>
             <if test="fBusinesstype != null">f_businesstype = #{fBusinesstype},</if>
+            <if test="fPeopletype != null">f_peopletype = #{fPeopletype},</if>
         </trim>
         where f_depositid = #{fDepositid}
     </update>

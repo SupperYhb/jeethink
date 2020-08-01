@@ -379,7 +379,6 @@ var sub = {
 /** 设置全局ajax处理 */
 $.ajaxSetup({
     complete: function(XMLHttpRequest, textStatus) {
-    	debugger
         if (textStatus == 'timeout') {
         	$.modal.alertWarning("服务器超时，请稍后再试！");
         	$.modal.enable();

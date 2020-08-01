@@ -76,8 +76,8 @@
                     title: '卡编号'
                 },
                 {
-                    field: 'fUsername',
-                    title: '存入用户名称'
+                    field: 'fUserid',
+                    title: '存入用户编号'
                 },
                 {
                     field: 'fUsername',
@@ -111,10 +111,55 @@
                         }
                     }
                 },
+                    {
+                        field: 'fBusinesstype',
+                        title: '入库类型',
+                        formatter:function (value,row,index) {
+                            if(row.fBusinesstype=="0")
+                            {
+                                return "首次入库";
+                            }else{
+                                return "归还入库";
+                            }
+                        }
+                    },
+                    {
+                        field: 'fPeopletype',
+                        title: '发卡类型',
+                        formatter:function (value,row,index) {
+                            if(row.fPeopletype=="0")
+                            {
+                                return "主办民警";
+                            }else{
+                                return "辅办民警";
+                            }
+                        }
+                    },
+                    {
+                        field: 'fOpendate',
+                        title: '开门时间'
+                    },
+                    {
+                        field: 'fEnddate',
+                        title: '关门时间'
+                    },
                 {
                     field: 'fRemark',
                     title: '备注'
-                }]
+                },
+                    {
+                        title: '操作',
+                        align: 'center',
+                        formatter: function(value, row, index) {
+                            var actions = [];
+                            debugger
+                            if(row.fState==0) {
+                                actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="openBox(\'' + row.fDepositid + '\',\''+row.fType+'\')"><i class="fa fa-edit"></i>编辑</a> ');
+                            }
+                            return actions.join('');
+                        }
+                    }
+                ]
             };
             $.table.init(options);
         });
@@ -191,6 +236,27 @@
         function openReturnForm()
         {
             $.modal.openTab("归还案卷","/business/deposit/returnadd");
+        }
+        function openBox(id,type)
+        {
+            $.ajax({
+                cache : true,
+                type : "POST",
+                url : ctx + "business/deposit/OpenBox",
+                data : {
+                    "id":id,
+                    "type":type
+                },
+                async : false,
+                error : function(request) {
+                    $.modal.alertError("系统错误");
+                },
+                success : function(data) {
+                    debugger
+                    $.modal.msg("打开柜门成功",modal_status.SUCCESS);
+                    $.table.search();
+                }
+            });
         }
     </script>
 </body>
