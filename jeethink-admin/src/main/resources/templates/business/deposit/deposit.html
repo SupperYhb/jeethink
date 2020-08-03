@@ -105,9 +105,9 @@
                     formatter:function (value,row,index) {
                         if(row.fState=="0")
                         {
-                            return "未存放";
+                            return "<span class=\"btn btn-danger\">未存放</span>";
                         }else{
-                            return "已存放";
+                            return "<span class=\"btn btn-info\">已存放</span>";
                         }
                     }
                 },
@@ -154,7 +154,7 @@
                             var actions = [];
                             debugger
                             if(row.fState==0) {
-                                actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="openBox(\'' + row.fDepositid + '\',\''+row.fType+'\')"><i class="fa fa-edit"></i>编辑</a> ');
+                                actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="openBox(\'' + row.fDepositid + '\',\''+row.fType+'\')"><i class="fa fa-edit"></i>再次开柜</a> ');
                             }
                             return actions.join('');
                         }
@@ -193,11 +193,19 @@
                     },
                     {
                         field: 'fPolice1id',
-                        title: '民警编号'
+                        title: '主办民警编号'
                     },
                     {
                         field: 'fPolice1name',
-                        title: '民警名称'
+                        title: '主办民警名称'
+                    },
+                    {
+                        field: 'fPolice2id',
+                        title: '辅办民警编号'
+                    },
+                    {
+                        field: 'fPolice2name',
+                        title: '辅办民警名称'
                     },
                     {
                         field: 'fDepartmentid',
@@ -210,14 +218,6 @@
                     {
                         field: 'fPositioncode',
                         title: '货位编号'
-                    },
-                    {
-                        field: 'fCriminalcode',
-                        title: '嫌疑人编号'
-                    },
-                    {
-                        field: 'fCriminalname',
-                        title: '嫌疑人名称'
                     },
                     {
                         field: 'fCrimeaddress',
@@ -252,8 +252,11 @@
                     $.modal.alertError("系统错误");
                 },
                 success : function(data) {
-                    debugger
+                    if(data.msg=="true"){
                     $.modal.msg("打开柜门成功",modal_status.SUCCESS);
+                    }else{
+                        $.modal.msg("打开柜门失败",modal_status.FAIL);
+                    }
                     $.table.search();
                 }
             });

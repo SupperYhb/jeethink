@@ -194,7 +194,7 @@ public class FBorrowServiceImpl implements IFBorrowService
                 card.setfUserid(peopleType.equals("0")? entity.getfPolice1id():entity.getfPolice2id());
                 card.setfUsername(peopleType.equals("0")? entity.getfPolice1name():entity.getfPolice2name());
                 card.setfState("1");
-                fCardService.updateFCard(card);
+                fCardService.updateFCard(card,"");
             }else{
                 borrow.setfType(0);
             }

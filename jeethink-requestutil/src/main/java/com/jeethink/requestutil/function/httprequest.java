@@ -9,6 +9,7 @@ import com.jeethink.requestutil.entity.kdcaseentity;
 import com.jeethink.requestutil.entity.loginresult;
 
 
+import java.util.ArrayList;
 import java.util.List;
 public class httprequest {
     /**
@@ -39,25 +40,33 @@ public class httprequest {
     public static String login()
     {
         String data=HttpUtils.sendPost(url+"/udms/login","userName=admin&password=admin123","","");
-        loginresult loginEntity=JSON.parseObject(data, loginresult.class);
-        return loginEntity.getApiToken();
+        if(!data.isEmpty()) {
+            loginresult loginEntity = JSON.parseObject(data, loginresult.class);
+            return loginEntity.getApiToken();
+        }else{
+            return "";
+        }
     }
     /**
      * 获取案卷信息
      * */
     public static List<kdcaseentity> getCase(String ApiToken,String caseName,String caseNumber,String policeCode){
        String obj= HttpUtils.sendGet(caseurl+"/dams/casePolices/page","currentPage=0&pageSize=10&caseName="+caseName+"&caseNumber="+caseNumber+"&policeCode="+policeCode,"",ApiToken);
-       casetotalentity entity=JSON.parseObject(obj,casetotalentity.class);
-       int i=0;
-        for (kdcaseentity data:entity.getList()
-             ) {
-            data.setMainPoliceCode("084141");
-            data.setMainPoliceName("尚洪涛");
-            data.setAssistPoliceCode("09278"+i);
-            data.setAssistPoliceName("白书辉");
-            i++;
-        }
-        return entity.getList();
+       if(!obj.isEmpty()) {
+           casetotalentity entity = JSON.parseObject(obj, casetotalentity.class);
+           int i = 0;
+           for (kdcaseentity data : entity.getList()
+           ) {
+               data.setMainPoliceCode("084141");
+               data.setMainPoliceName("尚洪涛");
+               data.setAssistPoliceCode("09278" + i);
+               data.setAssistPoliceName("白书辉");
+               i++;
+           }
+           return entity.getList();
+       }else{
+           return new ArrayList<kdcaseentity>();
+       }
     }
 
 

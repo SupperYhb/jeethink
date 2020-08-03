@@ -133,7 +133,11 @@
                 $.operate.save("/business/borrow/outCase", Data);
             }
         });
-
+        $("[name=peopleType]").change(function()
+        {
+            $("[name=cardCode]").val("");
+            $("[name=cardId]").val("");
+        })
 
         loadTable();
     });

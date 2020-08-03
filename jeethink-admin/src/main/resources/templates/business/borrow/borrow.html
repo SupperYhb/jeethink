@@ -103,9 +103,9 @@
                     formatter:function (value,row,index) {
                         if(row.fState=="0")
                         {
-                            return "未存放";
+                            return "<span class=\"btn btn-danger\">未存放</span>";
                         }else{
-                            return "已存放";
+                            return "<span class=\"btn btn-info\">已存放</span>";
                         }
                     }
                 },
@@ -141,7 +141,7 @@
                             var actions = [];
                             debugger
                             if(row.fState==0) {
-                                actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="openBox(\'' + row.fBorrowid + '\',\''+row.fType+'\')"><i class="fa fa-edit"></i>编辑</a> ');
+                                actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="openBox(\'' + row.fBorrowid + '\',\''+row.fType+'\')"><i class="fa fa-edit"></i>再次开柜</a> ');
                             }
                             return actions.join('');
                         }
@@ -230,8 +230,11 @@
                     $.modal.alertError("系统错误");
                 },
                 success : function(data) {
-                    debugger
-                    $.modal.msg("打开柜门成功",modal_status.SUCCESS);
+                    if(data.msg=="true"){
+                        $.modal.msg("打开柜门成功",modal_status.SUCCESS);
+                    }else{
+                        $.modal.msg("打开柜门失败",modal_status.FAIL);
+                    }
                     $.table.search();
                 }
             });

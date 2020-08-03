@@ -255,7 +255,7 @@ public class FDepositServiceImpl implements IFDepositService
             card.setfUserid("0".equals(peopleType)? list.get(0).getMainPoliceCode():list.get(0).getAssistPoliceCode());
             card.setfUsername("0".equals(peopleType)?list.get(0).getMainPoliceName():list.get(0).getAssistPoliceName());
             card.setfState("1");
-            fCardService.updateFCard(card);
+            fCardService.updateFCard(card,"");
         }else{
             fDeposit.setfType(0);
         }
@@ -417,7 +417,7 @@ public class FDepositServiceImpl implements IFDepositService
             card.setfUserid(peopleType.equals("0")? list.get(0).getfPolice1id():list.get(0).getfPolice2id());
             card.setfUsername(peopleType.equals("0")?list.get(0).getfPolice1name():list.get(0).getfPolice2name());
             card.setfState("1");
-            fCardService.updateFCard(card);
+            fCardService.updateFCard(card,"");
         }else{
             fDeposit.setfType(0);
         }

@@ -88,7 +88,7 @@ public class FDepositController extends BaseController
     @GetMapping("/add")
     public String add( ModelMap mmap)
     {
-        mmap.put("peopleTypes", ShiroUtils.getType());
+        mmap.put("peopleType", ShiroUtils.getType());
         return prefix + "/add";
     }
 

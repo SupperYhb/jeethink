@@ -159,10 +159,10 @@ public class FCasesServiceImpl implements IFCasesService
             fDeposit.setfType(1);
             FCard card=new FCard();
             card.setfCardid(fCases.getCardId());
-            card.setfUserid(peopleType=="0"? fCases.getfPolice1id():fCases.getfPolice2id());
-            card.setfUsername(peopleType=="0"? fCases.getfPolice1name():fCases.getfPolice2name());
+            card.setfUserid("0".equals(peopleType)? fCases.getfPolice1id():fCases.getfPolice2id());
+            card.setfUsername("0".equals(peopleType)? fCases.getfPolice1name():fCases.getfPolice2name());
             card.setfState("1");
-            fCardService.updateFCard(card);
+            fCardService.updateFCard(card,"");
         }
         //设置存入记录的状态，不知道是不是保存就调用，暂时默认为已入库
         fDeposit.setfState(1);
@@ -179,7 +179,7 @@ public class FCasesServiceImpl implements IFCasesService
         //暂时定义为1
         detail.setState("1");
         ifDepositdetailService.insertFDepositdetail(detail);
-        //验证民警信息
+        //验证主办民警信息
         SysUser Sysuser=new SysUser();
         Sysuser.setLoginName(fCases.getfPolice1id());
         Sysuser.setUserName(fCases.getfPolice1name());
@@ -192,7 +192,7 @@ public class FCasesServiceImpl implements IFCasesService
             user.setCardid(fCases.getCardId());
             user.setCardcode(fCases.getCardCode());
             sysUserService.updateUser(user);
-        }else if(userList.size()==0){
+        }else if(userList.size()==0&&!fCases.getfPolice1id().isEmpty()){
             String source="0";
             user.setCardid(fCases.getCardId());
             user.setCardcode(fCases.getCardCode());
@@ -229,7 +229,7 @@ public class FCasesServiceImpl implements IFCasesService
             user1.setCardid(fCases.getCardId());
             user1.setCardcode(fCases.getCardCode());
             sysUserService.updateUser(user1);
-        }else if(userList1.size()==0){
+        }else if(userList1.size()==0&&!fCases.getfPolice2id().isEmpty()){
             user1.setCardid(fCases.getCardId());
             user1.setCardcode(fCases.getCardCode());
             user1.setLoginName(fCases.getfPolice2id());
@@ -248,7 +248,7 @@ public class FCasesServiceImpl implements IFCasesService
             List<SysUserRole> userRolesList1=new ArrayList<>();
             SysUserRole userRole1=new SysUserRole();
             userRole1.setRoleId((long)3);
-            userRole1.setUserId(user.getUserId());
+            userRole1.setUserId(user1.getUserId());
             userRolesList1.add(userRole1);
             userRoleMapper.batchUserRole(userRolesList1);
         }
@@ -259,10 +259,14 @@ public class FCasesServiceImpl implements IFCasesService
         //发送命令
         String apiToken= httprequest.login();
         String result="";
-        if(fCases.getCardId().isEmpty()) {
-            result= httprequest.openBox(locker.getfLockercode(), position.getfPositioncode(), apiToken);
+        if(!apiToken.isEmpty()) {
+            if (fCases.getCardId().isEmpty()) {
+                result = httprequest.openBox(locker.getfLockercode(), position.getfPositioncode(), apiToken);
+            } else {
+                result = httprequest.openBoxByCard(fCases.getCardCode(), position.getfPositioncode(), locker.getfLockercode(), userName, apiToken);
+            }
         }else{
-            result=httprequest.openBoxByCard(fCases.getCardCode(),position.getfPositioncode(),locker.getfLockercode(),userName,apiToken);
+            result="登录失败";
         }
         if(result.indexOf("控制成功")==-1) {
             fDeposit.setfState(0);

@@ -2,6 +2,8 @@ package com.jeethink.system.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -247,6 +249,15 @@ public class SysUserServiceImpl implements ISysUserService
         // 新增用户与岗位管理
         insertUserPost(user);
         return userMapper.updateUser(user);
+    }
+
+    /**
+     * 更新用户的使用卡号及id为空
+     * */
+    @Override
+    public int updatecardnull(String userId) {
+
+        return userMapper.updatecardnull(userId);
     }
 
     /**

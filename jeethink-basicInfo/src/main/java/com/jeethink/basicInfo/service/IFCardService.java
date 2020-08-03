@@ -48,7 +48,7 @@ public interface IFCardService
      * @param fCard 卡
      * @return 结果
      */
-    public int updateFCard(FCard fCard);
+    public int updateFCard(FCard fCard,String reset);
 
     /**
      * 批量删除卡

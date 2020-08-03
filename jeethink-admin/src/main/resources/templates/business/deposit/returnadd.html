@@ -158,7 +158,11 @@
                  $.operate.save(prefix + "/addCaseReturn", Data);
              }
          });
-
+        $("[name=peopleType]").change(function()
+        {
+            $("[name=cardCode]").val("");
+            $("[name=cardId]").val("");
+        })
 
         loadTable();
     });
@@ -309,11 +313,7 @@
         };
         $.table.init(options);
     }
-    $("[name=peopleType]").change(function()
-    {
-        $("[name=cardCode]").val("");
-        $("[name=cardId]").val("");
-    })
+
 </script>
 <script th:inline="javascript">
     function getlocker() {

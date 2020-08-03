@@ -1,6 +1,7 @@
 package com.jeethink.system.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import com.jeethink.system.domain.SysUser;
 
@@ -93,6 +94,11 @@ public interface SysUserMapper
      * @return 结果
      */
     public int updateUser(SysUser user);
+
+    /**
+     * 更新用户的使用卡号及id为空
+     * */
+    public int updatecardnull(String userId);
 
     /**
      * 新增用户信息

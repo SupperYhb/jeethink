@@ -36,7 +36,7 @@
                 <a class="btn btn-warning" onclick="$.table.exportExcel()" shiro:hasPermission="basicInfo:card:export">
                     <i class="fa fa-download"></i> 导出
                 </a>
-                <a class="btn btn-success" onclick="returnCard()">
+                <a class="btn btn-success" onclick="returnCard()"shiro:hasPermission="basicInfo:card:returncard">
                     <i class="fa fa-plus"></i> 还卡
                 </a>
             </div>
@@ -104,29 +104,35 @@
         });
         function returnCard()
         {
+            var data=$("#" + table.options.id).bootstrapTable('getSelections');
+            if(data.length>0) {
 
-            layer.open({
-                type: 2,
-                area: ['500px', '500px'],
-                fix: false,
-                //不固定
-                maxmin: true,
-                shade: 0.3,
-                title: '还卡',
-                content: "/basicInfo/card/returnform",
-                btn: ['确定', '关闭'],
-                // 弹层外区域关闭
-                shadeClose: true,
-                yes: function(index,layero){
-                    //  debugger
-                    var iframeWin = layero.find('iframe')[0];
-                    var str= iframeWin.contentWindow.submitHandler(index, layero);
-                    layer.close(index);
-                },
-                cancel: function(index) {
-                    return true;
-                }
-            });
+                layer.open({
+                    type: 2,
+                    area: ['500px', '500px'],
+                    fix: false,
+                    //不固定
+                    maxmin: true,
+                    shade: 0.3,
+                    title: '还卡',
+                    content: "/basicInfo/card/returnform",
+                    btn: ['确定', '关闭'],
+                    // 弹层外区域关闭
+                    shadeClose: true,
+                    yes: function (index, layero) {
+                        //  debugger
+                        var iframeWin = layero.find('iframe')[0];
+                        var str = iframeWin.contentWindow.submitHandler(index, layero);
+                        layer.close(index);
+                        $.table.search();
+                    },
+                    cancel: function (index) {
+                        return true;
+                    }
+                });
+            }else{
+                $.modal.msg("请选择要归还的卡",modal_status.WARNING);
+            }
         }
     </script>
 </body>

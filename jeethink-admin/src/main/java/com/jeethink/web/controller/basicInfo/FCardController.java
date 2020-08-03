@@ -1,6 +1,8 @@
 package com.jeethink.web.controller.basicInfo;
 
 import java.util.List;
+
+import com.jeethink.framework.util.ShiroUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -50,6 +52,11 @@ public class FCardController extends BaseController
     public TableDataInfo list(FCard fCard)
     {
         startPage();
+        String type=ShiroUtils.getType();
+        if("1".equals(type))
+        {
+            fCard.setfUserid(ShiroUtils.getLoginName());
+        }
         List<FCard> list = fCardService.selectFCardList(fCard);
         return getDataTable(list);
     }
@@ -149,13 +156,13 @@ public class FCardController extends BaseController
     /**
      * 修改保存卡
      */
-    @RequiresPermissions("basicInfo:card:edit")
+    //@RequiresPermissions("basicInfo:card:edit")
     @Log(title = "卡", businessType = BusinessType.UPDATE)
     @PostMapping("/edit")
     @ResponseBody
-    public AjaxResult editSave(FCard fCard)
+    public AjaxResult editSave(FCard fCard,String reset)
     {
-        return toAjax(fCardService.updateFCard(fCard));
+        return toAjax(fCardService.updateFCard(fCard,reset));
     }
 
     /**

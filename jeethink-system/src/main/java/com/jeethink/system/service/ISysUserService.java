@@ -1,6 +1,7 @@
 package com.jeethink.system.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.jeethink.system.domain.SysUser;
 import com.jeethink.system.domain.SysUserRole;
@@ -122,6 +123,10 @@ public interface ISysUserService
      */
     public int updateUser(SysUser user);
 
+    /**
+     * 更新用户的使用卡号及id为空
+     * */
+    public int updatecardnull(String userId);
     /**
      * 修改用户详细信息
      * 

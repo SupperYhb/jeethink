@@ -160,7 +160,6 @@
          });
         $("[name=peopleType]").change(function()
         {
-            debugger
             $("[name=cardCode]").val("");
             $("[name=cardId]").val("");
         })
@@ -169,7 +168,7 @@
     function searce()
     {
         debugger
-        var peopleType=$("#peopleTypes").val();
+        var peopleType=$("#peopleType").val();
         if(peopleType=="0")
         {
             if($("[name=policeCode]").val()!="")

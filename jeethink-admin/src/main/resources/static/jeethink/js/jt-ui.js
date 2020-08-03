@@ -70,7 +70,6 @@ var table = {
         		    queryParams: $.table.queryParams,
         		    rowStyle: {},
         		};
-            	debugger
             	var options = $.extend(defaults, options);
             	table.options = options;
             	table.config[options.id] = options;
@@ -766,7 +765,6 @@ var table = {
                 if ($.common.isEmpty(height)) {
                 	height = ($(window).height() - 50);
                 }
-                debugger
                 if ($.common.isEmpty(callback)) {
                     callback = function(index, layero) {
                         var iframeWin = layero.find('iframe')[0];

@@ -120,7 +120,7 @@ public class FCasesController extends BaseController
     {
         peopleType=peopleType.length()>2?peopleType.substring(0,1):peopleType;
         String msg=fCasesService.insertFCases(fCases,peopleType);
-        return msg.isEmpty()?success("打开成功"):error("打开柜门失败");
+        return success("");
     }
 
     /**

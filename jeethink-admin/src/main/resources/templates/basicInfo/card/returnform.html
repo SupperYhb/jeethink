@@ -30,7 +30,8 @@
             fState:0,
             fUserid:'',
             fUsername:'',
-            fCardid:cardId
+            fCardid:cardId,
+            reset:1
         };
             $.operate.save(prefix + "/edit", data);
     }
@@ -51,7 +52,7 @@
                     type : "POST",
                     url : ctx + "basicInfo/card/findCard",
                     data : {
-                        "fCardcode": code,
+                        "fCardcode": code
                     },
                     async : false,
                     error : function(request) {

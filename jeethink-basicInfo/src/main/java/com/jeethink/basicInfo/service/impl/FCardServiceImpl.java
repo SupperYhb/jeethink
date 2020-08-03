@@ -1,10 +1,15 @@
 package com.jeethink.basicInfo.service.impl;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.jeethink.common.extend.createId;
 import com.jeethink.framework.util.ShiroUtils;
+import com.jeethink.system.domain.SysUser;
+import com.jeethink.system.mapper.SysUserMapper;
+import com.jeethink.system.service.impl.SysUserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.jeethink.basicInfo.mapper.FCardMapper;
@@ -23,6 +28,8 @@ public class FCardServiceImpl implements IFCardService
 {
     @Autowired
     private FCardMapper fCardMapper;
+    @Autowired
+    private SysUserServiceImpl sysUserService;
 
     /**
      * 查询卡
@@ -87,11 +94,18 @@ public class FCardServiceImpl implements IFCardService
      * @return 结果
      */
     @Override
-    public int updateFCard(FCard fCard)
+    public int updateFCard(FCard fCard,String reset)
     {
         if("0".equals(fCard.getfState())) {
             fCard.setfUsername("");
             fCard.setfUserid("");
+        }
+        if(!reset.isEmpty()) {
+            FCard card = fCardMapper.selectFCardById(fCard.getfCardid());
+            SysUser finduserparam = new SysUser();
+            finduserparam.setLoginName(card.getfUserid());
+            SysUser user = sysUserService.selectUserList(finduserparam).get(0);
+            sysUserService.updatecardnull(user.getUserId().toString());
         }
         return fCardMapper.updateFCard(fCard);
     }
