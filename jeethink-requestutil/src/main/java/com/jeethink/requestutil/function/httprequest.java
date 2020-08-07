@@ -54,15 +54,6 @@ public class httprequest {
        String obj= HttpUtils.sendGet(caseurl+"/dams/casePolices/page","currentPage=0&pageSize=10&caseName="+caseName+"&caseNumber="+caseNumber+"&policeCode="+policeCode,"",ApiToken);
        if(!obj.isEmpty()) {
            casetotalentity entity = JSON.parseObject(obj, casetotalentity.class);
-           int i = 0;
-           for (kdcaseentity data : entity.getList()
-           ) {
-               data.setMainPoliceCode("084141");
-               data.setMainPoliceName("尚洪涛");
-               data.setAssistPoliceCode("09278" + i);
-               data.setAssistPoliceName("白书辉");
-               i++;
-           }
            return entity.getList();
        }else{
            return new ArrayList<kdcaseentity>();

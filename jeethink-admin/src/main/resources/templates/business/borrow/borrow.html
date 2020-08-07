@@ -103,9 +103,9 @@
                     formatter:function (value,row,index) {
                         if(row.fState=="0")
                         {
-                            return "<span class=\"btn btn-danger\">未存放</span>";
+                            return "<span class=\"btn btn-danger\">未取出</span>";
                         }else{
-                            return "<span class=\"btn btn-info\">已存放</span>";
+                            return "<span class=\"btn btn-info\">已取出</span>";
                         }
                     }
                 },
@@ -179,11 +179,19 @@
                     },
                     {
                         field: 'fPolice1id',
-                        title: '民警编号'
+                        title: '主办民警编号'
                     },
                     {
                         field: 'fPolice1name',
-                        title: '民警名称'
+                        title: '主办民警名称'
+                    },
+                    {
+                        field: 'fPolice2id',
+                        title: '辅办民警编号'
+                    },
+                    {
+                        field: 'fPolice2name',
+                        title: '辅办民警名称'
                     },
                     {
                         field: 'fDepartmentid',
@@ -196,14 +204,6 @@
                     {
                         field: 'fPositioncode',
                         title: '货位编号'
-                    },
-                    {
-                        field: 'fCriminalcode',
-                        title: '嫌疑人编号'
-                    },
-                    {
-                        field: 'fCriminalname',
-                        title: '嫌疑人名称'
                     },
                     {
                         field: 'fCrimeaddress',

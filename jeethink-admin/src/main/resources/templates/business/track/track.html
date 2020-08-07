@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('案卷轨迹列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <label>案卷编号：</label>
+                                <input type="text" name="fCasecode"/>
+                            </li>
+
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-success" onclick="ckecktrack()" shiro:hasPermission="business:track:checktrack">
+                    <i class="fa fa-plus"></i> 查看轨迹
+                </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('business:track:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('business:track:remove')}]];
+        var prefix = ctx + "business/track";
+
+        $(function() {
+            var options = {
+                url: "/business/cases/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "案卷轨迹",
+                columns: [{
+                    checkbox: true
+                },
+                    {
+                        field: 'fCasecode',
+                        title: '案件编号'
+                    },
+                    {
+                        field: 'fCasename',
+                        title: '案件名称'
+                    },
+                    {
+                        field: 'fCasebriefdetail',
+                        title: '简要案情'
+                    },
+                    {
+                        field: 'fPutdate',
+                        title: '立案日期'
+                    },
+                    {
+                        field: 'fPolice1id',
+                        title: '主办民警编号'
+                    },
+                    {
+                        field: 'fPolice1name',
+                        title: '主办民警名称'
+                    },
+                    {
+                        field: 'fPolice2id',
+                        title: '辅办民警编号'
+                    },
+                    {
+                        field: 'fPolice2name',
+                        title: '辅办民警名称'
+                    },
+                    {
+                        field: 'fDepartmentid',
+                        title: '办案单位编号'
+                    },
+                    {
+                        field: 'fLockername',
+                        title: '卷宗柜名称'
+                    },
+                    {
+                        field: 'fPositioncode',
+                        title: '货位编号'
+                    },
+                    {
+                        field: 'fCrimeaddress',
+                        title: '案发地址'
+                    },
+                    {
+                        field: 'fState',
+                        title: '状态',
+                        formatter:function(cellvalue,row,index)
+                        {
+                            if(row.fState=="1")
+                            {
+                                return"入库";
+                            }else if(row.fState=="2")
+                            {
+                                return "取出";
+                            }
+                        }
+                    }]
+            };
+            $.table.init(options);
+        });
+        //查看轨迹
+        function ckecktrack()
+        {
+            var data=$("#" + table.options.id).bootstrapTable('getSelections');
+            if(data.length>0)
+            {
+
+            }else{
+                $.modal.msg("请选择要查看轨迹的案卷信息",modal_status.WARNING);
+            }
+        }
+    </script>
+</body>
+</html>

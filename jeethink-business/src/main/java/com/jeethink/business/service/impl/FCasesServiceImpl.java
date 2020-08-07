@@ -13,6 +13,7 @@ import com.jeethink.basicInfo.service.IFLockerService;
 import com.jeethink.basicInfo.service.IFPositionService;
 import com.jeethink.business.domain.FDeposit;
 import com.jeethink.business.domain.FDepositdetail;
+import com.jeethink.business.domain.FTrack;
 import com.jeethink.business.service.IFDepositService;
 import com.jeethink.business.service.IFDepositdetailService;
 import com.jeethink.common.extend.codeType;
@@ -58,6 +59,8 @@ public class FCasesServiceImpl implements IFCasesService
     private IFDepositdetailService ifDepositdetailService;
     @Autowired
     private SysUserRoleMapper userRoleMapper;
+    @Autowired
+    private FTrackServiceImpl fTrackService;
 
     /**
      * 查询案卷
@@ -194,8 +197,10 @@ public class FCasesServiceImpl implements IFCasesService
             sysUserService.updateUser(user);
         }else if(userList.size()==0&&!fCases.getfPolice1id().isEmpty()){
             String source="0";
-            user.setCardid(fCases.getCardId());
-            user.setCardcode(fCases.getCardCode());
+            if("0".equals(peopleType)&&!fCases.getCardId().isEmpty()) {
+                user.setCardid(fCases.getCardId());
+                user.setCardcode(fCases.getCardCode());
+            }
             user.setLoginName(fCases.getfPolice1id());
             user.setUserName(fCases.getfPolice1name());
             user.setSalt(ShiroUtils.randomSalt());
@@ -230,8 +235,10 @@ public class FCasesServiceImpl implements IFCasesService
             user1.setCardcode(fCases.getCardCode());
             sysUserService.updateUser(user1);
         }else if(userList1.size()==0&&!fCases.getfPolice2id().isEmpty()){
-            user1.setCardid(fCases.getCardId());
-            user1.setCardcode(fCases.getCardCode());
+            if("1".equals(peopleType)&&!fCases.getCardId().isEmpty()) {
+                user1.setCardid(fCases.getCardId());
+                user1.setCardcode(fCases.getCardCode());
+            }
             user1.setLoginName(fCases.getfPolice2id());
             user1.setUserName(fCases.getfPolice2name());
             user1.setSalt(ShiroUtils.randomSalt());
@@ -252,6 +259,17 @@ public class FCasesServiceImpl implements IFCasesService
             userRolesList1.add(userRole1);
             userRoleMapper.batchUserRole(userRolesList1);
         }
+        //添加案卷轨迹
+        FTrack fTrack=new FTrack();
+        fTrack.setfTrackid(createId.getID());
+        fTrack.setfCasecode(detail.getfCasecode());
+        fTrack.setfBusinesstype(codeType.In.getName());
+        fTrack.setfBusinessid(fDeposit.getfDepositid());
+        fTrack.setfBusinessdetailid(detail.getfDepositdetailid());
+        fTrack.setfCreateuserid(ShiroUtils.getLoginName());
+        fTrack.setfCreateusername(ShiroUtils.getSysUser().getUserName());
+        fTrack.setfCreatedate(new Date());
+        fTrackService.insertFTrack(fTrack);
         String userName=peopleType=="0"?fCases.getfPolice1id():fCases.getfPolice2id();
         //存入民警信息
         fCasesMapper.insertFCases(fCases);

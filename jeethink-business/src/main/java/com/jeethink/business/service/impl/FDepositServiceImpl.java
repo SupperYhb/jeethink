@@ -14,6 +14,7 @@ import com.jeethink.basicInfo.service.IFLockerService;
 import com.jeethink.basicInfo.service.IFPositionService;
 import com.jeethink.business.domain.FCases;
 import com.jeethink.business.domain.FDepositdetail;
+import com.jeethink.business.domain.FTrack;
 import com.jeethink.business.mapper.FCasesMapper;
 import com.jeethink.business.service.IFCasesService;
 import com.jeethink.business.service.IFDepositdetailService;
@@ -61,6 +62,8 @@ public class FDepositServiceImpl implements IFDepositService
     private IFDepositdetailService ifDepositdetailService;
     @Autowired
     private SysUserRoleMapper userRoleMapper;
+    @Autowired
+    private FTrackServiceImpl fTrackService;
 
     /**
      * 查询存放案卷
@@ -178,7 +181,7 @@ public class FDepositServiceImpl implements IFDepositService
                 sysUserService.updateUser(user);
             }else if(userList.size()==0){
                 String source="1";
-                if(!cardId.isEmpty()) {
+                if(!cardId.isEmpty()&&"0".equals(peopleType)) {
                     user.setCardid(cardId);
                     user.setCardcode(cardCode);
                 }
@@ -219,7 +222,7 @@ public class FDepositServiceImpl implements IFDepositService
                     sysUserService.updateUser(user1);
                 }else if(userList1.size()==1){
                     String source="1";
-                    if(!cardId.isEmpty()) {
+                    if(!cardId.isEmpty()&&"1".equals(peopleType)) {
                         user1.setCardid(cardId);
                         user1.setCardcode(cardCode);
                     }
@@ -243,6 +246,17 @@ public class FDepositServiceImpl implements IFDepositService
                     userRoleMapper.batchUserRole(userRolesList1);
                 }
             }
+            //添加轨迹
+            FTrack fTrack=new FTrack();
+            fTrack.setfTrackid(createId.getID());
+            fTrack.setfCasecode(detail.getfCasecode());
+            fTrack.setfBusinesstype(codeType.LQIn.getName());
+            fTrack.setfBusinessid(fDeposit.getfDepositid());
+            fTrack.setfBusinessdetailid(detail.getfDepositdetailid());
+            fTrack.setfCreateuserid(ShiroUtils.getLoginName());
+            fTrack.setfCreateusername(ShiroUtils.getSysUser().getUserName());
+            fTrack.setfCreatedate(new Date());
+            fTrackService.insertFTrack(fTrack);
         }
         String userName=peopleType=="0"?list.get(0).getMainPoliceName():list.get(0).getAssistPoliceName();
         //修改卡
@@ -405,6 +419,17 @@ public class FDepositServiceImpl implements IFDepositService
                 userRolesList1.add(userRole1);
                 userRoleMapper.batchUserRole(userRolesList1);
             }
+            //添加轨迹
+            FTrack fTrack=new FTrack();
+            fTrack.setfTrackid(createId.getID());
+            fTrack.setfCasecode(detail.getfCasecode());
+            fTrack.setfBusinesstype(codeType.GiveBack.getName());
+            fTrack.setfBusinessid(fDeposit.getfDepositid());
+            fTrack.setfBusinessdetailid(detail.getfDepositdetailid());
+            fTrack.setfCreateuserid(ShiroUtils.getLoginName());
+            fTrack.setfCreateusername(ShiroUtils.getSysUser().getUserName());
+            fTrack.setfCreatedate(new Date());
+            fTrackService.insertFTrack(fTrack);
         }
         String userName=peopleType=="0"?list.get(0).getfPolice1id():list.get(0).getfPolice2id();
         //修改卡

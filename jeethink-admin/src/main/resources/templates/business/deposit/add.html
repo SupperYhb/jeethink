@@ -15,7 +15,7 @@
                                 <form id="formId">
                                     <div class="select-list">
                                         <ul>
-                                            <li>
+                                            <li id="police">
                                                 <label>警号：</label>
                                                 <input type="text" name="policeCode" />
                                                 <input id="peopleType" th:value="${peopleType}" style="display:none">
@@ -114,6 +114,9 @@
     var prefix = ctx + "business/deposit";
 
     $(document).ready(function () {
+        if($("#peopleType").val()!="0"){
+            $("#police").hide();
+        }
 
          $("#wizard").steps({
              bodyTag:"fieldset", onStepChanging: function (event, currentIndex, newIndex){
@@ -173,10 +176,12 @@
         {
             if($("[name=policeCode]").val()!="")
             {
-                $.table.search()
+                $.table.search();
             }else{
                 $.modal.msg("请输入警号并查询",modal_status.FAIL);
             }
+        }else{
+            $.table.search();
         }
     }
     function openSwipingForm(){

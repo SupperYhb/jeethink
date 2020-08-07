@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeethink.business.mapper.FTrackMapper">
+    
+    <resultMap type="FTrack" id="FTrackResult">
+        <result property="fTrackid"    column="f_trackid"    />
+        <result property="fCasecode"    column="f_casecode"    />
+        <result property="fBusinesstype"    column="f_businesstype"    />
+        <result property="fBusinessid"    column="f_businessid"    />
+        <result property="fBusinessdetailid"    column="f_businessdetailid"    />
+        <result property="fCreateuserid"    column="f_createuserid"    />
+        <result property="fCreateusername"    column="f_createusername"    />
+        <result property="fCreatedate"    column="f_createdate"    />
+    </resultMap>
+
+    <sql id="selectFTrackVo">
+        select f_trackid, f_casecode, f_businesstype, f_businessid, f_businessdetailid, f_createuserid, f_createusername, f_createdate from f_track
+    </sql>
+
+    <select id="selectFTrackList" parameterType="FTrack" resultMap="FTrackResult">
+        <include refid="selectFTrackVo"/>
+        <where>  
+            <if test="fCasecode != null  and fCasecode != ''"> and f_casecode = #{fCasecode}</if>
+            <if test="fBusinesstype != null  and fBusinesstype != ''"> and f_businesstype = #{fBusinesstype}</if>
+            <if test="fBusinessid != null  and fBusinessid != ''"> and f_businessid = #{fBusinessid}</if>
+            <if test="fBusinessdetailid != null  and fBusinessdetailid != ''"> and f_businessdetailid = #{fBusinessdetailid}</if>
+            <if test="fCreateuserid != null  and fCreateuserid != ''"> and f_createuserid = #{fCreateuserid}</if>
+            <if test="fCreateusername != null  and fCreateusername != ''"> and f_createusername like concat('%', #{fCreateusername}, '%')</if>
+            <if test="fCreatedate != null "> and f_createdate = #{fCreatedate}</if>
+        </where>
+    </select>
+    
+    <select id="selectFTrackById" parameterType="String" resultMap="FTrackResult">
+        <include refid="selectFTrackVo"/>
+        where f_trackid = #{fTrackid}
+    </select>
+        
+    <insert id="insertFTrack" parameterType="FTrack">
+        insert into f_track
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="fTrackid != null">f_trackid,</if>
+            <if test="fCasecode != null">f_casecode,</if>
+            <if test="fBusinesstype != null">f_businesstype,</if>
+            <if test="fBusinessid != null">f_businessid,</if>
+            <if test="fBusinessdetailid != null">f_businessdetailid,</if>
+            <if test="fCreateuserid != null">f_createuserid,</if>
+            <if test="fCreateusername != null">f_createusername,</if>
+            <if test="fCreatedate != null">f_createdate,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="fTrackid != null">#{fTrackid},</if>
+            <if test="fCasecode != null">#{fCasecode},</if>
+            <if test="fBusinesstype != null">#{fBusinesstype},</if>
+            <if test="fBusinessid != null">#{fBusinessid},</if>
+            <if test="fBusinessdetailid != null">#{fBusinessdetailid},</if>
+            <if test="fCreateuserid != null">#{fCreateuserid},</if>
+            <if test="fCreateusername != null">#{fCreateusername},</if>
+            <if test="fCreatedate != null">#{fCreatedate},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFTrack" parameterType="FTrack">
+        update f_track
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="fCasecode != null">f_casecode = #{fCasecode},</if>
+            <if test="fBusinesstype != null">f_businesstype = #{fBusinesstype},</if>
+            <if test="fBusinessid != null">f_businessid = #{fBusinessid},</if>
+            <if test="fBusinessdetailid != null">f_businessdetailid = #{fBusinessdetailid},</if>
+            <if test="fCreateuserid != null">f_createuserid = #{fCreateuserid},</if>
+            <if test="fCreateusername != null">f_createusername = #{fCreateusername},</if>
+            <if test="fCreatedate != null">f_createdate = #{fCreatedate},</if>
+        </trim>
+        where f_trackid = #{fTrackid}
+    </update>
+
+    <delete id="deleteFTrackById" parameterType="String">
+        delete from f_track where f_trackid = #{fTrackid}
+    </delete>
+
+    <delete id="deleteFTrackByIds" parameterType="String">
+        delete from f_track where f_trackid in 
+        <foreach item="fTrackid" collection="array" open="(" separator="," close=")">
+            #{fTrackid}
+        </foreach>
+    </delete>
+
+</mapper>

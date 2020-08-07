@@ -13,6 +13,7 @@ import com.jeethink.basicInfo.service.IFLockerService;
 import com.jeethink.basicInfo.service.IFPositionService;
 import com.jeethink.business.domain.FBorrowdetail;
 import com.jeethink.business.domain.FCases;
+import com.jeethink.business.domain.FTrack;
 import com.jeethink.business.service.IFBorrowdetailService;
 import com.jeethink.business.service.IFCasesService;
 import com.jeethink.common.extend.codeType;
@@ -58,6 +59,8 @@ public class FBorrowServiceImpl implements IFBorrowService
     private IFLockerService fLockerService;
     @Autowired
     private IFPositionService fPositionService;
+    @Autowired
+    private FTrackServiceImpl fTrackService;
     /**
      * 查询借阅
      * 
@@ -123,7 +126,7 @@ public class FBorrowServiceImpl implements IFBorrowService
                 SysUserService.updateUser(user);
             }else if(userList.size()==0){
                 String source="1";
-                if(!cardId.isEmpty()) {
+                if(!cardId.isEmpty()&&"0".equals(peopleType)) {
                     user.setCardid(cardId);
                     user.setCardcode(cardCode);
                 }
@@ -162,7 +165,7 @@ public class FBorrowServiceImpl implements IFBorrowService
                 SysUserService.updateUser(user1);
             }else if(userList1.size()==0){
                 String source="1";
-                if(!cardId.isEmpty()) {
+                if(!cardId.isEmpty()&&"1".equals(peopleType)) {
                     user1.setCardid(cardId);
                     user1.setCardcode(cardCode);
                 }
@@ -186,18 +189,7 @@ public class FBorrowServiceImpl implements IFBorrowService
                 userRoleMapper.batchUserRole(userRolesList1);
             }
 
-            //修改卡
-            if(!cardId.isEmpty()){
-                borrow.setfType(1);
-                FCard card=new FCard();
-                card.setfCardid(cardId);
-                card.setfUserid(peopleType.equals("0")? entity.getfPolice1id():entity.getfPolice2id());
-                card.setfUsername(peopleType.equals("0")? entity.getfPolice1name():entity.getfPolice2name());
-                card.setfState("1");
-                fCardService.updateFCard(card,"");
-            }else{
-                borrow.setfType(0);
-            }
+
             FBorrowdetail detail=new FBorrowdetail();
             detail.setfBorrowdetailid(createId.getID());
             detail.setfBorrowid(borrow.getfBorrowid());
@@ -205,6 +197,29 @@ public class FBorrowServiceImpl implements IFBorrowService
             detail.setfState(1);
             detail.setCreatedate(new Date());
             fBorrowdetailService.insertFBorrowdetail(detail);
+            //添加轨迹
+            FTrack fTrack=new FTrack();
+            fTrack.setfTrackid(createId.getID());
+            fTrack.setfCasecode(detail.getfCasecode());
+            fTrack.setfBusinesstype(codeType.Out.getName());
+            fTrack.setfBusinessid(borrow.getfBorrowid());
+            fTrack.setfBusinessdetailid(detail.getfBorrowdetailid());
+            fTrack.setfCreateuserid(ShiroUtils.getLoginName());
+            fTrack.setfCreateusername(ShiroUtils.getSysUser().getUserName());
+            fTrack.setfCreatedate(new Date());
+            fTrackService.insertFTrack(fTrack);
+        }
+        //修改卡
+        if(!cardId.isEmpty()){
+            borrow.setfType(1);
+            FCard card=new FCard();
+            card.setfCardid(cardId);
+            card.setfUserid(peopleType.equals("0")? list.get(0).getfPolice1id():list.get(0).getfPolice2id());
+            card.setfUsername(peopleType.equals("0")? list.get(0).getfPolice1name():list.get(0).getfPolice2name());
+            card.setfState("1");
+            fCardService.updateFCard(card,"");
+        }else{
+            borrow.setfType(0);
         }
         String userName=peopleType=="0"?list.get(0).getfPolice1id():list.get(0).getfPolice2id();
         //发送命令
