@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('查看案卷轨迹')" />
+    <th:block th:include="include :: jointjs-css" />
+</head>
+<style type="text/css">
+    #paper {
+        margin: 5px;
+        border: 1px solid #ccc;
+        height: 300px;
+        background: #6764A7;
+    }
+</style>
+<body class="white-bg">
+    <div>
+        <div id="paper" class="paper"></div>
+    </div>
+    <input th:value="${FtrackId}" id="FtrackId" hidden="hidden" >
+    <script th:inline="javascript">
+
+        //扩展元素
+        var ElementView = joint.dia.ElementView.extend({
+            pointerdown: function () {
+                this._click = true;
+                joint.dia.ElementView.prototype.pointerdown.apply(this, arguments);
+            },
+            pointermove: function (evt, x, y) {
+                this._click = false;
+                //joint.dia.ElementView.prototype.pointermove.apply(this, arguments);
+            },
+            pointerup: function (evt, x, y) {
+                if (this._click) {
+                    this.notify('cell:click', evt, x, y);
+                } else {
+                    joint.dia.ElementView.prototype.pointerup.apply(this, arguments);
+                }
+            }
+        });
+
+        //扩展连线
+        var LinkView = joint.dia.LinkView.extend({
+            addVertex: function (evt, x, y) { },
+            removeVertex: function (endType) { },
+            pointerdown: function (evt, x, y) { }
+        });
+
+        //定义形状
+        var State = function (x, y, shape, background, id, text, graph) {
+            var cell;
+            if (shape == 'rect') {
+                cell = new joint.shapes.basic.Rect({
+                    position: { x: x, y: y },
+                    size: { width: 100, height: 72 },
+                    id: id,
+                    attrs: {
+                        rect: {
+                            fill: {
+                                type: 'linearGradient',
+                                stops: [
+                                    { offset: '0%', color: background }, //渐变开始
+                                    { offset: '100%', color: '#FF9966' } //渐变结束
+                                ],
+                                attrs: { x1: '0%', y1: '0%', x2: '0%', y2: '100%' }
+                            },
+                            style: { cursor: 'pointer' },
+                            stroke: background, //边框颜色
+                            'stroke-width': 1   //边框大小
+                        },
+                        text: { text: text, style: { cursor: 'pointer' } } //显示文字
+                    }
+                });
+            } else if (shape == 'ellipse') {
+                cell = new joint.shapes.basic.Ellipse({
+                    position: { x: x, y: y }, //坐标
+                    size: { width: 140, height: 40 },
+                    id: id,
+                    attrs: {
+                        ellipse: {
+                            fill: {
+                                type: 'linearGradient',
+                                stops: [
+                                    { offset: '0%', color: background },
+                                    { offset: '100%', color: '#ffffff' }
+                                ],
+                                attrs: { x1: '0%', y1: '0%', x2: '0%', y2: '100%' }
+                            },
+                            stroke: background,
+                            'stroke-width': 1
+                        },
+                        text: { text: text }
+                    }
+                });
+            }
+            graph.addCell(cell);
+            return cell;
+        };
+
+        //定义连线
+        var Link = function (source, target, label, graph) {
+            var cell = new joint.dia.Link({
+                source: { id: source.id },
+                target: { id: target.id },
+                labels: [
+                    {
+                        position: 0.5,
+                        attrs: {
+                            text: {
+                                text: label || '',
+                                'font-weight': 'bold'
+                            }
+                        }
+                    }
+                ],
+                router: { name: 'manhattan' },    //设置连线弯曲样式 manhattan直角
+                toolMarkup: '<g></g>', // 去掉tool，包括红色x
+                arrowheadMarkup: "<g></g>", //去掉两头的箭头
+                attrs: {
+                    '.connection': {
+                        stroke: '#FE773C',
+                        'stroke-width': 2
+                    },
+                    '.marker-target': {
+                        fill: '#FE773C',    //箭头颜色
+                        d: 'M 10 0 L 0 5 L 10 10 z' //箭头样式
+                    }
+                }
+            });
+
+            graph.addCell(cell);
+            return cell;
+        }
+
+        //格式化节点文本
+        function nodeText() {
+            var txtArray = [];
+            for (var i = 0; i < arguments.length; i++) {
+                txtArray.push(joint.util.breakText(arguments[i], { width: 100 }));
+            }
+
+            var result = txtArray.join('\n');
+            return result;
+        }
+
+        //添加节点
+        joint.dia.Graph.prototype.addNode = function (x, y, id, text) {
+            var node = State(x, y, 'rect', "#f7a07b", id, text, this);
+            return node;
+        }
+
+        //添加连线
+        joint.dia.Graph.prototype.addLink = function (e1, e2) {
+            var link = Link(e1, e2, "", this);
+            return link;
+        }
+
+        //创建画布
+        joint.dia.Graph.prototype.createPaper = function () {
+
+            var paper = new joint.dia.Paper({
+                el: $('#paper'),
+                width: $('#paper').parent().width() - 10,
+                height: $('#paper').parent().height(),
+                gridSize: 1,
+                model: this,
+                clickThreshold: 1,
+                background: {
+                    color: '#6764A7',
+                    //image: 'jointjs-logo.png',
+                    repeat: 'watermark',
+                    opacity: 0.3
+                },
+                elementView: ElementView,
+                linkView: LinkView
+            });
+            joint.dia.Graph.paper = paper;
+            this.paper = paper;
+            paper.on('cell:pointerclick',
+                function (cellView, evt, x, y) {
+                    debugger
+                    var id = cellView.model.id;
+                    $.ajax({
+                        url: '/DossierManage/Trajectory/GetVideoByBusinessId',
+                        type: "get",
+                        dataType: "json",
+                        cache: false,
+                        data: { Id:id},
+                        success: function (data) {
+                            debugger
+                            if (data.percentage == "")
+                            {
+                                dialogMsg('当前节点不存在视频！', 0);
+                            } else if (data.percentage == "100")
+                            {
+                                dialogOpen({
+                                    id: "Form",
+                                    title: '查看视频',
+                                    url: '/DossierManage/Trajectory/VideoForm?Url=' + data.url,
+                                    width: '803px',
+                                    height: '750px',
+                                    btn: null
+                                });
+                            } else {
+                                dialogMsg('视频下载中，'+data.percentage+"%", 0);
+                            }
+                        },
+                        error: function (XMLHttpRequest, textStatus, errorThrown) {
+                            isLoaded = -1;
+                        },
+                    });
+                });
+
+
+            paper.on('cell:mouseenter',
+                function (cellView, evt) {
+                }
+            );
+
+            paper.on('cell:mouseleave ',
+                function (cellView, evt) {
+
+                }
+            );
+
+            return paper;
+        }
+
+        joint.dia.Graph.prototype.clearTrackNode = function () {
+            this.trackNodes = [];
+            this.trackRow = 0;
+            this.trackCol = 0;
+        }
+        //添加节点及连线
+        joint.dia.Graph.prototype.batchAddNode = function (id, text) {
+            if (!this.trackNodes) {
+                this.trackNodes = [];
+            }
+            if (this.trackRow == undefined) {
+                this.trackRow = 0;
+            }
+            if (this.trackCol == undefined) {
+                this.trackCol = 0;
+            }
+            var me = this;
+            me.leftPad = 60;//左侧padding
+            me.nodeWidth = 100;
+
+            this.getX = function () {
+                var w = this.paper.getArea().width;
+                var x = 0;
+
+                if ((me.trackRow + 1) % 2 == 1) {
+                    //奇数行，从左往右排列
+                    ++me.trackCol;
+                    if ((me.trackCol - 1) * (me.nodeWidth + 50) > (w - me.nodeWidth - me.leftPad)) {
+                        //换行
+                        ++me.trackRow;
+                        --me.trackCol;
+                    }
+
+                } else {
+                    //偶数行，从右往左排列
+                    --me.trackCol;
+                    if ((me.trackCol - 1) * (me.nodeWidth + 50 + me.leftPad) < 0) {
+                        ++me.trackRow;
+                        ++me.trackCol;
+                    }
+                }
+
+                x = (me.trackCol - 1) * (me.nodeWidth + 50) + me.leftPad;
+                return x;
+            };
+
+            this.getY = function () {
+                var y = (me.trackRow) * 30 + (me.trackRow + 1) * 50;
+
+                return y;
+            }
+
+            debugger
+            var x = this.getX();
+            var y = this.getY();
+
+            var lastNode = this.addNode(x, y, id, text);
+            this.trackNodes.push(lastNode);
+
+            if (this.trackNodes.length > 1) {
+                var prevNode = this.trackNodes[this.trackNodes.length - 2];
+                this.addLink(prevNode, lastNode);
+            }
+        }
+
+        //显示指定案卷的轨迹
+        function showTrackNode(CaseCode) {
+            debugger
+            graph.clear();
+            graph.clearTrackNode();
+
+            $.ajax({
+                url: '/business/track/selectFtrackByCaseCode?caseCode=' + CaseCode,
+                type : "POST",
+                success: function (data) {
+                    debugger
+                    for (var i = 0; i < data.rows.length; i++) {
+                        var text = nodeText(data.rows[i].type,data.rows[i].fCreatedate.split(' ')[0], "操作人："+data.rows[i].fCreateusername);
+                        graph.batchAddNode(data.rows[i].fBusinessdetailid, text);
+                    }
+                },
+                error: function () {
+                    dialogAlert('获取案卷轨迹错误！', -1);
+                    graph.clear();
+                }
+            });
+        }
+        var graph = null;
+        $(function () {
+            graph = new joint.dia.Graph();//创建绘图
+            //定义画布
+            graph.createPaper();
+            var caseCode=$("#FtrackId").val();
+            showTrackNode(caseCode);
+        });
+    </script>
+</body>
+</html>

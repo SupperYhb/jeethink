@@ -46,6 +46,10 @@ public class FCard extends BaseEntity
     /** 创建时间 */
     @Excel(name = "创建时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date fCreatedate;
+    /** 案卷柜编号 */
+    private String fLockercode;
+    /** 案卷柜货位编号 */
+    private String fPositioncode;
 
     public void setfCardid(String fCardid) 
     {
@@ -118,6 +122,22 @@ public class FCard extends BaseEntity
     public Date getfCreatedate() 
     {
         return fCreatedate;
+    }
+
+    public void setfLockercode(String fLockercode) {
+        this.fLockercode = fLockercode;
+    }
+
+    public String getfLockercode() {
+        return fLockercode;
+    }
+
+    public void setfPositioncode(String fPositioncode) {
+        this.fPositioncode = fPositioncode;
+    }
+
+    public String getfPositioncode() {
+        return fPositioncode;
     }
 
     @Override

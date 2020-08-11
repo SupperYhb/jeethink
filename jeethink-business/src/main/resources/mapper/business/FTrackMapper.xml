@@ -13,6 +13,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="fCreateuserid"    column="f_createuserid"    />
         <result property="fCreateusername"    column="f_createusername"    />
         <result property="fCreatedate"    column="f_createdate"    />
+        <result property="type"    column="type"    />
     </resultMap>
 
     <sql id="selectFTrackVo">
@@ -36,7 +37,27 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectFTrackVo"/>
         where f_trackid = #{fTrackid}
     </select>
-        
+
+    <select id="selectFtrackByCaseCode" parameterType="String" resultMap="FTrackResult">
+        SELECT
+        CASE
+                f_businesstype
+                WHEN 'CR' THEN
+                '案卷存入'
+                WHEN 'QC' THEN
+                '案卷取出'
+                WHEN 'GH' THEN
+                '案卷归还'
+            END type,
+            f_businessdetailid,
+            f_casecode,
+            f_createusername,
+            f_createdate
+        FROM
+            f_track
+        WHERE
+            f_casecode = #{caseCode} order by f_createdate
+    </select>
     <insert id="insertFTrack" parameterType="FTrack">
         insert into f_track
         <trim prefix="(" suffix=")" suffixOverrides=",">

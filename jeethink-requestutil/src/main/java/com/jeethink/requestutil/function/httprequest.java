@@ -23,7 +23,7 @@ public class httprequest {
     /**
      * 柜门打开
      * */
-    private static String cupboardControl="/udms/device/cupboardControl1";
+    private static String cupboardControl="/udms/device/cupboardControl";
 
     /**
      * 刷卡柜门打开
@@ -34,6 +34,11 @@ public class httprequest {
      * 刷卡柜门打开
      * */
     private static String cases="/dams/cases/page";
+
+    /**
+     * 删除绑定
+     * */
+    private static String deleteBind="/udms/device/voucher";
     /**
      * 登录平台
      * */
@@ -79,6 +84,13 @@ public class httprequest {
         return result;
     }
 
+    /**
+     * 删除绑定
+     * */
+    public static String deleteBind(String cardCode,String lockerCode,String positionCode,String ApiToken){
+    String Result=HttpUtils.sendDeletes(url+deleteBind+"/"+cardCode+"/"+lockerCode+"/"+positionCode,ApiToken);
+    return Result;
+    }
 
 }
 

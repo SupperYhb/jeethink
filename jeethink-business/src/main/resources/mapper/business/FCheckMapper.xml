@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeethink.business.mapper.FCheckMapper">
+    
+    <resultMap type="FCheck" id="FCheckResult">
+        <result property="fCheckid"    column="f_checkid"    />
+        <result property="fName"    column="f_name"    />
+        <result property="fCode"    column="f_code"    />
+        <result property="fCreateuserid"    column="f_createuserid"    />
+        <result property="fCreateusername"    column="f_createusername"    />
+        <result property="fCreatedate"    column="f_createdate"    />
+        <result property="fLockerid"    column="f_lockerid"    />
+    </resultMap>
+
+    <sql id="selectFCheckVo">
+        select f_checkid, f_name, f_code, f_createuserid, f_createusername, f_createdate,f_lockerid from f_check
+    </sql>
+
+    <select id="selectFCheckList" parameterType="FCheck" resultMap="FCheckResult">
+        <include refid="selectFCheckVo"/>
+        <where>  
+            <if test="fName != null  and fName != ''"> and f_name like concat('%', #{fName}, '%')</if>
+            <if test="fCode != null  and fCode != ''"> and f_code = #{fCode}</if>
+            <if test="fCreateuserid != null  and fCreateuserid != ''"> and f_createuserid = #{fCreateuserid}</if>
+            <if test="fCreateusername != null  and fCreateusername != ''"> and f_createusername like concat('%', #{fCreateusername}, '%')</if>
+            <if test="fCreatedate != null "> and f_createdate = #{fCreatedate}</if>
+        </where>
+    </select>
+    
+    <select id="selectFCheckById" parameterType="String" resultMap="FCheckResult">
+        <include refid="selectFCheckVo"/>
+        where f_checkid = #{fCheckid}
+    </select>
+        
+    <insert id="insertFCheck" parameterType="FCheck">
+        insert into f_check
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="fCheckid != null">f_checkid,</if>
+            <if test="fName != null">f_name,</if>
+            <if test="fCode != null">f_code,</if>
+            <if test="fCreateuserid != null">f_createuserid,</if>
+            <if test="fCreateusername != null">f_createusername,</if>
+            <if test="fCreatedate != null">f_createdate,</if>
+            <if test="fLockerid != null">f_lockerid,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="fCheckid != null">#{fCheckid},</if>
+            <if test="fName != null">#{fName},</if>
+            <if test="fCode != null">#{fCode},</if>
+            <if test="fCreateuserid != null">#{fCreateuserid},</if>
+            <if test="fCreateusername != null">#{fCreateusername},</if>
+            <if test="fCreatedate != null">#{fCreatedate},</if>
+            <if test="fLockerid != null">#{fLockerid},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFCheck" parameterType="FCheck">
+        update f_check
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="fName != null">f_name = #{fName},</if>
+            <if test="fCode != null">f_code = #{fCode},</if>
+            <if test="fCreateuserid != null">f_createuserid = #{fCreateuserid},</if>
+            <if test="fCreateusername != null">f_createusername = #{fCreateusername},</if>
+            <if test="fCreatedate != null">f_createdate = #{fCreatedate},</if>
+        </trim>
+        where f_checkid = #{fCheckid}
+    </update>
+
+    <delete id="deleteFCheckById" parameterType="String">
+        delete from f_check where f_checkid = #{fCheckid}
+    </delete>
+
+    <delete id="deleteFCheckByIds" parameterType="String">
+        delete from f_check where f_checkid in 
+        <foreach item="fCheckid" collection="array" open="(" separator="," close=")">
+            #{fCheckid}
+        </foreach>
+    </delete>
+
+</mapper>

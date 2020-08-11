@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeethink.business.mapper.FCheckdetailMapper">
+    
+    <resultMap type="FCheckdetail" id="FCheckdetailResult">
+        <result property="fCheckdetailid"    column="f_checkdetailid"    />
+        <result property="fCheckid"    column="f_checkid"    />
+        <result property="fCasecode"    column="f_casecode"    />
+        <result property="fState"    column="f_state"    />
+        <result property="fRemark"    column="f_remark"    />
+        <result property="fCheckdate"    column="f_checkdate"    />
+    </resultMap>
+
+    <sql id="selectFCheckdetailVo">
+        select f_checkdetailid, f_checkid, f_casecode, f_state, f_remark, f_checkdate from f_checkdetail
+    </sql>
+
+    <select id="selectFCheckdetailList" parameterType="FCheckdetail" resultMap="FCheckdetailResult">
+        <include refid="selectFCheckdetailVo"/>
+        <where>  
+            <if test="fCheckid != null  and fCheckid != ''"> and f_checkid = #{fCheckid}</if>
+            <if test="fCasecode != null  and fCasecode != ''"> and f_casecode = #{fCasecode}</if>
+            <if test="fState != null "> and f_state = #{fState}</if>
+            <if test="fRemark != null  and fRemark != ''"> and f_remark = #{fRemark}</if>
+            <if test="fCheckdate != null "> and f_checkdate = #{fCheckdate}</if>
+        </where>
+    </select>
+    
+    <select id="selectFCheckdetailById" parameterType="String" resultMap="FCheckdetailResult">
+        <include refid="selectFCheckdetailVo"/>
+        where f_checkdetailid = #{fCheckdetailid}
+    </select>
+        
+    <insert id="insertFCheckdetail" parameterType="FCheckdetail">
+        insert into f_checkdetail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="fCheckdetailid != null">f_checkdetailid,</if>
+            <if test="fCheckid != null">f_checkid,</if>
+            <if test="fCasecode != null">f_casecode,</if>
+            <if test="fState != null">f_state,</if>
+            <if test="fRemark != null">f_remark,</if>
+            <if test="fCheckdate != null">f_checkdate,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="fCheckdetailid != null">#{fCheckdetailid},</if>
+            <if test="fCheckid != null">#{fCheckid},</if>
+            <if test="fCasecode != null">#{fCasecode},</if>
+            <if test="fState != null">#{fState},</if>
+            <if test="fRemark != null">#{fRemark},</if>
+            <if test="fCheckdate != null">#{fCheckdate},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFCheckdetail" parameterType="FCheckdetail">
+        update f_checkdetail
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="fCheckid != null">f_checkid = #{fCheckid},</if>
+            <if test="fCasecode != null">f_casecode = #{fCasecode},</if>
+            <if test="fState != null">f_state = #{fState},</if>
+            <if test="fRemark != null">f_remark = #{fRemark},</if>
+            <if test="fCheckdate != null">f_checkdate = #{fCheckdate},</if>
+        </trim>
+        where f_checkdetailid = #{fCheckdetailid}
+    </update>
+
+    <delete id="deleteFCheckdetailById" parameterType="String">
+        delete from f_checkdetail where f_checkdetailid = #{fCheckdetailid}
+    </delete>
+
+    <delete id="deleteFCheckdetailByIds" parameterType="String">
+        delete from f_checkdetail where f_checkdetailid in 
+        <foreach item="fCheckdetailid" collection="array" open="(" separator="," close=")">
+            #{fCheckdetailid}
+        </foreach>
+    </delete>
+
+</mapper>

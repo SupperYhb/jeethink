@@ -47,6 +47,11 @@ public class FTrack extends BaseEntity
     @Excel(name = "创建时间", width = 30, dateFormat = "yyyy-MM-dd")
     private Date fCreatedate;
 
+    /** 轨迹查询返回结果 */
+    /** 业务类型 */
+    private String type;
+
+
     public void setfTrackid(String fTrackid) 
     {
         this.fTrackid = fTrackid;
@@ -118,6 +123,14 @@ public class FTrack extends BaseEntity
     public Date getfCreatedate() 
     {
         return fCreatedate;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public String getType() {
+        return type;
     }
 
     @Override

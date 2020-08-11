@@ -20,7 +20,12 @@ public enum codeType {
     /**
      * 归还
      * */
-    GiveBack(3,"GH");
+    GiveBack(3,"GH"),
+
+    /**
+     * 盘点
+     * */
+    Check(10,"PD");
 
     private final int id;
     private final String name;

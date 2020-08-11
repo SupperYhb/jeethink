@@ -25,6 +25,10 @@
             <groupId>com.jeethink</groupId>
             <artifactId>jeethink-framework</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.jeethink</groupId>
+            <artifactId>jeethink-requestutil</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

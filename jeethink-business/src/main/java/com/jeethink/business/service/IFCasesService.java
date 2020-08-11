@@ -43,6 +43,19 @@ public interface IFCasesService
     public List<FCases> selectByOut(String caseCode,String policeNo,String caseName);
 
     /**
+     * 根据卷宗柜Id查询在库案卷
+     * */
+    public List<FCases> selectByLockerId(String lockerId);
+
+    /**
+     * 查询盘点明细
+     * */
+    public List<FCases> selectByCheckId(String checkId);
+    /**
+     * 查询可盘点信息
+     * */
+    public List<FCases> selectByCheckAndState(String checkId);
+    /**
      * 新增案卷
      *
      * @param fCases 案卷

@@ -115,6 +115,16 @@ public class FCases extends BaseEntity
     private String peopleType;
     /** 保存业务字段End */
 
+    /** 盘点业务查询字段 */
+    /** 盘点状态 */
+    private String fCheckState;
+    /** 盘点备注 */
+    private String fRemark;
+    /** 盘点时间 */
+    private String fCheckDate;
+    /** 盘点明细Id */
+    private String fCheckDetailId;
+
     public void setfId(String fId)
     {
         this.fId = fId;
@@ -334,6 +344,38 @@ public class FCases extends BaseEntity
 
     public String getPeopleType() {
         return peopleType;
+    }
+
+    public void setfCheckState(String fCheckState) {
+        this.fCheckState = fCheckState;
+    }
+
+    public String getfCheckState() {
+        return fCheckState;
+    }
+
+    public void setfRemark(String fRemark) {
+        this.fRemark = fRemark;
+    }
+
+    public String getfRemark() {
+        return fRemark;
+    }
+
+    public void setfCheckDate(String fCheckDate) {
+        this.fCheckDate = fCheckDate;
+    }
+
+    public String getfCheckDate() {
+        return fCheckDate;
+    }
+
+    public void setfCheckDetailId(String fCheckDetailId) {
+        this.fCheckDetailId = fCheckDetailId;
+    }
+
+    public String getfCheckDetailId() {
+        return fCheckDetailId;
     }
 
     @Override

@@ -269,6 +269,8 @@ public class FDepositServiceImpl implements IFDepositService
             card.setfUserid("0".equals(peopleType)? list.get(0).getMainPoliceCode():list.get(0).getAssistPoliceCode());
             card.setfUsername("0".equals(peopleType)?list.get(0).getMainPoliceName():list.get(0).getAssistPoliceName());
             card.setfState("1");
+            card.setfLockercode(locker.getfLockercode());
+            card.setfPositioncode(position.getfPositioncode());
             fCardService.updateFCard(card,"");
         }else{
             fDeposit.setfType(0);
@@ -281,7 +283,7 @@ public class FDepositServiceImpl implements IFDepositService
         }else{
             result=httprequest.openBoxByCard(cardCode,position.getfPositioncode(),locker.getfLockercode(),userName,apiToken);
         }
-        if(result.indexOf("控制成功")==-1) {
+        if(result.indexOf("成功")==-1) {
             fDeposit.setfState(0);
         }else{
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -293,7 +295,7 @@ public class FDepositServiceImpl implements IFDepositService
         //保存入库主表信息
         fDepositMapper.insertFDeposit(fDeposit);
 
-        if(result.indexOf("控制成功")!=-1)
+        if(result.indexOf("成功")!=-1)
         {
             return "";
         }else{
@@ -454,7 +456,7 @@ public class FDepositServiceImpl implements IFDepositService
         }else{
             result=httprequest.openBoxByCard(cardCode,position.getfPositioncode(),locker.getfLockercode(),userName,apiToken);
         }
-        if(result.indexOf("控制成功")==-1) {
+        if(result.indexOf("成功")==-1) {
             fDeposit.setfState(0);
         }else{
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -465,7 +467,7 @@ public class FDepositServiceImpl implements IFDepositService
         }
         //保存入库主表信息
         fDepositMapper.insertFDeposit(fDeposit);
-        if(result.indexOf("控制成功")!=-1)
+        if(result.indexOf("成功")!=-1)
         {
             return "";
         }else{
@@ -494,7 +496,7 @@ public class FDepositServiceImpl implements IFDepositService
         {
             result=httprequest.openBoxByCard(entity.getfCardcode(),position.getfPositioncode(),locker.getfLockercode(),"再次打开",apiToken);
         }
-        if(result.indexOf("控制成功")!=-1)
+        if(result.indexOf("成功")!=-1)
         {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             entity.setfOpendate( sdf.format(new Date()));

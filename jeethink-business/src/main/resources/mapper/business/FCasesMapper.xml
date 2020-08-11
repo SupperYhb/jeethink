@@ -26,6 +26,10 @@
         <result property="fCriminalname"    column="f_criminalname"    />
         <result property="fCrimeaddress"    column="f_crimeaddress"    />
         <result property="fState"    column="f_state"    />
+        <result property="fCheckState"    column="checkState"    />
+        <result property="fRemark"    column="f_remark"    />
+        <result property="fCheckDate"    column="f_checkdate"    />
+        <result property="fCheckDetailId"    column="f_checkdetailid"    />
     </resultMap>
 
     <sql id="selectFCasesVo">
@@ -64,6 +68,34 @@
             LEFT JOIN f_cases B ON A.f_casecode = B.f_casecode
         WHERE
             A.f_borrowid = #{borrowId}
+    </select>
+
+    <select id="selectByLockerId" parameterType="String" resultMap="FCasesResult">
+        select * from f_cases where f_lockerid=#{lockerId} and f_state=1
+    </select>
+
+    <select id="selectByCheckId" parameterType="String" resultMap="FCasesResult">
+        SELECT
+            B.*,
+            A.f_state checkState,
+            A.f_remark,
+            A.f_checkdate,
+            A.f_checkdetailid
+        FROM
+            f_checkdetail A
+            LEFT JOIN f_cases B ON A.f_casecode = B.f_casecode
+        WHERE
+	A.f_checkid=#{checkId}
+    </select>
+
+    <select id="selectByCheckAndState" parameterType="String" resultMap="FCasesResult">
+        SELECT
+            B.*
+        FROM
+            f_checkdetail A
+            LEFT JOIN f_cases B ON A.f_casecode = B.f_casecode
+        WHERE
+            A.f_checkid=#{checkId}	AND A.f_state IS NULL
     </select>
 
     <insert id="insertFCases" parameterType="FCases">

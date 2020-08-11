@@ -21,7 +21,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectFDepositVo">
-        select f_depositid, f_code, f_userid, f_username, f_createdate, f_type, f_state, f_remark, f_cardcode,f_opendate,f_enddate,f_peopletype from f_deposit
+        select f_depositid, f_code, f_userid, f_username, f_createdate, f_type, f_state, f_remark, f_cardcode,f_opendate,f_enddate,f_peopletype,f_businesstype from f_deposit
     </sql>
 
     <select id="selectFDepositList" parameterType="FDeposit" resultMap="FDepositResult">

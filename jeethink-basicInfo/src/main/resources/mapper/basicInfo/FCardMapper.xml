@@ -13,10 +13,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="fCreateuserid"    column="f_createuserid"    />
         <result property="fCreateusername"    column="f_createusername"    />
         <result property="fCreatedate"    column="f_createdate"    />
+        <result property="fLockercode"    column="f_lockercode"    />
+        <result property="fPositioncode"    column="f_positioncode"    />
     </resultMap>
 
     <sql id="selectFCardVo">
-        select f_cardid, f_cardcode, f_state, f_userid, f_username, f_createuserid, f_createusername, f_createdate from f_card
+        select f_cardid, f_cardcode, f_state, f_userid, f_username, f_createuserid, f_createusername, f_createdate,f_lockercode,f_positioncode from f_card
     </sql>
 
     <select id="verificationCard" parameterType="FCard" resultMap="FCardResult">
@@ -53,6 +55,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fCreateuserid != null">f_createuserid,</if>
             <if test="fCreateusername != null">f_createusername,</if>
             <if test="fCreatedate != null">f_createdate,</if>
+            <if test="fLockercode != null">f_lockercode,</if>
+            <if test="fPositioncode != null">f_positioncode,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="fCardid != null">#{fCardid},</if>
@@ -63,6 +67,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fCreateuserid != null">#{fCreateuserid},</if>
             <if test="fCreateusername != null">#{fCreateusername},</if>
             <if test="fCreatedate != null">#{fCreatedate},</if>
+            <if test="fLockercode != null">#{fLockercode},</if>
+            <if test="fPositioncode != null">#{fPositioncode},</if>
          </trim>
     </insert>
 
@@ -76,6 +82,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fCreateuserid != null">f_createuserid = #{fCreateuserid},</if>
             <if test="fCreateusername != null">f_createusername = #{fCreateusername},</if>
             <if test="fCreatedate != null">f_createdate = #{fCreatedate},</if>
+            <if test="fLockercode != null">f_lockercode = #{fLockercode},</if>
+            <if test="fPositioncode != null">f_positioncode = #{fPositioncode},</if>
         </trim>
         where f_cardid = #{fCardid}
     </update>

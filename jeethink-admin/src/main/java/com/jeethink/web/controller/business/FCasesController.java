@@ -82,6 +82,34 @@ public class FCasesController extends BaseController
         return getDataTable(list);
     }
     /**
+     * 查询盘点明细
+     */
+    @PostMapping("/selectByCheckId")
+    @ResponseBody
+    public TableDataInfo selectByCheckId(String checkId){
+        List<FCases> list=fCasesService.selectByCheckId(checkId);
+        return getDataTable(list);
+    }
+
+    /**
+     * 根据案卷柜Id查询在库案卷
+     */
+    @PostMapping("/selectByLockerId")
+    @ResponseBody
+    public TableDataInfo selectByLockerId(String lockerId){
+        List<FCases> list=fCasesService.selectByLockerId(lockerId);
+        return getDataTable(list);
+    }
+    /**
+     * 查询可盘点信息
+     */
+    @PostMapping("/selectByCheckAndState")
+    @ResponseBody
+    public TableDataInfo selectByCheckAndState(String checkId){
+        List<FCases> list=fCasesService.selectByCheckAndState(checkId);
+        return getDataTable(list);
+    }
+    /**
      * 导出案卷列表
      */
     @Log(title = "案卷", businessType = BusinessType.EXPORT)

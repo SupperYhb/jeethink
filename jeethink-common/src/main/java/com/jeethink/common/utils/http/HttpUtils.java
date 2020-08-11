@@ -5,10 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.ConnectException;
-import java.net.SocketTimeoutException;
-import java.net.URL;
-import java.net.URLConnection;
+import java.net.*;
 import java.security.cert.X509Certificate;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -108,6 +105,82 @@ public class HttpUtils
                 log.error("调用in.close Exception, url=" + url + ",param=" + param, ex);
             }
         }
+        return result.toString();
+    }
+
+    public static String sendDeletes(String url,String ApiToken) {
+        String result = "";
+        BufferedReader in = null;
+        try {
+            String urlNameString = url ;
+            URL realUrl = new URL(urlNameString);
+            // 打开和URL之间的连接
+            HttpURLConnection connection = (HttpURLConnection) realUrl.openConnection();
+            // 设置通用的请求属性
+            connection.setRequestProperty("accept", "*/*");
+            connection.setRequestProperty("connection", "Keep-Alive");
+            connection.setRequestProperty("user-agent",
+                    "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
+            connection.setRequestMethod("DELETE");
+            if(!ApiToken.isEmpty()){
+                connection.setRequestProperty("apiToken",ApiToken);
+            }
+            // 建立实际的连接
+            connection.connect();
+
+            // 定义 BufferedReader输入流来读取URL的响应
+            in = new BufferedReader(new InputStreamReader(
+                    connection.getInputStream(), "utf-8"));
+            String line;
+            while ((line = in.readLine()) != null) {
+                result += line;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        // 使用finally块来关闭输入流
+        finally {
+            try {
+                if (in != null) {
+                    in.close();
+                }
+            } catch (Exception e2) {
+                e2.printStackTrace();
+            }
+        }
+        return result;
+    }
+    /**
+     * 调用delete
+     * */
+    public static String sendDelete(String urls)
+    {
+        StringBuilder result = new StringBuilder();
+        BufferedReader in = null;
+        try{
+            URL url = new URL(urls);
+
+            HttpURLConnection httpCon = (HttpURLConnection) url.openConnection();
+
+            httpCon.setDoOutput(true);
+
+            httpCon.setRequestProperty(
+
+                    "Content-Type", "application/x-www-form-urlencoded" );
+
+            httpCon.setRequestMethod("DELETE");
+
+            httpCon.connect();
+            in = new BufferedReader(new InputStreamReader(httpCon.getInputStream(), Constants.GBK));
+            String line;
+            while ((line = in.readLine()) != null)
+            {
+                result.append(line);
+            }
+        }catch(Exception ex){
+            log.error("调用HttpsUtil.sendDelete Exception, url=" + urls);
+        }
+
         return result.toString();
     }
 

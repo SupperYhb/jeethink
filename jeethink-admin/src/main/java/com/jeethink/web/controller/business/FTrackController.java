@@ -69,12 +69,23 @@ public class FTrackController extends BaseController
     }
 
     /**
-     * 新增案卷轨迹
+     * 根据案卷编号查询轨迹列表
+     * */
+    @PostMapping("/selectFtrackByCaseCode")
+    @ResponseBody
+    public TableDataInfo selectFtrackByCaseCode(String caseCode){
+        List<FTrack> list=fTrackService.selectFtrackByCaseCode(caseCode);
+        return getDataTable(list);
+    }
+
+    /**
+     * 查看案卷轨迹
      */
-    @GetMapping("/add")
-    public String add()
+    @GetMapping("/checktrack")
+    public String checktrack(String FtrackId,ModelMap mmap)
     {
-        return prefix + "/add";
+        mmap.put("FtrackId",FtrackId);
+        return prefix + "/checktrack";
     }
 
     /**

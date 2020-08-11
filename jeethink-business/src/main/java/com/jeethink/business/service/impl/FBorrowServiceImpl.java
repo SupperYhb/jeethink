@@ -209,6 +209,10 @@ public class FBorrowServiceImpl implements IFBorrowService
             fTrack.setfCreatedate(new Date());
             fTrackService.insertFTrack(fTrack);
         }
+        //获取卷宗柜
+        FLocker locker=fLockerService.selectFLockerById(list.get(0).getfLockerid());
+        //获取货位
+        FPosition position=fPositionService.selectFPositionById(list.get(0).getfPositionid());
         //修改卡
         if(!cardId.isEmpty()){
             borrow.setfType(1);
@@ -217,16 +221,15 @@ public class FBorrowServiceImpl implements IFBorrowService
             card.setfUserid(peopleType.equals("0")? list.get(0).getfPolice1id():list.get(0).getfPolice2id());
             card.setfUsername(peopleType.equals("0")? list.get(0).getfPolice1name():list.get(0).getfPolice2name());
             card.setfState("1");
+            card.setfLockercode(locker.getfLockercode());
+            card.setfPositioncode(position.getfPositioncode());
             fCardService.updateFCard(card,"");
         }else{
             borrow.setfType(0);
         }
         String userName=peopleType=="0"?list.get(0).getfPolice1id():list.get(0).getfPolice2id();
         //发送命令
-        //获取卷宗柜
-        FLocker locker=fLockerService.selectFLockerById(list.get(0).getfLockerid());
-        //获取货位
-        FPosition position=fPositionService.selectFPositionById(list.get(0).getfPositionid());
+
         String apiToken= httprequest.login();
         String result="";
         if(cardId.isEmpty()) {
@@ -234,7 +237,7 @@ public class FBorrowServiceImpl implements IFBorrowService
         }else{
             result=httprequest.openBoxByCard(cardCode,position.getfPositioncode(),locker.getfLockercode(),userName,apiToken);
         }
-        if(result.indexOf("控制成功")==-1) {
+        if(result.indexOf("成功")==-1) {
             borrow.setfState(0);
         }else{
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -245,7 +248,7 @@ public class FBorrowServiceImpl implements IFBorrowService
         }
         fBorrowMapper.insertFBorrow(borrow);
 
-        if(result.indexOf("控制成功")!=-1)
+        if(result.indexOf("成功")!=-1)
         {
             return "";
         }else{
@@ -279,7 +282,7 @@ public class FBorrowServiceImpl implements IFBorrowService
         {
             result=httprequest.openBoxByCard(entity.getfCardcode(),position.getfPositioncode(),locker.getfLockercode(),"再次打开",apiToken);
         }
-        if(result.indexOf("控制成功")!=-1)
+        if(result.indexOf("成功")!=-1)
         {  SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             entity.setfOpendate( sdf.format(new Date()));
             Date now = new Date();

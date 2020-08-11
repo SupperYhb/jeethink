@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.jeethink.common.extend.createId;
 import com.jeethink.framework.util.ShiroUtils;
+import com.jeethink.requestutil.function.httprequest;
 import com.jeethink.system.domain.SysUser;
 import com.jeethink.system.mapper.SysUserMapper;
 import com.jeethink.system.service.impl.SysUserServiceImpl;
@@ -96,18 +97,25 @@ public class FCardServiceImpl implements IFCardService
     @Override
     public int updateFCard(FCard fCard,String reset)
     {
+        String Result="成功";
         if("0".equals(fCard.getfState())) {
             fCard.setfUsername("");
             fCard.setfUserid("");
         }
         if(!reset.isEmpty()) {
             FCard card = fCardMapper.selectFCardById(fCard.getfCardid());
+            String apiToken= httprequest.login();
+            Result= httprequest.deleteBind(card.getfCardcode(),card.getfLockercode(),card.getfPositioncode(),apiToken);
             SysUser finduserparam = new SysUser();
             finduserparam.setLoginName(card.getfUserid());
             SysUser user = sysUserService.selectUserList(finduserparam).get(0);
-            sysUserService.updatecardnull(user.getUserId().toString());
+            if(Result.indexOf("成功")!=-1) {
+                sysUserService.updatecardnull(user.getUserId().toString());
+            }
+            fCard.setfPositioncode("");
+            fCard.setfLockercode("");
         }
-        return fCardMapper.updateFCard(fCard);
+        return Result.indexOf("成功")!=-1? fCardMapper.updateFCard(fCard):1;
     }
 
     /**

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('盘点主表列表')" />
+</head>
+<body class="gray-bg">
+     <div class="container-div">
+        <div class="row">
+            <div class="col-sm-12 search-collapse">
+                <form id="formId">
+                    <div class="select-list">
+                        <ul>
+                            <li>
+                                <label>盘点名称：</label>
+                                <input type="text" name="fName"/>
+                            </li>
+                            <li>
+                                <label>盘点编号：</label>
+                                <input type="text" name="fCode"/>
+                            </li>
+                            <li>
+                                <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
+                                <a class="btn btn-warning btn-rounded btn-sm" onclick="$.form.reset()"><i class="fa fa-refresh"></i>&nbsp;重置</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+
+            <div class="btn-group-sm" id="toolbar" role="group">
+                <a class="btn btn-success" onclick="addCheck()" shiro:hasPermission="business:check:add">
+                    <i class="fa fa-plus"></i> 添加
+                </a>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <table id="bootstrap-table"></table>
+            </div>
+        </div>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var editFlag = [[${@permission.hasPermi('business:check:edit')}]];
+        var removeFlag = [[${@permission.hasPermi('business:check:remove')}]];
+        var prefix = ctx + "business/check";
+
+        $(function() {
+            var options = {
+                url: prefix + "/list",
+                createUrl: prefix + "/add",
+                updateUrl: prefix + "/edit/{id}",
+                removeUrl: prefix + "/remove",
+                exportUrl: prefix + "/export",
+                modalName: "盘点主表",
+                detailView: true,
+                onExpandRow : function(index, row, $detail) {
+                    initChildTable(index, row, $detail);
+                },
+                columns: [{
+                    checkbox: false
+                },
+                {
+                    field: 'fCheckid',
+                    title: '主键',
+                    visible: false
+                },
+                {
+                    field: 'fName',
+                    title: '盘点名称'
+                },
+                {
+                    field: 'fCode',
+                    title: '盘点编号'
+                },
+                {
+                    field: 'fCreateuserid',
+                    title: '创建用户Id'
+                },
+                {
+                    field: 'fCreateusername',
+                    title: '创建用户名'
+                },
+                {
+                    field: 'fCreatedate',
+                    title: '创建时间'
+                },
+                {
+                    title: '操作',
+                    align: 'center',
+                    formatter: function(value, row, index) {
+                        var actions = [];
+                        actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="check(\'' + row.fCheckid + '\')"><i class="fa fa-edit"></i>盘点</a> ');
+                        actions.push('<a class="btn btn-danger btn-xs ' + removeFlag + '" href="javascript:void(0)" onclick="$.operate.remove(\'' + row.fCheckid + '\')"><i class="fa fa-remove"></i>删除</a>');
+                        return actions.join('');
+                    }
+                }]
+            };
+            $.table.init(options);
+        });
+        function addCheck(){
+            layer.open({
+                type: 2,
+                area: ['1200px', '700px'],
+                fix: false,
+                //不固定
+                maxmin: true,
+                shade: 0.3,
+                title: "添加盘点",
+                content: "/business/check/add",
+                btn: ['确定','关闭'],
+                // 弹层外区域关闭
+                shadeClose: true,
+                yes: function(index,layero){
+                    var iframeWin = layero.find('iframe')[0];
+                    var str= iframeWin.contentWindow.submitHandler(index, layero);
+                },
+                cancel: function(index) {
+                    return true;
+                }
+            });
+        }
+        initChildTable = function(index, row, $detail) {
+            debugger
+            var childTable = $detail.html('<table style="table-layout:fixed"></table>').find('table');
+            $(childTable).bootstrapTable({
+                url: "/business/cases/selectByCheckId?checkId="+row.fCheckid,
+                method: 'post',
+                sidePagination: "server",
+                contentType: "application/x-www-form-urlencoded",
+                queryParams : {
+                    userName: '盘点案卷'
+                },
+                columns: [
+                    {
+                        field: 'fCasecode',
+                        title: '案件编号'
+                    },
+                    {
+                        field: 'fCasename',
+                        title: '案件名称'
+                    },
+                    {
+                        field: 'fCasebriefdetail',
+                        title: '简要案情'
+                    },
+                    {
+                        field: 'fPutdate',
+                        title: '立案日期'
+                    },
+                    {
+                        field: 'fPolice1id',
+                        title: '主办民警编号'
+                    },
+                    {
+                        field: 'fPolice1name',
+                        title: '主办民警名称'
+                    },
+                    {
+                        field: 'fPolice2id',
+                        title: '辅办民警编号'
+                    },
+                    {
+                        field: 'fPolice2name',
+                        title: '辅办民警名称'
+                    },
+                    {
+                        field: 'fLockername',
+                        title: '卷宗柜名称'
+                    },
+                    {
+                        field: 'fPositioncode',
+                        title: '货位编号'
+                    },
+                    {
+                        field: 'fCrimeaddress',
+                        title: '案发地址'
+                    },
+                    {
+                        field: 'fCheckState',
+                        title: '盘点状态'
+                    },
+                    {
+                        field: 'fRemark',
+                        title: '备注'
+                    },
+                    {
+                        field: 'fCheckDate',
+                        title: '盘点时间'
+                    }]
+            });
+        };
+        function check(id){
+            $.modal.openTab("盘点","/business/check/checkform?checkId="+id);
+        }
+    </script>
+</body>
+</html>

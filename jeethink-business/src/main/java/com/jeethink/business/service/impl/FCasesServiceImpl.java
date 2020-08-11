@@ -126,6 +126,29 @@ public class FCasesServiceImpl implements IFCasesService
     }
 
     /**
+     * 根据案卷柜Id查询在库案卷
+     * */
+    @Override
+    public List<FCases> selectByLockerId(String lockerId) {
+        return fCasesMapper.selectByLockerId(lockerId);
+    }
+
+    /**
+     * 查询盘点明细
+     * */
+    @Override
+    public List<FCases> selectByCheckId(String checkId) {
+        return fCasesMapper.selectByCheckId(checkId);
+    }
+    /**
+     * 查询可盘点信息
+     * */
+    @Override
+    public List<FCases> selectByCheckAndState(String checkId) {
+        return fCasesMapper.selectByCheckAndState(checkId);
+    }
+
+    /**
      * 新增案卷
      *
      * @param fCases 案卷
@@ -165,6 +188,8 @@ public class FCasesServiceImpl implements IFCasesService
             card.setfUserid("0".equals(peopleType)? fCases.getfPolice1id():fCases.getfPolice2id());
             card.setfUsername("0".equals(peopleType)? fCases.getfPolice1name():fCases.getfPolice2name());
             card.setfState("1");
+            card.setfLockercode(locker.getfLockercode());
+            card.setfPositioncode(position.getfPositioncode());
             fCardService.updateFCard(card,"");
         }
         //设置存入记录的状态，不知道是不是保存就调用，暂时默认为已入库
@@ -286,7 +311,7 @@ public class FCasesServiceImpl implements IFCasesService
         }else{
             result="登录失败";
         }
-        if(result.indexOf("控制成功")==-1) {
+        if(result.indexOf("成功")==-1) {
             fDeposit.setfState(0);
         }else{
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -297,7 +322,7 @@ public class FCasesServiceImpl implements IFCasesService
         }
         //保存入库主表信息
         fDepositService.insertFDeposit(fDeposit);
-        if(result.indexOf("控制成功")!=-1)
+        if(result.indexOf("成功")!=-1)
         {
             return "";
         }else{

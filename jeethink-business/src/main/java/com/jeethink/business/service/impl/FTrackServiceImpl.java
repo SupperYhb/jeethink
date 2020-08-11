@@ -45,6 +45,14 @@ public class FTrackServiceImpl implements IFTrackService
     }
 
     /**
+     * 根据案卷编号查询轨迹列表
+     * */
+    @Override
+    public List<FTrack> selectFtrackByCaseCode(String caseCode) {
+        return fTrackMapper.selectFtrackByCaseCode(caseCode);
+    }
+
+    /**
      * 新增案卷轨迹
      * 
      * @param fTrack 案卷轨迹

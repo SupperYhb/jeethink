@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <th:block th:include="include :: header('存放案卷列表')" />
+</head>
+<body class="gray-bg">
+<div class="container-div">
+    <div class="row">
+        <div class="col-sm-12 search-collapse">
+            <form id="formId">
+                <div class="select-list">
+                    <ul>
+                        <li>
+                            <label>卷宗柜：</label>
+                            <select name="lockerId" class="form-control m-b" th:with="type=${fLockerList}" required onchange="$.table.search()">
+                               <option th:each="dict : ${type}" th:text="${dict.fLockername}" th:value="${dict.fLockerid}"></option>
+                            </select>
+                        </li>
+                    </ul>
+                </div>
+            </form>
+        </div>
+
+                <div class="btn-group-sm" id="toolbar" role="group">
+                    <label>盘点名称：</label>
+                    <input type="text" name="businessName" style="border: 1px solid #ddd;
+                        border-radius: 4px;
+                        background: transparent;
+                        outline: none;
+                        height: 30px;
+                        width: 200px;
+                        padding-left: 5px;"/>
+                </div>
+        <div class="col-sm-12 select-table table-striped">
+            <table id="bootstrap-table"></table>
+        </div>
+    </div>
+</div>
+<th:block th:include="include :: footer" />
+<script th:inline="javascript">
+    var editFlag = [[${@permission.hasPermi('business:deposit:edit')}]];
+    var removeFlag = [[${@permission.hasPermi('business:deposit:remove')}]];
+    var prefix = ctx + "system/user";
+
+    $(function() {
+        var options = {
+            url: "/business/cases/selectByLockerId",
+            modalName: "案卷柜盘点",
+            pagination:false,
+            singleSelect:true,
+            columns: [{
+                checkbox: false
+            },
+                {
+                    field: 'fCasecode',
+                    title: '案件编号'
+                },
+                {
+                    field: 'fCasename',
+                    title: '案件名称'
+                },
+                {
+                    field: 'fCasebriefdetail',
+                    title: '简要案情'
+                },
+                {
+                    field: 'fPutdate',
+                    title: '立案日期'
+                },
+                {
+                    field: 'fPolice1id',
+                    title: '主办民警编号'
+                },
+                {
+                    field: 'fPolice1name',
+                    title: '主办民警名称'
+                },
+                {
+                    field: 'fPolice2id',
+                    title: '辅办民警编号'
+                },
+                {
+                    field: 'fPolice2name',
+                    title: '辅办民警名称'
+                },
+                {
+                    field: 'fLockername',
+                    title: '卷宗柜名称'
+                },
+                {
+                    field: 'fPositioncode',
+                    title: '货位编号'
+                },
+                {
+                    field: 'fCrimeaddress',
+                    title: '案发地址'
+                }]
+        };
+        $.table.init(options);
+    });
+
+    function submitHandler() {
+        debugger
+        var lockerId=$("[name=lockerId]").val();
+        var num = $("#" + table.options.id).bootstrapTable('getOptions').totalRows;
+        if(lockerId==""||lockerId==null||lockerId==undefined)
+        {
+            $.modal.msg("请选择案卷柜",modal_status.FAIL);
+            return false;
+        }else{
+            if(num!=0)
+            {
+                var businessName=$("[name=businessName]").val();
+                $.operate.save("/business/check/addCheck", {lockerId:lockerId,name:businessName});
+            }else{
+                $.modal.msg("当前案卷柜不存在案卷，无法进行盘点",modal_status.FAIL);
+            }
+        }
+    }
+</script>
+</body>
+</html>

@@ -28,6 +28,11 @@ public interface FTrackMapper
     public List<FTrack> selectFTrackList(FTrack fTrack);
 
     /**
+     * 根据案卷编号查询轨迹列表
+     * */
+    public List<FTrack> selectFtrackByCaseCode(String caseCode);
+
+    /**
      * 新增案卷轨迹
      * 
      * @param fTrack 案卷轨迹
