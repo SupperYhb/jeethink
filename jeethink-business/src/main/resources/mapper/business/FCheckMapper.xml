@@ -12,10 +12,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="fCreateusername"    column="f_createusername"    />
         <result property="fCreatedate"    column="f_createdate"    />
         <result property="fLockerid"    column="f_lockerid"    />
+        <result property="fState"    column="f_state"    />
     </resultMap>
 
     <sql id="selectFCheckVo">
-        select f_checkid, f_name, f_code, f_createuserid, f_createusername, f_createdate,f_lockerid from f_check
+        select f_checkid, f_name, f_code, f_createuserid, f_createusername, f_createdate,f_lockerid,f_state from f_check
     </sql>
 
     <select id="selectFCheckList" parameterType="FCheck" resultMap="FCheckResult">
@@ -44,6 +45,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fCreateusername != null">f_createusername,</if>
             <if test="fCreatedate != null">f_createdate,</if>
             <if test="fLockerid != null">f_lockerid,</if>
+            <if test="fState != null">f_state,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="fCheckid != null">#{fCheckid},</if>
@@ -53,6 +55,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fCreateusername != null">#{fCreateusername},</if>
             <if test="fCreatedate != null">#{fCreatedate},</if>
             <if test="fLockerid != null">#{fLockerid},</if>
+            <if test="fState != null">#{fState},</if>
          </trim>
     </insert>
 
@@ -64,8 +67,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fCreateuserid != null">f_createuserid = #{fCreateuserid},</if>
             <if test="fCreateusername != null">f_createusername = #{fCreateusername},</if>
             <if test="fCreatedate != null">f_createdate = #{fCreatedate},</if>
+            <if test="fState != null">f_state = #{fState},</if>
         </trim>
         where f_checkid = #{fCheckid}
+    </update>
+
+    <update id="updateState" parameterType="java.util.Map">
+        UPDATE f_check
+        SET f_state =#{state}
+        WHERE
+            f_checkid =#{checkId}
     </update>
 
     <delete id="deleteFCheckById" parameterType="String">

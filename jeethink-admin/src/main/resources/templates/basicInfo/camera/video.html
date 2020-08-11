@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('查看录像')" />
+    <th:block th:include="include :: kdvideo-js" />
+    <style>
+        #view-groups-devices,
+        #recs {
+            width: 300px;
+            height: 300px;
+            overflow: auto;
+        }
+
+        #logs {
+            width: 100%;
+            height: 200px;
+            overflow: auto;
+        }
+
+        .offline {
+            color: #ccc;
+        }
+
+        .online {
+            color: #000;
+        }
+    </style>
+</head>
+<body class="white-bg">
+
+<h3><span id='dev-name'></span>(<span id='plat-or-pu'></span>)</h3>
+<table>
+    <tbody>
+    <tr>
+        <td>
+            <object id="plugin0" type="application/x-sfplayplugin" width="280" height="210"></object>
+        </td>
+        <td>
+            <ul id='recs'></ul>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <button id='stop'>停止</button>
+            <button id='seek'>录像跳转10s</button>
+            <button id='volume'>设音量</button>
+            <input type='text' id='volData' value='50' style='width: 40px' />
+            <br />
+            <button id='pause'>暂停</button>
+            <button id='replay'>继续播放</button>
+            <button id='playspeed'>调整速度</button>
+            <label id='speed'>X1</label>
+        </td>
+        <td>
+            <p>路径<input type='text' id='local-path' value='D:\plugin' /></p>
+            <button id='snapshot'>抓拍</button>
+            <button id='localrec'>本地录像</button>
+            <button id='stoplocalrec' disabled>停止本地录像</button>
+        </td>
+    </tr>
+    </tbody>
+</table>
+<p>双击录像列表播放，双击播放窗口全屏</p>
+<div id='logs'></div>
+<script>
+    var domLogs = document.getElementById('logs');
+    var pluginPlay = document.getElementById('plugin0');
+    var domDevName = document.getElementById('dev-name');
+    var domPlatOrPu = document.getElementById('plat-or-pu');
+
+    if (!pluginPlay.valid) {
+        alert('Play plugin is not working :(');
+    }
+
+    function log(prefix, content) {
+        domLogs.innerHTML = domLogs.innerHTML + '<br />' + prefix + ': ' + content;
+    }
+
+    var platInfo = null;
+    var id2Groups = {};
+    var id2Devices = {};
+    var group2Devices = {};
+    var id2State = {};
+    var queryRecordInfo = [];
+
+    if (parent && parent.pluginData) {
+        platInfo = JSON.parse(parent.pluginData.loginPlatformInfo);
+        id2Groups = JSON.parse(parent.pluginData.deviceGroups);
+        id2State = JSON.parse(parent.pluginData.deviceStates);
+
+        for (var i in parent.pluginData.group2Devices) {
+            group2Devices[i] = JSON.parse(parent.pluginData.group2Devices[i]);
+
+            group2Devices[i].forEach(function (d) {
+                id2Devices[d.puid] = d;
+            });
+        }
+
+        for (var i = 0; i < parent.pluginData.queryRecord.length; i++) {
+            queryRecordInfo.push({
+                puid: parent.pluginData.queryRecord[i].puid,
+                chn: parent.pluginData.queryRecord[i].chn,
+                isQueryPu: parent.pluginData.queryRecord[i].isQueryPu
+            });
+        }
+
+        if (queryRecordInfo.length > 0) {
+            var dev = id2Devices[queryRecordInfo[0].puid];
+            var chn = dev.srcchns[queryRecordInfo[0].chn];
+            if (!!dev) {
+                if (chn && chn.name && chn.name != '') {
+                    domDevName.innerHTML = chn.name;
+                } else {
+                    domDevName.innerHTML = dev.name + ':' + queryRecordInfo[0].chn;
+                }
+                domPlatOrPu.innerHTML = queryRecordInfo[0].isQueryPu ? '前端录像' : '平台录像';
+            }
+        }
+    }
+
+    function setPlatInfo () {
+        if (!platInfo) return;
+
+        var cmd = {
+            'cmd': 'setplatforminfo',
+            'data': {
+                'ip': platInfo.ip,
+                'port': platInfo.port,
+                'user': platInfo.user,
+                'pwd': platInfo.pwd,
+                'type': platInfo.type
+            }
+        };
+
+        var ret = pluginPlay.PostCmd(JSON.stringify(cmd));
+        log('Set platform info', ret);
+    }
+
+    var records = [];
+    var domRecs = document.getElementById('recs');
+
+    function queryRec() {
+        if (queryRecordInfo.length == 0) return;
+
+        var queryInfo = queryRecordInfo[0];
+        var puid = queryInfo.puid;
+        var chn = queryInfo.chn;
+        var isQueryPu = queryInfo.isQueryPu;
+        var device = id2Devices[puid];
+
+        var now = parseInt(Date.now() / 1000);
+        var start = now - 259200; // 往前3天
+
+        var cmd = {
+            'cmd': 'getrecord',
+            'data': {
+                'type': isQueryPu ? 2 : 1,
+                'domain': device.domain,
+                'starttime': start,
+                'endtime': now,
+                'chnid': chn,
+                'puid': device.puid
+            }
+        };
+
+        records = [];
+
+        var ret = pluginPlay.PostCmd(JSON.stringify(cmd));
+        log('Query', ret);
+    }
+
+    function clearRecords() {
+        while (domRecs.children.length > 0) {
+            domRecs.removeChild(domRecs.children[0]);
+        }
+    }
+
+    function showRecords() {
+        clearRecords();
+
+        for (var i = 0; i < records.length; i++) {
+            var domItem = document.createElement('li');
+            domItem.innerHTML = recTimeToString(records[i].starttime) + ' - ' + recTimeToString(records[i].endtime);
+            domRecs.appendChild(domItem);
+
+            addEvent(domItem, 'dblclick', function(rec, e) {
+                e.preventDefault();
+                e.stopPropagation();
+                playRecord(rec);
+            }.bind(null, records[i]));
+        }
+    }
+
+    function onRecordList(notify) {
+        if (notify.code != 0) {
+            clearRecords();
+            alert('录像查询失败: ' + notify.desc);
+        } else {
+            if (!notify.data) return;
+
+            if (Array.isArray(notify.data.records)) {
+                records = records.concat(notify.data.records);
+            }
+
+            if (notify.data.end == 1) {
+                showRecords();
+            }
+        }
+    }
+
+    function getLocalFolder() {
+        var domLocalPath = document.getElementById('local-path');
+        return domLocalPath.value;
+    }
+</script>
+<script id='main-script'>
+    var lblSpeed = document.getElementById('speed');
+    var iptVol = document.getElementById('volData');
+    var domSpeed = document.getElementById('playspeed');
+    var domSeek = document.getElementById('seek');
+    var domLocalRec = document.getElementById('localrec');
+    var domStopLocalRec = document.getElementById('stoplocalrec');
+
+    var currentPlay = null;
+    var speedVal = 4;
+    var isLocalRecord = false;
+    var isPausePlay = false;
+    var currentPlayTime = null;
+
+    function playRecord(rec) {
+        var queryInfo = queryRecordInfo[0];
+        var puid = queryInfo.puid;
+        var chn = queryInfo.chn;
+        var device = id2Devices[puid];
+
+        var cmd = {
+            'cmd': 'switchstartplayrecord',
+            'data': {
+                'vendor': device.manufact,
+                'starttime': rec.starttime,
+                'endtime': rec.endtime,
+                'playtime': rec.starttime,
+                'hd': 1
+            }
+        };
+
+        isLocalRecord = false;
+        isPausePlay = false;
+        currentPlayTime = null;
+        var ret = pluginPlay.PostCmd(JSON.stringify(cmd));
+        log('Play record', ret);
+        ret = JSON.parse(ret);
+        if (ret.code == 0) {
+            currentPlay = cmd;
+        } else {
+            alert('Post play record failed!');
+        }
+    }
+
+    function stopPlayRecord() {
+        var cmd = {
+            'cmd': 'stopplayrecord'
+        };
+
+        var ret = pluginPlay.PostCmd(JSON.stringify(cmd));
+        log('Stop play record', ret);
+        ret = JSON.parse(ret);
+        if (ret.code == 0) {
+        } else {
+            alert('Post stop play record cmd failed!');
+        }
+    }
+
+    function pausePlay() {
+        if (isPausePlay) return;
+
+        var cmd = {
+            'cmd': 'pause'
+        };
+
+        var ret = pluginPlay.PostCmd(JSON.stringify(cmd));
+        log('Pause play video', ret);
+        ret = JSON.parse(ret);
+        if (ret.code == 0) {
+        } else {
+            alert('Post pause cmd failed!');
+        }
+    }
+
+    function replay() {
+        if (!isPausePlay) return;
+
+        var cmd = {
+            'cmd': 'replay'
+        };
+
+        var ret = pluginPlay.PostCmd(JSON.stringify(cmd));
+        log('Replay video', ret);
+        ret = JSON.parse(ret);
+        if (ret.code == 0) {
+        } else {
+            alert('Post replay cmd failed!');
+        }
+    }
+
+    function setVolume(vol) {
+        var cmd = {
+            'cmd': 'setvolume',
+            'data': {
+                'volume': vol
+            }
+        };
+
+        var ret = pluginPlay.PostCmd(JSON.stringify(cmd));
+        log('Set volume', ret);
+    }
+
+    function onPlaySpeed(e) {
+        if (!currentPlay) return;
+
+        domSpeed.setAttribute('disabled', true);
+
+        speedVal += 1;
+        if (speedVal > 8) speedVal = 1;
+        if (queryRecordInfo[0].isQueryPu) {
+            // 前端录像只支持1/2、1、2倍
+            if (speedVal > 5) speedVal = 3;
+        }
+        lblSpeed.innerHTML = speedToString(speedVal);
+
+        var cmd = {
+            'cmd': 'setspeed',
+            'data': {
+                'speed': speedVal
+            }
+        };
+
+        var ret = pluginPlay.PostCmd(JSON.stringify(cmd));
+        log('Set speed', ret);
+    }
+
+    function onSnapShot(e) {
+        if (!currentPlay) return;
+
+        var cmd = {
+            'cmd': 'snapshot',
+            'data': {
+                'path': getLocalFolder() + '\\' + Date.now() + '.jpg',
+                'pictype': 1,
+                'snaptype': 2
+            }
+        };
+
+        var ret = pluginPlay.PostCmd(JSON.stringify(cmd));
+        log('Snapshot', ret);
+    }
+
+    function onLocalRec(e) {
+        if (!currentPlay) return;
+
+        var ext = ['kedacom', 'hik'].indexOf(currentPlay.data.vendor) == -1
+            ? currentPlay.data.vendor : 'mp4';
+
+        var cmd = {
+            'cmd': 'startlocalrecord',
+            'data': {
+                'path': getLocalFolder() + '\\' + Date.now() + '.' + ext,
+                'filetype': 0,
+                'playtype': 2
+            }
+        };
+
+        var ret = pluginPlay.PostCmd(JSON.stringify(cmd));
+        log('Local record', ret);
+    }
+
+    function onStopLocalRec(e) {
+        var cmd = {
+            'cmd': 'stoplocalrecord',
+            'data': {
+                'playtype': 2
+            }
+        };
+
+        var ret = pluginPlay.PostCmd(JSON.stringify(cmd));
+        log('Stop local record', ret);
+    }
+
+    function onSeek(e) {
+        if (!currentPlay || !currentPlayTime) return;
+
+        var cmd = {
+            'cmd': 'seekplay',
+            'data': {
+                'time': currentPlayTime + 10 - currentPlay.data.starttime
+            }
+        };
+
+        var ret = pluginPlay.PostCmd(JSON.stringify(cmd));
+        log('Seek', ret);
+
+        domSeek.setAttribute('disabled', true);
+    }
+
+    function isFullscreen() {
+        var cmd = {
+            'cmd': 'isfullscreen'
+        };
+
+        var ret = pluginPlay.PostCmd(JSON.stringify(cmd));
+        log('Is fullscreen', ret);
+        ret = JSON.parse(ret);
+        return ret.fullscreen == 1;
+    }
+
+    function fullscreen() {
+        var cmd = {
+            'cmd': 'setfullscreen',
+            'data': {
+                'fullscreen': isFullscreen() ? 0 : 1
+            }
+        };
+        var ret = pluginPlay.PostCmd(JSON.stringify(cmd));
+        log('Set fullscreen', ret);
+    }
+
+    function onStartPlayRecordNty(notify) {
+        if (notify.code != 0) {
+            alert('播放录像失败！');
+            currentPlay = null;
+        } else {
+            setVolume(iptVol.value);
+        }
+    }
+
+    function onPlayRecordProgress(notify) {
+        log('progress', JSON.stringify(notify));
+        currentPlayTime = notify.data.progress;
+
+        domSeek.removeAttribute('disabled');
+        domSpeed.removeAttribute('disabled');
+    }
+
+    function onStopPlayRecordNty(notify) {
+        currentPlay = null;
+
+        if (notify.code != 0) {
+            alert('停止播放录像失败');
+        }
+    }
+
+    function onPauseNty(notify) {
+        isPausePlay = notify.code == 0;
+    }
+
+    function onReplayNty(notify) {
+        isPausePlay = !(notify.code == 0);
+    }
+
+    function onSpeedNty(notify) {
+        if (notify.code != 0) {
+            alert('Change speed failed');
+        } else {
+        }
+    }
+
+    function onSnapshotNty(notify) {
+        if (notify.code != 0) {
+            alert('Snapshot failed');
+        }
+    }
+
+    function onStartLocalRecordNty(notify) {
+        if (notify.code != 0) {
+            alert('Start local record failed');
+        } else {
+            isLocalRecord = true;
+            domLocalRec.setAttribute('disabled', true);
+            domStopLocalRec.removeAttribute('disabled');
+        }
+    }
+
+    function onStopLocalRecordNty(notify) {
+        if (notify.code != 0) {
+            alert('Stop local record failed');
+        } else {
+            isLocalRecord = false;
+            domStopLocalRec.setAttribute('disabled', true);
+            domLocalRec.removeAttribute('disabled');
+        }
+    }
+
+    addEvent(pluginPlay, 'Notify', function(e) {
+        var notify = JSON.parse(e);
+        switch (notify.notify) {
+            case 'ready':
+                // 必须先设置平台信息，然后才可以调用播放等操作。
+                setPlatInfo();
+                setTimeout(function() {
+                    queryRec();
+                }, 1000);
+                break;
+
+            case 'recordlist':
+                onRecordList(notify);
+                break;
+
+            case 'startplayrecordnty':
+                onStartPlayRecordNty(notify);
+                break;
+
+            case 'playrecordprogress':
+                onPlayRecordProgress(notify);
+                break;
+
+            case 'stopplayrecordnty':
+                onStopPlayRecordNty(notify);
+                break;
+
+            case 'pausenty':
+                onPauseNty(notify);
+                break;
+
+            case 'replaynty':
+                onReplayNty(notify);
+                break;
+
+            case 'setspeednty':
+                onSpeedNty(notify);
+                break;
+
+            case 'snapshotnty':
+                onSnapshotNty(notify);
+                break;
+
+            case 'startlocalrecordnty':
+                onStartLocalRecordNty(notify);
+                break;
+
+            case 'stoplocalrecordnty':
+                onStopLocalRecordNty(notify);
+                break;
+
+            case 'lbuttondblclk':
+                fullscreen();
+                break;
+        }
+    });
+
+
+    addEvent(document.getElementById('stop'), 'click', function(e) {
+        stopPlayRecord();
+    });
+
+    addEvent(document.getElementById('volume'), 'click', function(e) {
+        setVolume(iptVol.value);
+    });
+
+    addEvent(document.getElementById('pause'), 'click', function(e) {
+        pausePlay();
+    });
+
+    addEvent(document.getElementById('replay'), 'click', function(e) {
+        replay();
+    });
+
+    addEvent(domSpeed, 'click', onPlaySpeed);
+    addEvent(document.getElementById('snapshot'), 'click', onSnapShot);
+    addEvent(domLocalRec, 'click', onLocalRec);
+    addEvent(domStopLocalRec, 'click', onStopLocalRec);
+    addEvent(domSeek, 'click', onSeek);
+</script>
+</body>
+</html>

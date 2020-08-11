@@ -1,6 +1,8 @@
 package com.jeethink.business.mapper;
 
 import java.util.List;
+import java.util.Map;
+
 import com.jeethink.business.domain.FCheck;
 
 /**
@@ -42,6 +44,11 @@ public interface FCheckMapper
      * @return 结果
      */
     public int updateFCheck(FCheck fCheck);
+
+    /**
+     * 更新主表状态
+     * */
+    public int updateState(Map map);
 
     /**
      * 删除盘点主表

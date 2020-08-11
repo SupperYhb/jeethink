@@ -28,7 +28,7 @@ public class FCheckdetail extends BaseEntity
     private String fCasecode;
 
     /** 状态（0正常，1损坏） */
-    @Excel(name = "状态", readConverterExp = "0=正常，1损坏")
+    @Excel(name = "状态", readConverterExp = "0=正常，1损坏,2丢失")
     private Integer fState;
 
     /** 备注 */

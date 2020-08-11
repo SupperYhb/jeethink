@@ -45,30 +45,22 @@
                         <div class="row" id="element">
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">发卡分类：</label>
+                                    <label class="col-sm-3 control-label">状态：</label>
                                     <div class="col-sm-8">
-                                        <label><input name="peopleType"  type="radio" value="0" checked />主办民警 </label>
-                                        <label style="margin-left: 20px;"><input name="peopleType" type="radio" value="1" />副办民警 </label>
+                                        <select name="fState" class="form-control m-b" required>
+                                            <option value="0">正常</option>
+                                            <option value="1">损坏</option>
+                                            <option value="2">丢失</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">发卡：</label>
+                                    <label class="col-sm-3 control-label">备注：</label>
                                     <div class="col-sm-8">
-                                        <input name="cardCode" class="form-control" type="text" readonly onclick="openSwipingForm()">
-                                        <input style="visibility: hidden;" name="cardId">
+                                        <textarea name="fRemark" class="form-control" type="text"></textarea>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label class="col-sm-3 control-label">备注：</label>
-                                <div class="col-sm-8">
-                                    <input name="fRemark" class="form-control" type="text">
                                 </div>
                             </div>
                         </div>
@@ -119,144 +111,38 @@
                 }
             },onFinished:function (event, currentIndex) {
                 debugger
-                var cardCode=$("[name=cardCode]").val();
-                var cardId=$("[name=cardId]").val();
+                var fState=$("[name=fState]").val();
                 var fRemark=$("[name=fRemark]").val();
                 var data=$("#" + table.options.id).bootstrapTable('getSelections');
+                var fIds="";
+                for(var i=0;i<data.length;i++)
+                {
+                    fIds+=data[i].fCheckDetailId+",";
+                }
+                fIds=fIds.substr(0,fIds.length-1);
                 debugger
                 var Data={
-                    list:JSON.stringify(data),
-                    cardCode:cardCode,
-                    cardId:cardId,
+                    state:fState,
                     remark:fRemark,
-                    peopleType:$("[name=peopleType]:checked ").val()
+                    ids:fIds
                 };
-                $.operate.save("/business/borrow/outCase", Data);
+                $.operate.save("/business/check/checkCase", Data);
             }
         });
-        $("[name=peopleType]").change(function()
-        {
-            $("[name=cardCode]").val("");
-            $("[name=cardId]").val("");
-        })
 
         loadTable();
     });
-    function openSwipingForm(){
-        debugger
-        var data=$("#" + table.options.id).bootstrapTable('getSelections');
-        if(data.length>0) {
-            var pass = true;
-            var policeno = "";
-            for (var i = 0; i < data.length; i++) {
-                if (policeno == "") {
-                    policeno = data[i].fPolice1id;
-                }
-                if (policeno != data[i].fPolice1id) {
-                    pass = false;
-                    $.modal.msg("同一民警的案卷才能发卡",modal_status.FAIL);
-                    return;
-                }
-            }
-            var peopleType=$("[name=peopleType]:checked ").val();
-            var userId="";
-            if(peopleType=="0"&&(data[0].fPolice1id==""||data[0].fPolice1id==undefined||data[0].fPolice1id==null))
-            {
-                $.modal.msg("当前主办民警不存在，无法进行发卡",modal_status.FAIL);
-                return false;
-            }else if(peopleType=="0"&&(data[0].fPolice1id!=""||data[0].fPolice1id!=undefined||data[0].fPolice1id!=null)){
-                userId=data[0].fPolice1id;
-            }
-            if(peopleType=="1"&&(data[0].fPolice2id==""||data[0].fPolice2id==undefined||data[0].fPolice2id==null))
-            {
-                $.modal.msg("当前辅办民警不存在，无法进行发卡",modal_status.FAIL);
-                return false;
-            }else if(peopleType=="1"&&(data[0].fPolice2id!=""||data[0].fPolice2id!=undefined||data[0].fPolice2id!=null)){
-                userId=data[0].fPolice2id;
-            }
-            if(peopleType=="1"){
-                var asscode="";
-                debugger
-                for(var i=0;i<data.length;i++)
-                {
-                    if(asscode==""||asscode==null||asscode==undefined)
-                    {
-                        asscode=data[i].fPolice2id;
-                    }
-                    if(asscode!=data[i].fPolice2id){
-                        $.modal.msg("一次只能借阅同一民警及辅警的案卷",modal_status.FAIL);
-                        return false;
-                    }
-                }
-            }
-            if(pass)
-            {
-                $.ajax({
-                    cache : true,
-                    type : "POST",
-                    url : ctx + "basicInfo/card/selectCardByUserId",
-                    data : {
-                        "fUserid":userId,
-                    },
-                    async : false,
-                    error : function(request) {
-                        $.modal.alertError("系统错误");
-                    },
-                    success : function(data) {
-                        debugger
-                        if( data.rows.length>0) {
-                            var card= data.rows;
-                            $("[name=cardCode]").val(card[0].fCardcode);
-                            $("[name=cardId]").val(card[0].fCardid);
-                        }else{
-                            layer.open({
-                                type: 2,
-                                area: ['500px', '500px'],
-                                fix: false,
-                                //不固定
-                                maxmin: true,
-                                shade: 0.3,
-                                title: '刷卡',
-                                content: "/basicInfo/card/swipingform",
-                                btn: ['确定', '关闭'],
-                                // 弹层外区域关闭
-                                shadeClose: true,
-                                yes: function(index,layero){
-                                    //  debugger
-                                    var iframeWin = layero.find('iframe')[0];
-                                    var str= iframeWin.contentWindow.submitHandler(index, layero);
-                                    var cardCode=str.split(';')[0];
-                                    var cardId=str.split(';')[1];
-                                    $("[name=cardCode]").val(cardCode);
-                                    $("[name=cardId]").val(cardId);
-                                    layer.close(index);
-                                },
-                                cancel: function(index) {
-                                    return true;
-                                }
-                            });
-                        }
-                    }
-                });
-
-            }else{
-                $.modal.msg("同一民警的案卷才能发卡",modal_status.FAIL);
-            }
-        }
-
-
-    }
     function loadTable()
     {
         var options = {
-            url:"/business/cases/selectByCheckAndState",
+            url:"/business/cases/selectByCheckId",
             modalName: "存放案卷",
             pagination:false,
             columns: [{
                 checkbox: true
             },
                 {
-                    field: 'fId',
+                    field: 'fCheckDetailId',
                     title: '主键',
                     visible: false
                 },

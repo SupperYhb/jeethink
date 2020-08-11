@@ -1,6 +1,8 @@
 package com.jeethink.business.mapper;
 
 import java.util.List;
+
+import com.jeethink.business.domain.FCheck;
 import com.jeethink.business.domain.FDepositdetail;
 
 /**

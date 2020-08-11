@@ -85,7 +85,7 @@
             f_checkdetail A
             LEFT JOIN f_cases B ON A.f_casecode = B.f_casecode
         WHERE
-	A.f_checkid=#{checkId}
+	A.f_checkid=#{checkId} AND A.f_state IS NULL
     </select>
 
     <select id="selectByCheckAndState" parameterType="String" resultMap="FCasesResult">

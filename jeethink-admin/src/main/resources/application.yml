@@ -21,6 +21,14 @@ jeethink:
   caseUrl: http://180.169.73.197:19224
   # 案卷柜Url
   lockerUrl: http://180.169.73.197:19210
+  # 视频平台Ip
+  cameraIp: 192.168.1.1
+  # 视频平台端口
+  cameraPort: 8000
+  # 视频平台用户名
+  cameraUsername: admin
+  # 视频平台密码
+  cameraPassword: Admin@9000
 
 # 开发环境配置
 server:

@@ -32,6 +32,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectFCheckdetailVo"/>
         where f_checkdetailid = #{fCheckdetailid}
     </select>
+
+    <select id="selectByCheckIdAndState" parameterType="String" resultMap="FCheckdetailResult">
+        select * from f_checkdetail where f_checkid =#{checkId} and f_state is null
+    </select>
         
     <insert id="insertFCheckdetail" parameterType="FCheckdetail">
         insert into f_checkdetail

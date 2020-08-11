@@ -126,6 +126,16 @@ public class FCheckController extends BaseController
     }
 
     /**
+     * 修改盘点主表
+     */
+    @PostMapping("/checkCase")
+    @ResponseBody
+    public AjaxResult checkCase(String state,String ids,String remark){
+        String Result=fCheckService.checkCase(state,ids,remark);
+        return Result.isEmpty()?success("操作成功"):error("操作失败");
+    }
+
+    /**
      * 修改保存盘点主表
      */
     @RequiresPermissions("business:check:edit")

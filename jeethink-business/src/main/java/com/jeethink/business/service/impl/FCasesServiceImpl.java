@@ -158,6 +158,13 @@ public class FCasesServiceImpl implements IFCasesService
     @Transactional
     public String insertFCases(FCases fCases,String peopleType)
     {
+        FCases findCases=new FCases();
+        findCases.setfCasecode(fCases.getfCasecode());
+        List<FCases> findList=fCasesMapper.selectFCasesList(findCases);
+        if(findList.size()>0)
+        {
+            return "案卷编号已存在！";
+        }
         //获取卷宗柜
         FLocker locker=fLockerService.selectFLockerById(fCases.getfLockerid());
         //获取货位

@@ -72,6 +72,22 @@
                     title: '盘点编号'
                 },
                 {
+                    field: 'fState',
+                    title: '状态',
+                    formatter:function (value, row, index) {
+                        if(row.fState=="0")
+                        {
+                            return "未盘点";
+                        }else if(row.fState=="1")
+                        {
+                            return "盘点中";
+                        }else if(row.fState=="2")
+                        {
+                            return "已盘点";
+                        }
+                    }
+                },
+                {
                     field: 'fCreateuserid',
                     title: '创建用户Id'
                 },

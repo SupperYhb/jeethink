@@ -1,6 +1,8 @@
 package com.jeethink.business.service;
 
 import java.util.List;
+import java.util.Map;
+
 import com.jeethink.business.domain.FCheck;
 
 /**
@@ -43,6 +45,16 @@ public interface IFCheckService
      * @return 结果
      */
     public int updateFCheck(FCheck fCheck);
+
+    /**
+     * 更新主表状态
+     * */
+    public int updateStates(String fCheckId);
+
+    /**
+     * 盘点明细
+     * */
+    public String checkCase(String state,String ids,String remark);
 
     /**
      * 批量删除盘点主表

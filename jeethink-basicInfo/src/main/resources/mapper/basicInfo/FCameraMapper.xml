@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeethink.business.mapper.FCameraMapper">
+    
+    <resultMap type="FCamera" id="FCameraResult">
+        <result property="fCameraid"    column="f_cameraid"    />
+        <result property="fName"    column="f_name"    />
+        <result property="fIp"    column="f_ip"    />
+        <result property="fUsername"    column="f_username"    />
+        <result property="fPassword"    column="f_password"    />
+        <result property="fPuid"    column="f_puid"    />
+    </resultMap>
+
+    <sql id="selectFCameraVo">
+        select f_cameraid, f_name, f_ip, f_username, f_password, f_puid from f_camera
+    </sql>
+
+    <select id="selectFCameraList" parameterType="FCamera" resultMap="FCameraResult">
+        <include refid="selectFCameraVo"/>
+        <where>  
+            <if test="fName != null  and fName != ''"> and f_name like concat('%', #{fName}, '%')</if>
+            <if test="fIp != null  and fIp != ''"> and f_ip = #{fIp}</if>
+            <if test="fUsername != null  and fUsername != ''"> and f_username like concat('%', #{fUsername}, '%')</if>
+            <if test="fPassword != null  and fPassword != ''"> and f_password = #{fPassword}</if>
+            <if test="fPuid != null  and fPuid != ''"> and f_puid = #{fPuid}</if>
+        </where>
+    </select>
+    
+    <select id="selectFCameraById" parameterType="String" resultMap="FCameraResult">
+        <include refid="selectFCameraVo"/>
+        where f_cameraid = #{fCameraid}
+    </select>
+        
+    <insert id="insertFCamera" parameterType="FCamera">
+        insert into f_camera
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="fCameraid != null">f_cameraid,</if>
+            <if test="fName != null">f_name,</if>
+            <if test="fIp != null">f_ip,</if>
+            <if test="fUsername != null">f_username,</if>
+            <if test="fPassword != null">f_password,</if>
+            <if test="fPuid != null">f_puid,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="fCameraid != null">#{fCameraid},</if>
+            <if test="fName != null">#{fName},</if>
+            <if test="fIp != null">#{fIp},</if>
+            <if test="fUsername != null">#{fUsername},</if>
+            <if test="fPassword != null">#{fPassword},</if>
+            <if test="fPuid != null">#{fPuid},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFCamera" parameterType="FCamera">
+        update f_camera
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="fName != null">f_name = #{fName},</if>
+            <if test="fIp != null">f_ip = #{fIp},</if>
+            <if test="fUsername != null">f_username = #{fUsername},</if>
+            <if test="fPassword != null">f_password = #{fPassword},</if>
+            <if test="fPuid != null">f_puid = #{fPuid},</if>
+        </trim>
+        where f_cameraid = #{fCameraid}
+    </update>
+
+    <delete id="deleteFCameraById" parameterType="String">
+        delete from f_camera where f_cameraid = #{fCameraid}
+    </delete>
+
+    <delete id="deleteFCameraByIds" parameterType="String">
+        delete from f_camera where f_cameraid in 
+        <foreach item="fCameraid" collection="array" open="(" separator="," close=")">
+            #{fCameraid}
+        </foreach>
+    </delete>
+
+</mapper>

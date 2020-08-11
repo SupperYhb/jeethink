@@ -1,6 +1,8 @@
 package com.jeethink.business.mapper;
 
 import java.util.List;
+
+import com.jeethink.business.domain.FCheck;
 import com.jeethink.business.domain.FCheckdetail;
 
 /**
@@ -27,6 +29,11 @@ public interface FCheckdetailMapper
      */
     public List<FCheckdetail> selectFCheckdetailList(FCheckdetail fCheckdetail);
 
+
+    /**
+     * 查询未盘点的案卷
+     * */
+    public List<FCheckdetail> selectByCheckIdAndState(String checkId);
     /**
      * 新增盘点明细
      * 

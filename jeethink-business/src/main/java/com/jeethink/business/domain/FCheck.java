@@ -30,6 +30,9 @@ public class FCheck extends BaseEntity
     @Excel(name = "盘点编号")
     private String fCode;
 
+    /** 状态（0未盘点，1盘点中，2已盘点） */
+    private Integer fState;
+
     /** 创建用户Id */
     @Excel(name = "创建用户Id")
     private String fCreateuserid;
@@ -78,7 +81,16 @@ public class FCheck extends BaseEntity
     {
         return fCode;
     }
-    public void setfCreateuserid(String fCreateuserid) 
+
+    public void setfState(Integer fState) {
+        this.fState = fState;
+    }
+
+    public Integer getfState() {
+        return fState;
+    }
+
+    public void setfCreateuserid(String fCreateuserid)
     {
         this.fCreateuserid = fCreateuserid;
     }
