@@ -2,6 +2,7 @@ package com.jeethink.requestutil.function;
 
 import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.databind.MappingIterator;
+import com.jeethink.common.config.Global;
 import com.jeethink.common.utils.AddressUtils;
 import com.jeethink.common.utils.http.HttpUtils;
 import com.jeethink.requestutil.entity.casetotalentity;
@@ -44,7 +45,7 @@ public class httprequest {
      * */
     public static String login()
     {
-        String data=HttpUtils.sendPost(url+"/udms/login","userName=admin&password=admin123","","");
+        String data=HttpUtils.sendPost(Global.getLockerUrl()+"/udms/login","userName=admin&password=admin123","","");
         if(!data.isEmpty()) {
             loginresult loginEntity = JSON.parseObject(data, loginresult.class);
             return loginEntity.getApiToken();
@@ -56,7 +57,8 @@ public class httprequest {
      * 获取案卷信息
      * */
     public static List<kdcaseentity> getCase(String ApiToken,String caseName,String caseNumber,String policeCode){
-       String obj= HttpUtils.sendGet(caseurl+"/dams/casePolices/page","currentPage=0&pageSize=10&caseName="+caseName+"&caseNumber="+caseNumber+"&policeCode="+policeCode,"",ApiToken);
+
+       String obj= HttpUtils.sendGet(Global.getCaseUrl()+"/dams/casePolices/page","currentPage=0&pageSize=10&caseName="+caseName+"&caseNumber="+caseNumber+"&policeCode="+policeCode,"",ApiToken);
        if(!obj.isEmpty()) {
            casetotalentity entity = JSON.parseObject(obj, casetotalentity.class);
            return entity.getList();
@@ -72,7 +74,7 @@ public class httprequest {
      * */
     public static String openBox(String uuid,String boxNum,String ApiToken)
     {
-       String result= HttpUtils.sendPost(url+cupboardControl,"uuid="+uuid+"&boxNum="+boxNum,"", ApiToken);
+       String result= HttpUtils.sendPost(Global.getLockerUrl()+cupboardControl,"uuid="+uuid+"&boxNum="+boxNum,"", ApiToken);
         return result;
     }
     /**
@@ -80,7 +82,7 @@ public class httprequest {
      * */
     public static String openBoxByCard(String cardCode,String boxCode,String uuid,String userName,String ApiToken)
     {
-        String result= HttpUtils.sendPost(url+bind,"cardCode="+cardCode+"&boxCode="+boxCode+"&lockerUuid="+uuid+"&useName="+userName,"", ApiToken);
+        String result= HttpUtils.sendPost(Global.getLockerUrl()+bind,"cardCode="+cardCode+"&boxCode="+boxCode+"&lockerUuid="+uuid+"&useName="+userName,"", ApiToken);
         return result;
     }
 
@@ -88,7 +90,7 @@ public class httprequest {
      * 删除绑定
      * */
     public static String deleteBind(String cardCode,String lockerCode,String positionCode,String ApiToken){
-    String Result=HttpUtils.sendDeletes(url+deleteBind+"/"+cardCode+"/"+lockerCode+"/"+positionCode,ApiToken);
+    String Result=HttpUtils.sendDeletes(Global.getLockerUrl()+deleteBind+"/"+cardCode+"/"+lockerCode+"/"+positionCode,ApiToken);
     return Result;
     }
 

@@ -30,6 +30,12 @@ public class Global
     /** 获取地址开关 */
     private static boolean addressEnabled;
 
+    /** 案卷获取接口 */
+    private static String caseUrl;
+
+    /** 案卷柜接口 */
+    private static String lockerUrl;
+
     public static String getName()
     {
         return name;
@@ -88,6 +94,22 @@ public class Global
     public void setAddressEnabled(boolean addressEnabled)
     {
         Global.addressEnabled = addressEnabled;
+    }
+
+    public void setCaseUrl(String caseUrl) {
+        Global.caseUrl = caseUrl;
+    }
+
+    public static String getCaseUrl() {
+        return caseUrl;
+    }
+
+    public void setLockerUrl(String lockerUrl) {
+        Global.lockerUrl = lockerUrl;
+    }
+
+    public static String getLockerUrl() {
+        return lockerUrl;
     }
 
     /**

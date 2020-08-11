@@ -17,6 +17,10 @@ jeethink:
   profile: /home/jeethink/uploadPath
   # 获取ip地址开关
   addressEnabled: true
+  # 案卷获取Url
+  caseUrl: http://180.169.73.197:19224
+  # 案卷柜Url
+  lockerUrl: http://180.169.73.197:19210
 
 # 开发环境配置
 server:
