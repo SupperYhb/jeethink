@@ -138,7 +138,7 @@ public class FBorrowServiceImpl implements IFBorrowService
             List<SysUser> userList= SysUserService.selectUserList(Sysuser);
             SysUser user=new SysUser();
             //判断民警是否存在，存在赋值卡信息
-            if(userList.size()>0&&!cardId.isEmpty()&&"0".equals(peopleType))
+            if(userList.size()>0&&!cardId.isEmpty()&&"0".equals(peopleType)&&userList.size()==1)
             {
                 user=userList.get(0);
                 user.setCardid(cardId);
@@ -177,7 +177,7 @@ public class FBorrowServiceImpl implements IFBorrowService
             List<SysUser> userList1= SysUserService.selectUserList(Sysuser1);
             SysUser user1=new SysUser();
             //判断民警是否存在，存在赋值卡信息
-            if(userList1.size()>0&&!cardId.isEmpty()&&"1".equals(peopleType))
+            if(userList1.size()>0&&!cardId.isEmpty()&&"1".equals(peopleType)&&userList.size()==1)
             {
                 user1=userList1.get(0);
                 user1.setCardid(cardId);
@@ -252,9 +252,9 @@ public class FBorrowServiceImpl implements IFBorrowService
 
         String apiToken= httprequest.login();
         String result="";
-        if(cardId.isEmpty()) {
+        if(cardId.isEmpty()&&!apiToken.isEmpty()) {
             result= httprequest.openBox(locker.getfLockercode(), position.getfPositioncode(), apiToken);
-        }else{
+        }else if(!apiToken.isEmpty()){
             result=httprequest.openBoxByCard(cardCode,position.getfPositioncode(),locker.getfLockercode(),userName,apiToken);
         }
         if(result.indexOf("成功")==-1) {

@@ -103,8 +103,8 @@ public class FDepositServiceImpl implements IFDepositService
 //                policeCode="1";
 //            }
 //        }
-       String apiTolen= httprequest.login();
-       List<kdcaseentity> list= httprequest.getCase(apiTolen,caseName,caseNumber,policeCode);
+//       String apiTolen= httprequest.login();
+       List<kdcaseentity> list= httprequest.getCase("",caseName,caseNumber,policeCode);
        //String openboxResult=httprequest.openBox("1000001478595110","1",apiTolen);
        List<FCases> casesList =fCasesMapper.selectFCasesList(null);
        List<kdcaseentity> resultList=list.stream().filter(kdcaseentity->casesList.stream().noneMatch(cases->cases.getfCasecode().equals(kdcaseentity.getNo()))).collect(Collectors.toList());
@@ -175,7 +175,7 @@ public class FDepositServiceImpl implements IFDepositService
             List<SysUser> userList= sysUserService.selectUserList(Sysuser);
             SysUser user=new SysUser();
             //判断民警是否存在，存在赋值卡信息
-            if(userList.size()>0&&!cardId.isEmpty()&&"0".equals(peopleType))
+            if(userList.size()>0&&!cardId.isEmpty()&&"0".equals(peopleType)&&userList.size()==1)
             {
                 user=userList.get(0);
                 user.setCardid(cardId);
@@ -207,7 +207,7 @@ public class FDepositServiceImpl implements IFDepositService
                 userRoleMapper.batchUserRole(userRolesList);
             }
             //判断辅办民警是不是空
-            if(!entity.getAssistPoliceCode().isEmpty()){
+            if(entity.getAssistPoliceCode()!=null){
                 //添加主办人员
                 //验证民警信息
                 SysUser Sysuser1=new SysUser();
@@ -280,9 +280,9 @@ public class FDepositServiceImpl implements IFDepositService
         //发送命令
         String apiToken= httprequest.login();
         String result="";
-        if(cardId.isEmpty()) {
+        if(cardId.isEmpty()&&!apiToken.isEmpty()) {
             result= httprequest.openBox(locker.getfLockercode(), position.getfPositioncode(), apiToken);
-        }else{
+        }else if(!apiToken.isEmpty()){
             result=httprequest.openBoxByCard(cardCode,position.getfPositioncode(),locker.getfLockercode(),userName,apiToken);
         }
         if(result.indexOf("成功")==-1) {
@@ -353,7 +353,7 @@ public class FDepositServiceImpl implements IFDepositService
             List<SysUser> userList= sysUserService.selectUserList(Sysuser);
             SysUser user=new SysUser();
             //判断民警是否存在，存在赋值卡信息
-            if(userList.size()>0&&!cardId.isEmpty()&&"0".equals(peopleType))
+            if(userList.size()>0&&!cardId.isEmpty()&&"0".equals(peopleType)&&userList.size()==1)
             {
                 user=userList.get(0);
                 user.setCardid(cardId);
@@ -392,7 +392,7 @@ public class FDepositServiceImpl implements IFDepositService
             List<SysUser> userList1= sysUserService.selectUserList(Sysuser1);
             SysUser user1=new SysUser();
             //判断民警是否存在，存在赋值卡信息
-            if(userList.size()>0&&!cardId.isEmpty()&&"1".equals(peopleType))
+            if(userList.size()>0&&!cardId.isEmpty()&&"1".equals(peopleType)&&userList.size()==1)
             {
                 user1=userList1.get(0);
                 user1.setCardid(cardId);
@@ -453,9 +453,9 @@ public class FDepositServiceImpl implements IFDepositService
         //发送命令
         String apiToken= httprequest.login();
         String result="";
-        if(cardId.isEmpty()) {
+        if(cardId.isEmpty()&&!apiToken.isEmpty()) {
             result= httprequest.openBox(locker.getfLockercode(), position.getfPositioncode(), apiToken);
-        }else{
+        }else if(!apiToken.isEmpty()){
             result=httprequest.openBoxByCard(cardCode,position.getfPositioncode(),locker.getfLockercode(),userName,apiToken);
         }
         if(result.indexOf("成功")==-1) {

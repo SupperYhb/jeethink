@@ -46,8 +46,11 @@
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">发卡分类：</label>
                                     <div class="col-sm-8">
-                                        <label><input name="peopleType"  type="radio" value="0" checked />主办民警 </label>
-                                        <label style="margin-left: 20px;"><input name="peopleType" type="radio" value="1" />副办民警 </label>
+                                        <select name="peopleType" class="form-control m-b" >
+                                            <option value="99">请选择</option>
+                                            <option value="0">主办民警</option>
+                                            <option value="1">副办民警</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
@@ -128,7 +131,7 @@
                     cardCode:cardCode,
                     cardId:cardId,
                     remark:fRemark,
-                    peopleType:$("[name=peopleType]:checked ").val()
+                    peopleType:$("[name=peopleType]").val()
                 };
                 $.operate.save("/business/borrow/outCase", Data);
             }
@@ -157,7 +160,11 @@
                     return;
                 }
             }
-            var peopleType=$("[name=peopleType]:checked ").val();
+            var peopleType=$("[name=peopleType]").val();
+            if(peopleType=="99"){
+                $.modal.msg("请选择发卡类型",modal_status.FAIL);
+                return false;
+            }
             var userId="";
             if(peopleType=="0"&&(data[0].fPolice1id==""||data[0].fPolice1id==undefined||data[0].fPolice1id==null))
             {

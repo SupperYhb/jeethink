@@ -117,8 +117,10 @@
                             if(row.fPeopletype=="0")
                             {
                                 return "主办民警";
-                            }else{
+                            }else if(row.fPeopletype=="1"){
                                 return "辅办民警";
+                            }else {
+                                return "未发卡";
                             }
                         }
                     },

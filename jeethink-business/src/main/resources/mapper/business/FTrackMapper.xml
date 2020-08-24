@@ -48,6 +48,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 '案卷取出'
                 WHEN 'GH' THEN
                 '案卷归还'
+                WHEN 'LQ' THEN
+		        '拉取存入'
             END type,
             f_businessdetailid,
             f_casecode,
