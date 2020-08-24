@@ -37,6 +37,14 @@ public class FCamera extends BaseEntity
     /** 科达平台puid */
     @Excel(name = "科达平台puid")
     private String fPuid;
+    /** 端口号 */
+    private String fPort;
+
+    /** 开始时间 */
+    private String beginDate;
+
+    /** 结束时间 */
+    private String endDate;
 
     public void setfCameraid(String fCameraid) 
     {
@@ -91,6 +99,30 @@ public class FCamera extends BaseEntity
     public String getfPuid() 
     {
         return fPuid;
+    }
+
+    public void setBeginDate(String beginDate) {
+        this.beginDate = beginDate;
+    }
+
+    public String getBeginDate() {
+        return beginDate;
+    }
+
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
+    }
+
+    public String getEndDate() {
+        return endDate;
+    }
+
+    public void setfPort(String fPort) {
+        this.fPort = fPort;
+    }
+
+    public String getfPort() {
+        return fPort;
     }
 
     @Override

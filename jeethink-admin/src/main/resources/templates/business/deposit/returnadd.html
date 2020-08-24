@@ -199,24 +199,24 @@
                 }
             }
         }
-        $.ajax({
-            cache : true,
-            type : "POST",
-            url : ctx + "basicInfo/card/selectCardByUserId",
-            data : {
-                "fUserid":userId,
-            },
-            async : false,
-            error : function(request) {
-                $.modal.alertError("系统错误");
-            },
-            success : function(data) {
-                debugger
-                if( data.rows.length>0) {
-                    var card= data.rows;
-                    $("[name=cardCode]").val(card[0].fCardcode);
-                    $("[name=cardId]").val(card[0].fCardid);
-                }else{
+        // $.ajax({
+        //     cache : true,
+        //     type : "POST",
+        //     url : ctx + "basicInfo/card/selectCardByUserId",
+        //     data : {
+        //         "fUserid":userId,
+        //     },
+        //     async : false,
+        //     error : function(request) {
+        //         $.modal.alertError("系统错误");
+        //     },
+        //     success : function(data) {
+        //         debugger
+        //         if( data.rows.length>0) {
+        //             var card= data.rows;
+        //             $("[name=cardCode]").val(card[0].fCardcode);
+        //             $("[name=cardId]").val(card[0].fCardid);
+        //         }else{
                     layer.open({
                         type: 2,
                         area: ['500px', '500px'],
@@ -243,9 +243,9 @@
                             return true;
                         }
                     });
-                }
-            }
-        });
+        //         }
+        //     }
+        // });
 
     }
     function loadTable()

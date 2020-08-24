@@ -3,7 +3,11 @@ package com.jeethink.web.controller.business;
 import java.util.List;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import com.fasterxml.jackson.annotation.JsonAlias;
+import com.jeethink.basicInfo.domain.FCamera;
 import com.jeethink.business.domain.FCases;
+import com.jeethink.business.service.IFBorrowService;
 import com.jeethink.framework.util.ShiroUtils;
 import com.jeethink.requestutil.entity.kdcaseentity;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -39,6 +43,8 @@ public class FDepositController extends BaseController
 
     @Autowired
     private IFDepositService fDepositService;
+    @Autowired
+    private IFBorrowService fBorrowService;
 
     @RequiresPermissions("business:deposit:view")
     @GetMapping()
@@ -145,6 +151,20 @@ public class FDepositController extends BaseController
         FDeposit fDeposit = fDepositService.selectFDepositById(fDepositid);
         mmap.put("fDeposit", fDeposit);
         return prefix + "/edit";
+    }
+
+    /**
+     * 根据入库主表Id查询平台及时间信息
+     * */
+    @PostMapping("/getFcameraById")
+    @ResponseBody
+    public AjaxResult getFcameraById(String depositId){
+        FCamera fCamera=fDepositService.getFcameraById(depositId);
+        if(fCamera==null)
+        {
+            fCamera=fBorrowService.getFcameraById(depositId);
+        }
+        return success(JSONObject.toJSONString(fCamera));
     }
 
     /**

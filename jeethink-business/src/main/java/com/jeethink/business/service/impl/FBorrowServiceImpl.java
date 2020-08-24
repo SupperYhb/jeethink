@@ -5,17 +5,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.jeethink.basicInfo.domain.FCamera;
 import com.jeethink.basicInfo.domain.FCard;
 import com.jeethink.basicInfo.domain.FLocker;
 import com.jeethink.basicInfo.domain.FPosition;
 import com.jeethink.basicInfo.service.IFCardService;
 import com.jeethink.basicInfo.service.IFLockerService;
 import com.jeethink.basicInfo.service.IFPositionService;
-import com.jeethink.business.domain.FBorrowdetail;
-import com.jeethink.business.domain.FCases;
-import com.jeethink.business.domain.FTrack;
+import com.jeethink.business.domain.*;
 import com.jeethink.business.service.IFBorrowdetailService;
 import com.jeethink.business.service.IFCasesService;
+import com.jeethink.common.config.Global;
 import com.jeethink.common.extend.codeType;
 import com.jeethink.common.extend.createId;
 import com.jeethink.framework.util.ShiroUtils;
@@ -29,7 +29,6 @@ import org.apache.shiro.crypto.hash.Md5Hash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.jeethink.business.mapper.FBorrowMapper;
-import com.jeethink.business.domain.FBorrow;
 import com.jeethink.business.service.IFBorrowService;
 import com.jeethink.common.core.text.Convert;
 import org.springframework.transaction.annotation.Transactional;
@@ -84,6 +83,27 @@ public class FBorrowServiceImpl implements IFBorrowService
     {
         fBorrow.setfUserid(ShiroUtils.getLoginName());
         return fBorrowMapper.selectFBorrowList(fBorrow);
+    }
+
+    /**
+     * 根据id查询时间及摄像头信息
+     * */
+    @Override
+    public FCamera getFcameraById(String borrowId) {
+        FBorrow fBorrow=fBorrowMapper.selectFBorrowById(borrowId);
+        if(fBorrow!=null) {
+            FCamera fCamera = new FCamera();
+            fCamera.setBeginDate(fBorrow.getfOpendate());
+            fCamera.setEndDate(fBorrow.getfEnddate());
+            fCamera.setfIp(Global.getCameraIp());
+            fCamera.setfUsername(Global.getCameraUsername());
+            fCamera.setfPassword(Global.getCameraPassword());
+            fCamera.setfPuid(Global.getPuid());
+            fCamera.setfPort(Global.getCameraPort());
+            return fCamera;
+        }else{
+            return null;
+        }
     }
 
     /**

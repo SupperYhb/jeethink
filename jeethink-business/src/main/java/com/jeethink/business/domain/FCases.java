@@ -115,6 +115,11 @@ public class FCases extends BaseEntity
     private String peopleType;
     /** 保存业务字段End */
 
+    /**
+     * 老货位编号(业务字段查询)
+     * */
+    private String oldPositioncode;
+
     /** 盘点业务查询字段 */
     /** 盘点状态 */
     private String fCheckState;
@@ -344,6 +349,14 @@ public class FCases extends BaseEntity
 
     public String getPeopleType() {
         return peopleType;
+    }
+
+    public void setOldPositioncode(String oldPositioncode) {
+        this.oldPositioncode = oldPositioncode;
+    }
+
+    public String getOldPositioncode() {
+        return oldPositioncode;
     }
 
     public void setfCheckState(String fCheckState) {

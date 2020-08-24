@@ -16,19 +16,21 @@ jeethink:
   # 文件路径 示例（ Windows配置D:/jeethink/uploadPath，Linux配置 /home/jeethink/uploadPath）
   profile: /home/jeethink/uploadPath
   # 获取ip地址开关
-  addressEnabled: true
+  addressEnabled: false
   # 案卷获取Url
-  caseUrl: http://180.169.73.197:19224
+  caseUrl: http://26.91.22.212:19224
   # 案卷柜Url
-  lockerUrl: http://180.169.73.197:19210
+  lockerUrl: http://26.91.22.214:19210
   # 视频平台Ip
-  cameraIp: 192.168.1.1
+  cameraIp: 139.196.182.143
   # 视频平台端口
-  cameraPort: 8000
+  cameraPort: 80
   # 视频平台用户名
-  cameraUsername: admin
+  cameraUsername: lin_test@kedacom
   # 视频平台密码
-  cameraPassword: Admin@9000
+  cameraPassword: kedacom123
+  #摄像头Puid
+  puid: 56c5b53243014df8be1c52749e766b55@kedacom
 
 # 开发环境配置
 server:

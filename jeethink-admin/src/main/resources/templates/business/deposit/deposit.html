@@ -157,7 +157,7 @@
                             if(row.fState==0) {
                                 actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="openBox(\'' + row.fDepositid + '\',\''+row.fType+'\')"><i class="fa fa-edit"></i>再次开柜</a> ');
                             }else{
-                                actions.push('<a class="btn btn-default btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="openVideo()"><i class="fa fa-key"></i>查看视频</a> ');
+                                actions.push('<a class="btn btn-default btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="openVideo(\'' + row.fDepositid + '\')"><i class="fa fa-key"></i>查看视频</a> ');
                             }
 
                             return actions.join('');
@@ -220,7 +220,7 @@
                         title: '卷宗柜名称'
                     },
                     {
-                        field: 'fPositioncode',
+                        field: 'oldPositioncode',
                         title: '货位编号'
                     },
                     {
@@ -266,16 +266,16 @@
             });
         }
         
-        function openVideo() {
+        function openVideo(Id) {
             layer.open({
                 type: 2,
-                area: ['500px', '500px'],
+                area: ['640px', '680px'],
                 fix: false,
                 //不固定
                 maxmin: true,
                 shade: 0.3,
-                title: '刷卡',
-                content: "/basicInfo/camera/video",
+                title: '查看视频',
+                content: "/basicInfo/camera/video?Id="+Id,
                 btn: ['确定', '关闭'],
                 // 弹层外区域关闭
                 shadeClose: true,

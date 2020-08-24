@@ -36,6 +36,17 @@ public class Global
     /** 案卷柜接口 */
     private static String lockerUrl;
 
+    /** 平台Ip */
+    private static String cameraIp;
+    /** 平台端口 */
+    private static String cameraPort;
+    /** 平台用户名 */
+    private static String cameraUsername;
+    /** 平台密码 */
+    private static String cameraPassword;
+    /** 摄像头puid */
+    private static String puid;
+
     public static String getName()
     {
         return name;
@@ -110,6 +121,46 @@ public class Global
 
     public static String getLockerUrl() {
         return lockerUrl;
+    }
+
+    public void setCameraIp(String cameraIp) {
+        Global.cameraIp = cameraIp;
+    }
+
+    public static String getCameraIp() {
+        return cameraIp;
+    }
+
+    public void setCameraPort(String cameraPort) {
+        Global.cameraPort = cameraPort;
+    }
+
+    public static String getCameraPort() {
+        return cameraPort;
+    }
+
+    public void setCameraUsername(String cameraUsername) {
+        Global.cameraUsername = cameraUsername;
+    }
+
+    public static String getCameraUsername() {
+        return cameraUsername;
+    }
+
+    public void setCameraPassword(String cameraPassword) {
+        Global.cameraPassword = cameraPassword;
+    }
+
+    public static String getCameraPassword() {
+        return cameraPassword;
+    }
+
+    public void setPuid(String puid) {
+        Global.puid = puid;
+    }
+
+    public static String getPuid() {
+        return puid;
     }
 
     /**

@@ -52,11 +52,13 @@
     </select>
 
     <select id="selectBydepositId" parameterType="String" resultMap="FCasesResult">
-        SELECT
-            B.*
+       SELECT
+            B.*,
+            C.f_positioncode oldPositioncode
         FROM
             f_depositdetail A
             LEFT JOIN f_cases B ON A.f_casecode = B.f_casecode
+            LEFT JOIN f_position C ON A.f_positionid = C.f_positionid
             where A.f_depositId=#{depositId}
     </select>
 
@@ -85,7 +87,7 @@
             f_checkdetail A
             LEFT JOIN f_cases B ON A.f_casecode = B.f_casecode
         WHERE
-	A.f_checkid=#{checkId} AND A.f_state IS NULL
+	A.f_checkid=#{checkId}
     </select>
 
     <select id="selectByCheckAndState" parameterType="String" resultMap="FCasesResult">

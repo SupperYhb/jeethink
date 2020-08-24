@@ -1,6 +1,8 @@
 package com.jeethink.business.service;
 
 import java.util.List;
+
+import com.jeethink.basicInfo.domain.FCamera;
 import com.jeethink.business.domain.FBorrow;
 import com.jeethink.business.domain.FCases;
 
@@ -28,6 +30,10 @@ public interface IFBorrowService
      */
     public List<FBorrow> selectFBorrowList(FBorrow fBorrow);
 
+    /**
+     * 根据id查询时间及摄像头信息
+     * */
+    public FCamera getFcameraById(String borrowId);
     /**
      * 借阅案卷
      * */

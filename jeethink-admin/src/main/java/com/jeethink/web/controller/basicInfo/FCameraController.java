@@ -45,8 +45,9 @@ public class FCameraController extends BaseController
      * 查看视频
      * */
     @GetMapping("/video")
-    public String video()
+    public String video(String Id,ModelMap mmap)
     {
+        mmap.put("BusinessId",Id);
         return prefix + "/video";
     }
     /**

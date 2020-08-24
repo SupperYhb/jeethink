@@ -18,7 +18,7 @@
                                             <li id="police">
                                                 <label>警号：</label>
                                                 <input type="text" name="policeCode" />
-                                                <input id="peopleType" th:value="${peopleType}" style="display:none">
+                                                <input id="peopleType" th:value="${peopleType}" style="display: none" >
                                             </li>
                                             <li>
                                                 <label>案卷名称：</label>
@@ -114,6 +114,8 @@
     var prefix = ctx + "business/deposit";
 
     $(document).ready(function () {
+        debugger
+        var a=$("#peopleType").val();
         if($("#peopleType").val()!="0"){
             $("#police").hide();
         }
@@ -219,24 +221,24 @@
                 }
             }
         }
-        $.ajax({
-            cache : true,
-            type : "POST",
-            url : ctx + "basicInfo/card/selectCardByUserId",
-            data : {
-                "fUserid":userId,
-            },
-            async : false,
-            error : function(request) {
-                $.modal.alertError("系统错误");
-            },
-            success : function(data) {
-                debugger
-                if( data.rows.length>0) {
-                    var card= data.rows;
-                    $("[name=cardCode]").val(card[0].fCardcode);
-                    $("[name=cardId]").val(card[0].fCardid);
-                }else{
+        // $.ajax({
+        //     cache : true,
+        //     type : "POST",
+        //     url : ctx + "basicInfo/card/selectCardByUserId",
+        //     data : {
+        //         "fUserid":userId,
+        //     },
+        //     async : false,
+        //     error : function(request) {
+        //         $.modal.alertError("系统错误");
+        //     },
+        //     success : function(data) {
+        //         debugger
+        //         if( data.rows.length>0) {
+        //             var card= data.rows;
+        //             $("[name=cardCode]").val(card[0].fCardcode);
+        //             $("[name=cardId]").val(card[0].fCardid);
+        //         }else{
                     layer.open({
                         type: 2,
                         area: ['500px', '500px'],
@@ -263,9 +265,9 @@
                             return true;
                         }
                     });
-                }
-            }
-        });
+        //         }
+        //     }
+        // });
 
     }
     function loadTable()

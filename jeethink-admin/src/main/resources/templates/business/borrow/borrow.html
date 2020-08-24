@@ -142,6 +142,8 @@
                             debugger
                             if(row.fState==0) {
                                 actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="openBox(\'' + row.fBorrowid + '\',\''+row.fType+'\')"><i class="fa fa-edit"></i>再次开柜</a> ');
+                            }else{
+                                actions.push('<a class="btn btn-default btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="openVideo(\'' + row.fBorrowid + '\')"><i class="fa fa-key"></i>查看视频</a> ');
                             }
                             return actions.join('');
                         }
@@ -198,14 +200,6 @@
                         title: '办案单位编号'
                     },
                     {
-                        field: 'fLockername',
-                        title: '卷宗柜名称'
-                    },
-                    {
-                        field: 'fPositioncode',
-                        title: '货位编号'
-                    },
-                    {
                         field: 'fCrimeaddress',
                         title: '案发地址'
                     }]
@@ -239,6 +233,29 @@
                 }
             });
         }
+        function openVideo(Id) {
+            layer.open({
+                type: 2,
+                area: ['640px', '680px'],
+                fix: false,
+                //不固定
+                maxmin: true,
+                shade: 0.3,
+                title: '查看视频',
+                content: "/basicInfo/camera/video?Id="+Id,
+                btn: ['确定', '关闭'],
+                // 弹层外区域关闭
+                shadeClose: true,
+                yes: function(index,layero){
+                    //  debugger
+                    var iframeWin = layero.find('iframe')[0];
+                    var str= iframeWin.contentWindow.submitHandler(index, layero);
+                    layer.close(index);
+                },
+                cancel: function(index) {
+                    return true;
+                }
+            });}
     </script>
 </body>
 </html>

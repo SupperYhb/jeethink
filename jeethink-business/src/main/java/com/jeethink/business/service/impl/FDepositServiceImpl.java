@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.jeethink.basicInfo.domain.FCamera;
 import com.jeethink.basicInfo.domain.FCard;
 import com.jeethink.basicInfo.domain.FLocker;
 import com.jeethink.basicInfo.domain.FPosition;
@@ -18,6 +19,7 @@ import com.jeethink.business.domain.FTrack;
 import com.jeethink.business.mapper.FCasesMapper;
 import com.jeethink.business.service.IFCasesService;
 import com.jeethink.business.service.IFDepositdetailService;
+import com.jeethink.common.config.Global;
 import com.jeethink.common.extend.codeType;
 import com.jeethink.common.extend.createId;
 import com.jeethink.framework.util.ShiroUtils;
@@ -510,6 +512,27 @@ public class FDepositServiceImpl implements IFDepositService
             return "发送命令失败";
         }
     }
+    /**
+     * 根据入库主表Id查询平台及时间信息
+     * */
+    @Override
+    public FCamera getFcameraById(String depositId) {
+        FDeposit fDeposit=fDepositMapper.selectFDepositById(depositId);
+        if(fDeposit!=null) {
+            FCamera fCamera = new FCamera();
+            fCamera.setBeginDate(fDeposit.getfOpendate());
+            fCamera.setEndDate(fDeposit.getfEnddate());
+            fCamera.setfIp(Global.getCameraIp());
+            fCamera.setfUsername(Global.getCameraUsername());
+            fCamera.setfPassword(Global.getCameraPassword());
+            fCamera.setfPuid(Global.getPuid());
+            fCamera.setfPort(Global.getCameraPort());
+            return fCamera;
+        }else{
+            return null;
+        }
+    }
+
     /**
      * 新增存放案卷
      * 

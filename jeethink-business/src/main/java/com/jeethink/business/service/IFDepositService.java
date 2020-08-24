@@ -2,6 +2,7 @@ package com.jeethink.business.service;
 
 import java.util.List;
 
+import com.jeethink.basicInfo.domain.FCamera;
 import com.jeethink.business.domain.FCases;
 import com.jeethink.business.domain.FDeposit;
 import com.jeethink.requestutil.entity.kdcaseentity;
@@ -45,6 +46,10 @@ public interface IFDepositService
      * 再次打开柜门
      * */
     String OpenBox(String id,String type);
+    /**
+     * 根据入库主表Id查询平台及时间信息
+     * */
+    public FCamera getFcameraById(String depositId);
     /**
      * 新增存放案卷
      * 
