@@ -146,6 +146,10 @@
                         field: 'fEnddate',
                         title: '关门时间'
                     },
+                    {
+                        field: 'fCardusername',
+                        title: '刷卡人'
+                    },
                 {
                     field: 'fRemark',
                     title: '备注'
@@ -228,7 +232,17 @@
                     {
                         field: 'fCrimeaddress',
                         title: '案发地址'
-                    }]
+                    },
+                    {
+                        title: '操作',
+                        align: 'center',
+                        formatter: function(value, row, index) {
+                            var actions = [];
+                            actions.push('<a class="btn btn-success btn-xs ' + editFlag + '" href="javascript:void(0)" onclick="print()"><i class="fa fa-edit"></i>打印</a> ');
+                            return actions.join('');
+                        }
+                    }
+                ]
             });
         };
         function addCase()
@@ -278,6 +292,30 @@
                 shade: 0.3,
                 title: '查看视频',
                 content: "/basicInfo/camera/video?Id="+Id,
+                btn: ['确定', '关闭'],
+                // 弹层外区域关闭
+                shadeClose: true,
+                yes: function(index,layero){
+                    //  debugger
+                    var iframeWin = layero.find('iframe')[0];
+                    var str= iframeWin.contentWindow.submitHandler(index, layero);
+                    layer.close(index);
+                },
+                cancel: function(index) {
+                    return true;
+                }
+            });
+        }
+        function print() {
+            layer.open({
+                type: 2,
+                area: ['640px', '680px'],
+                fix: false,
+                //不固定
+                maxmin: true,
+                shade: 0.3,
+                title: '查看视频',
+                content: "/system/config/print?code=123",
                 btn: ['确定', '关闭'],
                 // 弹层外区域关闭
                 shadeClose: true,

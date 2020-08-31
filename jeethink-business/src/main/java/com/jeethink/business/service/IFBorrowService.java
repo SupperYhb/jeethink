@@ -37,7 +37,7 @@ public interface IFBorrowService
     /**
      * 借阅案卷
      * */
-    String outCase(List<FCases> list, String cardCode, String cardId, String remark,String peopleType);
+    String outCase(List<FCases> list, String cardCode, String cardId, String remark,String peopleType,String policeAccount,String policeName);
 
     /**
      * 新增借阅

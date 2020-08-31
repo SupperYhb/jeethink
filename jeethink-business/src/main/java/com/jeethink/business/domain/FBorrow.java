@@ -61,6 +61,11 @@ public class FBorrow extends BaseEntity
     /** 发卡人员类型（0主办民警，1辅办民警） */
     @Excel(name = "发卡人员类型（0主办民警，1辅办民警）")
     private String fPeopletype;
+    /** 刷卡用户Id */
+    private String fCarduserid;
+    /** 刷卡用户名 */
+    private String fCardusername;
+
 
     public void setfBorrowid(String fBorrowid) 
     {
@@ -167,6 +172,22 @@ public class FBorrow extends BaseEntity
 
     public String getfPeopletype() {
         return fPeopletype;
+    }
+
+    public void setfCarduserid(String fCarduserid) {
+        this.fCarduserid = fCarduserid;
+    }
+
+    public String getfCarduserid() {
+        return fCarduserid;
+    }
+
+    public void setfCardusername(String fCardusername) {
+        this.fCardusername = fCardusername;
+    }
+
+    public String getfCardusername() {
+        return fCardusername;
     }
 
     @Override

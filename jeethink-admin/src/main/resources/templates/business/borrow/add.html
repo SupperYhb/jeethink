@@ -46,7 +46,7 @@
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">发卡分类：</label>
                                     <div class="col-sm-8">
-                                        <select name="peopleType" class="form-control m-b" >
+                                        <select name="peopleType" class="form-control m-b" onchange="getPolice()">
                                             <option value="99">请选择</option>
                                             <option value="0">主办民警</option>
                                             <option value="1">副办民警</option>
@@ -66,6 +66,24 @@
                         </div>
                     </div>
                     <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">警号：</label>
+                                <div class="col-sm-8">
+                                    <input name="policeAccount" class="form-control" type="text">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">民警名称：</label>
+                                <div class="col-sm-8">
+                                    <input name="policeName" class="form-control" type="text">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 15px;">
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">备注：</label>
@@ -74,9 +92,9 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
+                     </div>
                 </fieldset>
+                    </div>
             </div>
 
         </div>
@@ -126,12 +144,26 @@
                 var fRemark=$("[name=fRemark]").val();
                 var data=$("#" + table.options.id).bootstrapTable('getSelections');
                 debugger
+                var policeAccount=$("[name=policeAccount]").val();
+                var policeName=$("[name=policeName]").val();
+                if($("[name=peopleType]").val()!="99"&&(policeAccount==""||policeName==""))
+                {
+                    $.modal.msg("请输入民警信息",modal_status.FAIL);
+                    return false;
+                }
+                if($("[name=peopleType]").val()!="99"&&cardId=="")
+                {
+                    $.modal.msg("请给民警发卡",modal_status.FAIL);
+                    return false;
+                }
                 var Data={
                     list:JSON.stringify(data),
                     cardCode:cardCode,
                     cardId:cardId,
                     remark:fRemark,
-                    peopleType:$("[name=peopleType]").val()
+                    peopleType:$("[name=peopleType]").val(),
+                    policeAccount,
+                    policeName
                 };
                 $.operate.save("/business/borrow/outCase", Data);
             }
@@ -165,36 +197,43 @@
                 $.modal.msg("请选择发卡类型",modal_status.FAIL);
                 return false;
             }
+            var policeAccount=$("[name=policeAccount]").val();
+            var policeName=$("[name=policeName]").val();
+            if(policeAccount==""||policeName=="")
+            {
+                $.modal.msg("请输入民警信息才能发卡",modal_status.FAIL);
+                return false;
+            }
             var userId="";
-            if(peopleType=="0"&&(data[0].fPolice1id==""||data[0].fPolice1id==undefined||data[0].fPolice1id==null))
-            {
-                $.modal.msg("当前主办民警不存在，无法进行发卡",modal_status.FAIL);
-                return false;
-            }else if(peopleType=="0"&&(data[0].fPolice1id!=""||data[0].fPolice1id!=undefined||data[0].fPolice1id!=null)){
-                userId=data[0].fPolice1id;
-            }
-            if(peopleType=="1"&&(data[0].fPolice2id==""||data[0].fPolice2id==undefined||data[0].fPolice2id==null))
-            {
-                $.modal.msg("当前辅办民警不存在，无法进行发卡",modal_status.FAIL);
-                return false;
-            }else if(peopleType=="1"&&(data[0].fPolice2id!=""||data[0].fPolice2id!=undefined||data[0].fPolice2id!=null)){
-                userId=data[0].fPolice2id;
-            }
-            if(peopleType=="1"){
-                var asscode="";
-                debugger
-                for(var i=0;i<data.length;i++)
-                {
-                    if(asscode==""||asscode==null||asscode==undefined)
-                    {
-                        asscode=data[i].fPolice2id;
-                    }
-                    if(asscode!=data[i].fPolice2id){
-                        $.modal.msg("一次只能借阅同一民警及辅警的案卷",modal_status.FAIL);
-                        return false;
-                    }
-                }
-            }
+            // if(peopleType=="0"&&(data[0].fPolice1id==""||data[0].fPolice1id==undefined||data[0].fPolice1id==null))
+            // {
+            //     $.modal.msg("当前主办民警不存在，无法进行发卡",modal_status.FAIL);
+            //     return false;
+            // }else if(peopleType=="0"&&(data[0].fPolice1id!=""||data[0].fPolice1id!=undefined||data[0].fPolice1id!=null)){
+            //     userId=data[0].fPolice1id;
+            // }
+            // if(peopleType=="1"&&(data[0].fPolice2id==""||data[0].fPolice2id==undefined||data[0].fPolice2id==null))
+            // {
+            //     $.modal.msg("当前辅办民警不存在，无法进行发卡",modal_status.FAIL);
+            //     return false;
+            // }else if(peopleType=="1"&&(data[0].fPolice2id!=""||data[0].fPolice2id!=undefined||data[0].fPolice2id!=null)){
+            //     userId=data[0].fPolice2id;
+            // }
+            // if(peopleType=="1"){
+            //     var asscode="";
+            //     debugger
+            //     for(var i=0;i<data.length;i++)
+            //     {
+            //         if(asscode==""||asscode==null||asscode==undefined)
+            //         {
+            //             asscode=data[i].fPolice2id;
+            //         }
+            //         if(asscode!=data[i].fPolice2id){
+            //             $.modal.msg("一次只能借阅同一民警及辅警的案卷",modal_status.FAIL);
+            //             return false;
+            //         }
+            //     }
+            // }
             if(pass)
             {
                 layer.open({
@@ -296,7 +335,14 @@
         };
         $.table.init(options);
     }
-
+    function getPolice() {
+        var peopleType=$("[name=peopleType]").val();
+        var data=$("#" + table.options.id).bootstrapTable('getSelections');
+        var policeAccount=(peopleType=="0"? data[0].fPolice1id:data[0].fPolice2id);
+        var policeName=(peopleType=="0"? data[0].fPolice1name:data[0].fPolice2name);
+        $("[name=policeAccount]").val(policeAccount);
+        $("[name=policeName]").val(policeName);
+    }
 </script>
 <script th:inline="javascript">
     function getlocker() {

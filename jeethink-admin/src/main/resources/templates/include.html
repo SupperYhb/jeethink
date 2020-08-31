@@ -94,6 +94,19 @@
 	<script th:src="@{/jointjs/jquery.js}"></script>
 </div>
 
+<!-- 打印 -->
+<div th:fragment="hiprint-css">
+	<link th:href="@{/hiprint/css/hiprint.css}" rel="stylesheet"/>
+	<link th:href="@{/hiprint/css/print-lock.css}" rel="stylesheet"/>
+</div>
+<div th:fragment="hiprint-js">
+	<script th:src="@{/hiprint/polyfill.min.js}"></script>
+	<script th:src="@{/hiprint/hiprint.bundle.js}"></script>
+	<script th:src="@{/hiprint/plugins/JsBarcode.all.min.js}"></script>
+	<script th:src="@{/hiprint/plugins/qrcode.js}"></script>
+	<script th:src="@{/hiprint/plugins/jquery.hiwprint.js}"></script>
+</div>
+
 <!-- ui布局插件 -->
 <div th:fragment="layout-latest-css">
     <link th:href="@{/ajax/libs/jquery-layout/jquery.layout-latest.css}" rel="stylesheet"/>

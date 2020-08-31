@@ -116,7 +116,7 @@ public class FDepositServiceImpl implements IFDepositService
      * */
     @Override
     @Transactional
-    public String addCaseIn(List<kdcaseentity> list, String lockerId, String positionId, String cardCode, String cardId, String remark,String peopleType) {
+    public String addCaseIn(List<kdcaseentity> list, String lockerId, String positionId, String cardCode, String cardId, String remark,String peopleType,String policeAccount,String policeName) {
 
         //获取卷宗柜
         FLocker locker=fLockerService.selectFLockerById(lockerId);
@@ -133,6 +133,8 @@ public class FDepositServiceImpl implements IFDepositService
         fDeposit.setfState(1);
         fDeposit.setfBusinesstype("1");
         fDeposit.setfPeopletype(peopleType);
+        fDeposit.setfCarduserid(policeAccount);
+        fDeposit.setfCardusername(policeName);
         for (kdcaseentity entity:list
              ) {
             //添加案卷
@@ -170,8 +172,8 @@ public class FDepositServiceImpl implements IFDepositService
             //添加主办人员
             //验证民警信息
             SysUser Sysuser=new SysUser();
-            Sysuser.setLoginName(entity.getMainPoliceCode());
-            Sysuser.setUserName(entity.getMainPoliceName());
+            Sysuser.setLoginName(policeAccount);
+            Sysuser.setUserName(policeName);
             List<SysUser> userList= sysUserService.selectUserList(Sysuser);
             SysUser user=new SysUser();
             //判断民警是否存在，存在赋值卡信息
@@ -187,12 +189,12 @@ public class FDepositServiceImpl implements IFDepositService
                     user.setCardid(cardId);
                     user.setCardcode(cardCode);
                 }
-                user.setLoginName(entity.getMainPoliceCode());
-                user.setUserName(entity.getMainPoliceName());
+                user.setLoginName(policeAccount);
+                user.setUserName(policeName);
                 user.setSalt(ShiroUtils.randomSalt());
                 user.setUserType("1");
                 user.setDeptId((long)110);
-                String password= new Md5Hash(entity.getMainPoliceCode()+"123456"+user.getSalt()).toHex();
+                String password= new Md5Hash(policeAccount+"123456"+user.getSalt()).toHex();
                 user.setPassword(password);
                 user.setCreateBy(ShiroUtils.getLoginName());
                 user.setSource(source);
@@ -207,47 +209,47 @@ public class FDepositServiceImpl implements IFDepositService
                 userRoleMapper.batchUserRole(userRolesList);
             }
             //判断辅办民警是不是空
-            if(entity.getAssistPoliceCode()!=null){
-                //添加主办人员
-                //验证民警信息
-                SysUser Sysuser1=new SysUser();
-                Sysuser1.setLoginName(entity.getAssistPoliceCode());
-                Sysuser1.setUserName(entity.getAssistPoliceName());
-                List<SysUser> userList1= sysUserService.selectUserList(Sysuser1);
-                SysUser user1=new SysUser();
-                //判断民警是否存在，存在赋值卡信息
-                if(userList1.size()>0&&!cardId.isEmpty()&&"0".equals(peopleType))
-                {
-                    user1=userList1.get(0);
-                    user1.setCardid(cardId);
-                    user1.setCardcode(cardCode);
-                    sysUserService.updateUser(user1);
-                }else if(userList1.size()==1){
-                    String source="1";
-                    if(!cardId.isEmpty()&&"1".equals(peopleType)) {
-                        user1.setCardid(cardId);
-                        user1.setCardcode(cardCode);
-                    }
-                    user1.setLoginName(entity.getAssistPoliceCode());
-                    user1.setUserName(entity.getAssistPoliceName());
-                    user1.setSalt(ShiroUtils.randomSalt());
-                    user1.setUserType("1");
-                    user1.setDeptId((long)110);
-                    String password= new Md5Hash(entity.getAssistPoliceCode()+"123456"+user1.getSalt()).toHex();
-                    user1.setPassword(password);
-                    user1.setCreateBy(ShiroUtils.getLoginName());
-                    user1.setSource(source);
-                    user1.setCreateBy(source=="0"?"填写":"平台拉取");
-                    sysUserService.insertUser(user1);
-                    //设置用户角色
-                    List<SysUserRole> userRolesList1=new ArrayList<>();
-                    SysUserRole userRole1=new SysUserRole();
-                    userRole1.setRoleId((long)3);
-                    userRole1.setUserId(user1.getUserId());
-                    userRolesList1.add(userRole1);
-                    userRoleMapper.batchUserRole(userRolesList1);
-                }
-            }
+//            if(entity.getAssistPoliceCode()!=null){
+//                //添加主办人员
+//                //验证民警信息
+//                SysUser Sysuser1=new SysUser();
+//                Sysuser1.setLoginName(entity.getAssistPoliceCode());
+//                Sysuser1.setUserName(entity.getAssistPoliceName());
+//                List<SysUser> userList1= sysUserService.selectUserList(Sysuser1);
+//                SysUser user1=new SysUser();
+//                //判断民警是否存在，存在赋值卡信息
+//                if(userList1.size()>0&&!cardId.isEmpty()&&"0".equals(peopleType))
+//                {
+//                    user1=userList1.get(0);
+//                    user1.setCardid(cardId);
+//                    user1.setCardcode(cardCode);
+//                    sysUserService.updateUser(user1);
+//                }else if(userList1.size()==1){
+//                    String source="1";
+//                    if(!cardId.isEmpty()&&"1".equals(peopleType)) {
+//                        user1.setCardid(cardId);
+//                        user1.setCardcode(cardCode);
+//                    }
+//                    user1.setLoginName(entity.getAssistPoliceCode());
+//                    user1.setUserName(entity.getAssistPoliceName());
+//                    user1.setSalt(ShiroUtils.randomSalt());
+//                    user1.setUserType("1");
+//                    user1.setDeptId((long)110);
+//                    String password= new Md5Hash(entity.getAssistPoliceCode()+"123456"+user1.getSalt()).toHex();
+//                    user1.setPassword(password);
+//                    user1.setCreateBy(ShiroUtils.getLoginName());
+//                    user1.setSource(source);
+//                    user1.setCreateBy(source=="0"?"填写":"平台拉取");
+//                    sysUserService.insertUser(user1);
+//                    //设置用户角色
+//                    List<SysUserRole> userRolesList1=new ArrayList<>();
+//                    SysUserRole userRole1=new SysUserRole();
+//                    userRole1.setRoleId((long)3);
+//                    userRole1.setUserId(user1.getUserId());
+//                    userRolesList1.add(userRole1);
+//                    userRoleMapper.batchUserRole(userRolesList1);
+//                }
+//            }
             //添加轨迹
             FTrack fTrack=new FTrack();
             fTrack.setfTrackid(createId.getID());
@@ -260,7 +262,7 @@ public class FDepositServiceImpl implements IFDepositService
             fTrack.setfCreatedate(new Date());
             fTrackService.insertFTrack(fTrack);
         }
-        String userName=peopleType=="0"?list.get(0).getMainPoliceName():list.get(0).getAssistPoliceName();
+        String userName=policeName;
         //修改卡
         if(!cardId.isEmpty())
         {
@@ -268,8 +270,8 @@ public class FDepositServiceImpl implements IFDepositService
             fDeposit.setfCardcode(cardCode);
             FCard card=new FCard();
             card.setfCardid(cardId);
-            card.setfUserid("0".equals(peopleType)? list.get(0).getMainPoliceCode():list.get(0).getAssistPoliceCode());
-            card.setfUsername("0".equals(peopleType)?list.get(0).getMainPoliceName():list.get(0).getAssistPoliceName());
+            card.setfUserid(policeAccount);
+            card.setfUsername(policeName);
             card.setfState("1");
             card.setfLockercode(locker.getfLockercode());
             card.setfPositioncode(position.getfPositioncode());
@@ -307,7 +309,7 @@ public class FDepositServiceImpl implements IFDepositService
 
     @Override
     @Transactional
-    public String addCaseReturn(List<FCases> list, String lockerId, String positionId, String cardCode, String cardId, String remark,String peopleType) {
+    public String addCaseReturn(List<FCases> list, String lockerId, String positionId, String cardCode, String cardId, String remark,String peopleType,String policeAccount,String policeName) {
 
         //获取卷宗柜
         FLocker locker=fLockerService.selectFLockerById(lockerId);
@@ -348,8 +350,8 @@ public class FDepositServiceImpl implements IFDepositService
             //添加主办人员
             //验证民警信息
             SysUser Sysuser=new SysUser();
-            Sysuser.setLoginName(entity.getfPolice1id());
-            Sysuser.setUserName(entity.getfPolice1name());
+            Sysuser.setLoginName(policeAccount);
+            Sysuser.setUserName(policeName);
             List<SysUser> userList= sysUserService.selectUserList(Sysuser);
             SysUser user=new SysUser();
             //判断民警是否存在，存在赋值卡信息
@@ -365,12 +367,12 @@ public class FDepositServiceImpl implements IFDepositService
                     user.setCardid(cardId);
                     user.setCardcode(cardCode);
                 }
-                user.setLoginName(entity.getfPolice1id());
-                user.setUserName(entity.getfPolice1name());
+                user.setLoginName(policeAccount);
+                user.setUserName(policeName);
                 user.setSalt(ShiroUtils.randomSalt());
                 user.setUserType("1");
                 user.setDeptId((long)110);
-                String password= new Md5Hash(entity.getfPolice1id()+"123456"+user.getSalt()).toHex();
+                String password= new Md5Hash(policeAccount+"123456"+user.getSalt()).toHex();
                 user.setPassword(password);
                 user.setCreateBy(ShiroUtils.getLoginName());
                 user.setSource(source);
@@ -386,43 +388,43 @@ public class FDepositServiceImpl implements IFDepositService
             }
             //添加辅主办人员
             //验证民警信息
-            SysUser Sysuser1=new SysUser();
-            Sysuser1.setLoginName(entity.getfPolice2id());
-            Sysuser1.setUserName(entity.getfPolice2name());
-            List<SysUser> userList1= sysUserService.selectUserList(Sysuser1);
-            SysUser user1=new SysUser();
-            //判断民警是否存在，存在赋值卡信息
-            if(userList.size()>0&&!cardId.isEmpty()&&"1".equals(peopleType)&&userList.size()==1)
-            {
-                user1=userList1.get(0);
-                user1.setCardid(cardId);
-                user1.setCardcode(cardCode);
-                sysUserService.updateUser(user1);
-            }else if(userList1.size()==0){
-                String source="1";
-                if(!cardId.isEmpty()) {
-                    user1.setCardid(cardId);
-                    user1.setCardcode(cardCode);
-                }
-                user1.setLoginName(entity.getfPolice2id());
-                user1.setUserName(entity.getfPolice2name());
-                user1.setSalt(ShiroUtils.randomSalt());
-                user1.setUserType("1");
-                user1.setDeptId((long)110);
-                String password= new Md5Hash(entity.getfPolice2id()+"123456"+user1.getSalt()).toHex();
-                user1.setPassword(password);
-                user1.setCreateBy(ShiroUtils.getLoginName());
-                user1.setSource(source);
-                user1.setCreateBy(source=="0"?"填写":"平台拉取");
-                sysUserService.insertUser(user1);
-                //设置用户角色
-                List<SysUserRole> userRolesList1=new ArrayList<>();
-                SysUserRole userRole1=new SysUserRole();
-                userRole1.setRoleId((long)3);
-                userRole1.setUserId(user1.getUserId());
-                userRolesList1.add(userRole1);
-                userRoleMapper.batchUserRole(userRolesList1);
-            }
+//            SysUser Sysuser1=new SysUser();
+//            Sysuser1.setLoginName(entity.getfPolice2id());
+//            Sysuser1.setUserName(entity.getfPolice2name());
+//            List<SysUser> userList1= sysUserService.selectUserList(Sysuser1);
+//            SysUser user1=new SysUser();
+//            //判断民警是否存在，存在赋值卡信息
+//            if(userList.size()>0&&!cardId.isEmpty()&&"1".equals(peopleType)&&userList.size()==1)
+//            {
+//                user1=userList1.get(0);
+//                user1.setCardid(cardId);
+//                user1.setCardcode(cardCode);
+//                sysUserService.updateUser(user1);
+//            }else if(userList1.size()==0){
+//                String source="1";
+//                if(!cardId.isEmpty()) {
+//                    user1.setCardid(cardId);
+//                    user1.setCardcode(cardCode);
+//                }
+//                user1.setLoginName(entity.getfPolice2id());
+//                user1.setUserName(entity.getfPolice2name());
+//                user1.setSalt(ShiroUtils.randomSalt());
+//                user1.setUserType("1");
+//                user1.setDeptId((long)110);
+//                String password= new Md5Hash(entity.getfPolice2id()+"123456"+user1.getSalt()).toHex();
+//                user1.setPassword(password);
+//                user1.setCreateBy(ShiroUtils.getLoginName());
+//                user1.setSource(source);
+//                user1.setCreateBy(source=="0"?"填写":"平台拉取");
+//                sysUserService.insertUser(user1);
+//                //设置用户角色
+//                List<SysUserRole> userRolesList1=new ArrayList<>();
+//                SysUserRole userRole1=new SysUserRole();
+//                userRole1.setRoleId((long)3);
+//                userRole1.setUserId(user1.getUserId());
+//                userRolesList1.add(userRole1);
+//                userRoleMapper.batchUserRole(userRolesList1);
+//            }
             //添加轨迹
             FTrack fTrack=new FTrack();
             fTrack.setfTrackid(createId.getID());
@@ -435,7 +437,6 @@ public class FDepositServiceImpl implements IFDepositService
             fTrack.setfCreatedate(new Date());
             fTrackService.insertFTrack(fTrack);
         }
-        String userName=peopleType=="0"?list.get(0).getfPolice1id():list.get(0).getfPolice2id();
         //修改卡
         if(!cardId.isEmpty())
         {
@@ -443,8 +444,8 @@ public class FDepositServiceImpl implements IFDepositService
             fDeposit.setfCardcode(cardCode);
             FCard card=new FCard();
             card.setfCardid(cardId);
-            card.setfUserid(peopleType.equals("0")? list.get(0).getfPolice1id():list.get(0).getfPolice2id());
-            card.setfUsername(peopleType.equals("0")?list.get(0).getfPolice1name():list.get(0).getfPolice2name());
+            card.setfUserid(policeAccount);
+            card.setfUsername(policeName);
             card.setfState("1");
             fCardService.updateFCard(card,"");
         }else{
@@ -456,7 +457,7 @@ public class FDepositServiceImpl implements IFDepositService
         if(cardId.isEmpty()&&!apiToken.isEmpty()) {
             result= httprequest.openBox(locker.getfLockercode(), position.getfPositioncode(), apiToken);
         }else if(!apiToken.isEmpty()){
-            result=httprequest.openBoxByCard(cardCode,position.getfPositioncode(),locker.getfLockercode(),userName,apiToken);
+            result=httprequest.openBoxByCard(cardCode,position.getfPositioncode(),locker.getfLockercode(),policeName,apiToken);
         }
         if(result.indexOf("成功")==-1) {
             fDeposit.setfState(0);

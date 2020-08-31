@@ -77,6 +77,15 @@ public class SysConfigController extends BaseController
         return prefix + "/add";
     }
 
+
+    /**
+     * 打印
+     * */
+    @GetMapping("/print")
+    public String print(String code, ModelMap mmap){
+        mmap.put("code",code);
+        return prefix+"/print";}
+
     /**
      * 新增保存参数配置
      */

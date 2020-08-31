@@ -37,11 +37,11 @@ public interface IFDepositService
     /**
      * 添加入库信息（平台拉取）
      * */
-    public String addCaseIn(List<kdcaseentity> list,String lockerId,String positionId,String cardCode,String cardId,String remark,String peopleType);
+    public String addCaseIn(List<kdcaseentity> list,String lockerId,String positionId,String cardCode,String cardId,String remark,String peopleType,String policeAccount,String policeName);
     /**
      * 添加归还信息
      * */
-    public String addCaseReturn(List<FCases> list, String lockerId, String positionId, String cardCode, String cardId, String remark,String peopleType);
+    public String addCaseReturn(List<FCases> list, String lockerId, String positionId, String cardCode, String cardId, String remark,String peopleType,String policeAccount,String policeName);
     /**
      * 再次打开柜门
      * */

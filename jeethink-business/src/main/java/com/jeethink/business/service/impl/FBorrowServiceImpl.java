@@ -111,7 +111,7 @@ public class FBorrowServiceImpl implements IFBorrowService
      * */
     @Override
     @Transactional
-    public String outCase(List<FCases> list, String cardCode, String cardId, String remark,String peopleType) {
+    public String outCase(List<FCases> list, String cardCode, String cardId, String remark,String peopleType,String policeAccount,String policeName) {
 
 
         FBorrow borrow=new FBorrow();
@@ -123,6 +123,8 @@ public class FBorrowServiceImpl implements IFBorrowService
         borrow.setfState(1);
         borrow.setfCardcode(cardCode);
         borrow.setfPeopletype(peopleType);
+        borrow.setfCarduserid(policeAccount);
+        borrow.setfCardusername(policeName);
         for (FCases entity:list
              ) {
             //修改案卷状态
@@ -133,8 +135,8 @@ public class FBorrowServiceImpl implements IFBorrowService
             //添加主办人员
             //验证民警信息
             SysUser Sysuser=new SysUser();
-            Sysuser.setLoginName(entity.getfPolice1id());
-            Sysuser.setUserName(entity.getfPolice1name());
+            Sysuser.setLoginName(policeAccount);
+            Sysuser.setUserName(policeName);
             List<SysUser> userList= SysUserService.selectUserList(Sysuser);
             SysUser user=new SysUser();
             //判断民警是否存在，存在赋值卡信息
@@ -150,12 +152,12 @@ public class FBorrowServiceImpl implements IFBorrowService
                     user.setCardid(cardId);
                     user.setCardcode(cardCode);
                 }
-                user.setLoginName(entity.getfPolice1id());
-                user.setUserName(entity.getfPolice1name());
+                user.setLoginName(policeAccount);
+                user.setUserName(policeName);
                 user.setSalt(ShiroUtils.randomSalt());
                 user.setUserType("1");
                 user.setDeptId((long)110);
-                String password= new Md5Hash(entity.getfPolice1id()+"123456"+user.getSalt()).toHex();
+                String password= new Md5Hash(policeAccount+"123456"+user.getSalt()).toHex();
                 user.setPassword(password);
                 user.setCreateBy(ShiroUtils.getLoginName());
                 user.setSource(source);
@@ -171,43 +173,43 @@ public class FBorrowServiceImpl implements IFBorrowService
             }
             //添加辅办人员
             //验证民警信息
-            SysUser Sysuser1=new SysUser();
-            Sysuser1.setLoginName(entity.getfPolice2id());
-            Sysuser1.setUserName(entity.getfPolice2name());
-            List<SysUser> userList1= SysUserService.selectUserList(Sysuser1);
-            SysUser user1=new SysUser();
-            //判断民警是否存在，存在赋值卡信息
-            if(userList1.size()>0&&!cardId.isEmpty()&&"1".equals(peopleType)&&userList.size()==1)
-            {
-                user1=userList1.get(0);
-                user1.setCardid(cardId);
-                user1.setCardcode(cardCode);
-                SysUserService.updateUser(user1);
-            }else if(userList1.size()==0){
-                String source="1";
-                if(!cardId.isEmpty()&&"1".equals(peopleType)) {
-                    user1.setCardid(cardId);
-                    user1.setCardcode(cardCode);
-                }
-                user1.setLoginName(entity.getfPolice2id());
-                user1.setUserName(entity.getfPolice2name());
-                user1.setSalt(ShiroUtils.randomSalt());
-                user1.setUserType("1");
-                user1.setDeptId((long)110);
-                String password= new Md5Hash(entity.getfPolice2id()+"123456"+user1.getSalt()).toHex();
-                user1.setPassword(password);
-                user1.setCreateBy(ShiroUtils.getLoginName());
-                user1.setSource(source);
-                user1.setCreateBy(source=="0"?"填写":"平台拉取");
-                SysUserService.insertUser(user);
-                //设置用户角色
-                List<SysUserRole> userRolesList1=new ArrayList<>();
-                SysUserRole userRole1=new SysUserRole();
-                userRole1.setRoleId((long)3);
-                userRole1.setUserId(user1.getUserId());
-                userRolesList1.add(userRole1);
-                userRoleMapper.batchUserRole(userRolesList1);
-            }
+//            SysUser Sysuser1=new SysUser();
+//            Sysuser1.setLoginName(entity.getfPolice2id());
+//            Sysuser1.setUserName(entity.getfPolice2name());
+//            List<SysUser> userList1= SysUserService.selectUserList(Sysuser1);
+//            SysUser user1=new SysUser();
+//            //判断民警是否存在，存在赋值卡信息
+//            if(userList1.size()>0&&!cardId.isEmpty()&&"1".equals(peopleType)&&userList.size()==1)
+//            {
+//                user1=userList1.get(0);
+//                user1.setCardid(cardId);
+//                user1.setCardcode(cardCode);
+//                SysUserService.updateUser(user1);
+//            }else if(userList1.size()==0){
+//                String source="1";
+//                if(!cardId.isEmpty()&&"1".equals(peopleType)) {
+//                    user1.setCardid(cardId);
+//                    user1.setCardcode(cardCode);
+//                }
+//                user1.setLoginName(entity.getfPolice2id());
+//                user1.setUserName(entity.getfPolice2name());
+//                user1.setSalt(ShiroUtils.randomSalt());
+//                user1.setUserType("1");
+//                user1.setDeptId((long)110);
+//                String password= new Md5Hash(entity.getfPolice2id()+"123456"+user1.getSalt()).toHex();
+//                user1.setPassword(password);
+//                user1.setCreateBy(ShiroUtils.getLoginName());
+//                user1.setSource(source);
+//                user1.setCreateBy(source=="0"?"填写":"平台拉取");
+//                SysUserService.insertUser(user);
+//                //设置用户角色
+//                List<SysUserRole> userRolesList1=new ArrayList<>();
+//                SysUserRole userRole1=new SysUserRole();
+//                userRole1.setRoleId((long)3);
+//                userRole1.setUserId(user1.getUserId());
+//                userRolesList1.add(userRole1);
+//                userRoleMapper.batchUserRole(userRolesList1);
+//            }
 
 
             FBorrowdetail detail=new FBorrowdetail();
@@ -238,8 +240,8 @@ public class FBorrowServiceImpl implements IFBorrowService
             borrow.setfType(1);
             FCard card=new FCard();
             card.setfCardid(cardId);
-            card.setfUserid(peopleType.equals("0")? list.get(0).getfPolice1id():list.get(0).getfPolice2id());
-            card.setfUsername(peopleType.equals("0")? list.get(0).getfPolice1name():list.get(0).getfPolice2name());
+            card.setfUserid(policeAccount);
+            card.setfUsername(policeName);
             card.setfState("1");
             card.setfLockercode(locker.getfLockercode());
             card.setfPositioncode(position.getfPositioncode());
@@ -247,7 +249,6 @@ public class FBorrowServiceImpl implements IFBorrowService
         }else{
             borrow.setfType(0);
         }
-        String userName=peopleType=="0"?list.get(0).getfPolice1id():list.get(0).getfPolice2id();
         //发送命令
 
         String apiToken= httprequest.login();
@@ -255,7 +256,7 @@ public class FBorrowServiceImpl implements IFBorrowService
         if(cardId.isEmpty()&&!apiToken.isEmpty()) {
             result= httprequest.openBox(locker.getfLockercode(), position.getfPositioncode(), apiToken);
         }else if(!apiToken.isEmpty()){
-            result=httprequest.openBoxByCard(cardCode,position.getfPositioncode(),locker.getfLockercode(),userName,apiToken);
+            result=httprequest.openBoxByCard(cardCode,position.getfPositioncode(),locker.getfLockercode(),policeName,apiToken);
         }
         if(result.indexOf("成功")==-1) {
             borrow.setfState(0);

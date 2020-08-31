@@ -18,10 +18,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="fEnddate"    column="f_enddate"    />
         <result property="fBusinesstype"    column="f_businesstype"    />
         <result property="fPeopletype"    column="f_peopletype"    />
+        <result property="fCarduserid"    column="f_carduserid"    />
+        <result property="fCardusername"    column="f_cardusername"    />
     </resultMap>
 
     <sql id="selectFDepositVo">
-        select f_depositid, f_code, f_userid, f_username, f_createdate, f_type, f_state, f_remark, f_cardcode,f_opendate,f_enddate,f_peopletype,f_businesstype from f_deposit
+        select f_depositid, f_code, f_userid, f_username, f_createdate, f_type, f_state, f_remark, f_cardcode,f_opendate,f_enddate,f_peopletype,f_businesstype,f_carduserid,f_cardusername from f_deposit
     </sql>
 
     <select id="selectFDepositList" parameterType="FDeposit" resultMap="FDepositResult">
@@ -63,6 +65,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fEnddate != null">f_enddate,</if>
             <if test="fBusinesstype != null">f_businesstype,</if>
             <if test="fPeopletype != null">f_peopletype,</if>
+            <if test="fCarduserid != null">f_carduserid,</if>
+            <if test="fCardusername != null">f_cardusername,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="fDepositid != null">#{fDepositid},</if>
@@ -78,6 +82,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fEnddate != null">#{fEnddate},</if>
             <if test="fBusinesstype != null">#{fBusinesstype},</if>
             <if test="fPeopletype != null">#{fPeopletype},</if>
+            <if test="fCarduserid != null">#{fCarduserid},</if>
+            <if test="fCardusername != null">#{fCardusername},</if>
          </trim>
     </insert>
 

@@ -17,10 +17,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="fEnddate"    column="f_enddate"    />
         <result property="fRemark"    column="f_remark"    />
         <result property="fPeopletype"    column="f_peopletype"    />
+        <result property="fCarduserid"    column="f_carduserid"    />
+        <result property="fCardusername"    column="f_cardusername"    />
     </resultMap>
 
     <sql id="selectFBorrowVo">
-        select f_borrowid, f_code, f_userid, f_username, f_createdate, f_type, f_state, f_cardcode, f_opendate, f_enddate,f_peopletype from f_borrow
+        select f_borrowid, f_code, f_userid, f_username, f_createdate, f_type, f_state, f_cardcode, f_opendate, f_enddate,f_peopletype,f_carduserid,f_cardusername from f_borrow
     </sql>
 
     <select id="selectFBorrowList" parameterType="FBorrow" resultMap="FBorrowResult">
@@ -60,6 +62,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fEnddate != null">f_enddate,</if>
             <if test="fRemark != null">f_remark,</if>
             <if test="fPeopletype != null">f_peopletype,</if>
+            <if test="fCarduserid != null">f_carduserid,</if>
+            <if test="fCardusername != null">f_cardusername,</if>
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="fBorrowid != null">#{fBorrowid},</if>
@@ -74,6 +78,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fEnddate != null">#{fEnddate},</if>
             <if test="fRemark != null">#{fRemark},</if>
             <if test="fPeopletype != null">#{fPeopletype},</if>
+            <if test="fCarduserid != null">#{fCarduserid},</if>
+            <if test="fCardusername != null">#{fCardusername},</if>
          </trim>
     </insert>
 

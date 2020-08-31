@@ -58,23 +58,14 @@ public class httprequest {
      * */
     public static List<kdcaseentity> getCase(String ApiToken,String caseName,String caseNumber,String policeCode){
 
-//       String obj= HttpUtils.sendGet(Global.getCaseUrl()+"/dams/casePolices/page","currentPage=0&pageSize=10&caseName="+caseName+"&caseNumber="+caseNumber+"&policeCode="+policeCode,"",ApiToken);
-//       if(!obj.isEmpty()) {
-//           casetotalentity entity = JSON.parseObject(obj, casetotalentity.class);
-//           return entity.getList();
-//       }else{
-//           return new ArrayList<kdcaseentity>();
-//       }
-        List<kdcaseentity> list=new ArrayList<>();
-        for (int i=0;i<10;i++){
-            kdcaseentity kdcaseentity=new kdcaseentity();
-            kdcaseentity.setName("123案卷");
-            kdcaseentity.setNo("121"+i);
-            kdcaseentity.setCrimeAddress("cadsa");
-            kdcaseentity.setAcceptanceTime("2020-08-24");
-            list.add(kdcaseentity);
-        }
-        return list;
+       String obj= HttpUtils.sendGet(Global.getCaseUrl()+"/dams/casePolices/page","currentPage=0&pageSize=10&caseName="+caseName+"&caseNumber="+caseNumber+"&policeCode="+policeCode,"",ApiToken);
+       if(!obj.isEmpty()) {
+           casetotalentity entity = JSON.parseObject(obj, casetotalentity.class);
+           return entity.getList();
+       }else{
+           return new ArrayList<kdcaseentity>();
+       }
+
     }
 
 
