@@ -42,14 +42,15 @@
         var hiprintTemplate = new hiprint.PrintTemplate();
         <!-- 模板对象添加打印面板 paperHeader：页眉线 paperFooter：页尾线-->
         var width = Number(qrcodeData[0]);
-        var height = Number(qrcodeData[1]);
+        var height =Number(qrcodeData[1]);
         var panel = hiprintTemplate.addPrintPanel({ width: width, height: height ,paperNumberDisabled:true});
         <!-- 二维码 打印面板添加二维码元素-->
         var val = articlecode;
         var qrWH = Number(qrcodeData[2]);
-        var topMargin = Number(qrcodeData[3]);
-        var leftMargin = Number(qrcodeData[4]);
-        panel.addPrintText({ options: { width: qrWH, height: qrWH, top: topMargin, left: leftMargin, title: val, textType: 'qrcode' } });
+        var qrHE = Number(qrcodeData[3]);
+        var topMargin =Number(qrcodeData[4]);
+        var leftMargin = Number(qrcodeData[5]);
+        panel.addPrintText({ options: { width: qrWH, height: qrHE, top: topMargin, left: leftMargin, title: val, textType: 'barcode' } });
 
         if(isPrint){
             <!-- 直接打印 -->

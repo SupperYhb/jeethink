@@ -129,6 +129,8 @@ public class FCases extends BaseEntity
     private String fCheckDate;
     /** 盘点明细Id */
     private String fCheckDetailId;
+    /** 借阅时间 */
+    private String borrowDate;
 
     public void setfId(String fId)
     {
@@ -390,6 +392,15 @@ public class FCases extends BaseEntity
     public String getfCheckDetailId() {
         return fCheckDetailId;
     }
+
+    public void setBorrowDate(String borrowDate) {
+        this.borrowDate = borrowDate;
+    }
+
+    public String getBorrowDate() {
+        return borrowDate;
+    }
+
 
     @Override
     public String toString() {

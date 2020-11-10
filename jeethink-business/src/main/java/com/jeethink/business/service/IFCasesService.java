@@ -1,6 +1,7 @@
 package com.jeethink.business.service;
 
 import java.util.List;
+
 import com.jeethink.business.domain.FCases;
 
 /**
@@ -55,6 +56,11 @@ public interface IFCasesService
      * 查询可盘点信息
      * */
     public List<FCases> selectByCheckAndState(String checkId);
+
+    /**
+     * 查询超期借阅列表
+     * */
+    public List<FCases> selectOverdueList();
     /**
      * 新增案卷
      *

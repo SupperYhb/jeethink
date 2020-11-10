@@ -1,6 +1,7 @@
 package com.jeethink.business.mapper;
 
 import java.util.List;
+
 import com.jeethink.business.domain.FCases;
 
 /**
@@ -50,6 +51,12 @@ public interface FCasesMapper
      * 查询可盘点信息
      * */
     public List<FCases> selectByCheckAndState(String checkId);
+
+    /**
+     * 查询超期借阅列表
+     * */
+    public List<FCases> selectOverdueList(String overTimeCount);
+
     /**
      * 新增案卷
      *

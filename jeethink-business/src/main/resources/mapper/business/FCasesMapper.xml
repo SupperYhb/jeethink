@@ -30,6 +30,7 @@
         <result property="fRemark"    column="f_remark"    />
         <result property="fCheckDate"    column="f_checkdate"    />
         <result property="fCheckDetailId"    column="f_checkdetailid"    />
+        <result property="borrowDate"    column="borrowDate"    />
     </resultMap>
 
     <sql id="selectFCasesVo">
@@ -99,7 +100,31 @@
         WHERE
             A.f_checkid=#{checkId}	AND A.f_state IS NULL
     </select>
-
+    <select id="selectOverdueList" parameterType="String" resultMap="FCasesResult">
+        SELECT
+            *
+        FROM
+            (
+            SELECT
+                a.*,(
+                SELECT
+                    b.createdate
+                FROM
+                    f_borrowdetail b
+                WHERE
+                    b.f_casecode = a.f_casecode
+                ORDER BY
+                    b.createdate DESC
+                    LIMIT 1
+                ) borrowDate
+            FROM
+                f_cases a
+            WHERE
+                a.f_state = 2
+            ) t
+        WHERE
+            TIMESTAMPDIFF( HOUR, t.borrowDate, CURRENT_TIMESTAMP )> #{overTimeCount}
+    </select>
     <insert id="insertFCases" parameterType="FCases">
         insert into f_cases
         <trim prefix="(" suffix=")" suffixOverrides=",">

@@ -131,6 +131,10 @@ public class FBorrowServiceImpl implements IFBorrowService
             FCases cases=new FCases();
             cases.setfId(entity.getfId());
             cases.setfState(2);
+            cases.setfLockerid("");
+            cases.setfLockername("");
+            cases.setfPositionid("");
+            cases.setfPositioncode("");
             fCasesService.updateFCases(cases);
             //添加主办人员
             //验证民警信息

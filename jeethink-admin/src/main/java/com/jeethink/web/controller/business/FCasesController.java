@@ -109,6 +109,17 @@ public class FCasesController extends BaseController
         List<FCases> list=fCasesService.selectByCheckAndState(checkId);
         return getDataTable(list);
     }
+
+    /**
+     * 查询超期借阅列表
+     */
+    @PostMapping("/selectOverdueList")
+    @ResponseBody
+    public TableDataInfo selectOverdueList(){
+        List<FCases> list=fCasesService.selectOverdueList();
+        return getDataTable(list);
+    }
+
     /**
      * 导出案卷列表
      */

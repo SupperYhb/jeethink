@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('新增箱体')" />
+    <style>
+        .box{
+            height: 95%;
+            background-color: #2d93ca;
+            width: 600px;
+            padding: 1px;
+            position: relative;
+            display: inline-block;
+            margin-left: 10px;
+        }
+        .title{
+            width:98%;
+            height: 20px;
+            background-color: #1eacae;
+            margin:0px 6px 0px 6px;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            font-size: 19px;
+            color: white;
+            font-weight: bold;
+        }
+        .boxbody{
+            width: 98%;
+            height: 88%;
+            background-color: #3b8ab8;
+            margin:0px 6px 0px 6px;
+            padding: 1px;
+        }
+        .delete{
+            width: 98%;
+            height: 38px;
+            background-color: #77b8d8;
+            margin:0px 6px 0px 6px;
+        }
+        .position{
+            width:142px;
+            height: 70px;
+            background-color: #62b8ef;
+            margin: 2px;
+            border-radius: 3px;
+            line-height: 72px;
+            text-align: center;
+            color: white;
+            font-size: 16px;
+            float: left;
+            cursor: pointer;
+        }
+        .use{
+            background-color: #ef8062;
+        }
+    </style>
+</head>
+<body class="white-bg">
+    <div class="wrapper wrapper-content animated fadeInRight ibox-content" id="boxList" style="float: left;
+overflow-y: hidden;
+overflow-x: auto;word-break:keep-all;display:block;
+white-space: nowrap;background-color: #0e9aef;width: 1720px; height: 90%;padding: 1px;">
+<!--        <div style="height: 95%;background-color: #2d93ca;width: 600px;padding: 1px;">-->
+<!--            <div class="title">-->
+<!--                主柜-->
+<!--            </div>-->
+<!--            <div class="boxbody" id="box1">-->
+
+<!--            </div>-->
+<!--            <div class="delete">-->
+<!--                <a class="btn" style="width: 100%" onclick="$.operate.removeAll()">-->
+<!--                    <i class="fa fa-remove"></i> 删除-->
+<!--                </a>-->
+<!--            </div>-->
+<!--        </div>-->
+    </div>
+    <div class="col-sm-12 search-collapse">
+        <form id="formId">
+            <div class="select-list">
+                <ul>
+                    <li>
+                        <label>状态：</label>
+                    </li>
+                    <li>
+                        <a class="btn " style=" background-color: #62b8ef;color: white">
+                            空闲中
+                        </a>
+                    </li>
+                    <li>
+                        <a class="btn " style=" background-color: #ef8062;color: white">
+                            使用中
+                        </a>
+                    </li>
+                    <li>
+                        <label>操作：</label>
+                    </li>
+                    <li>
+                        <a class="btn btn-primary btn-rounded btn-sm" onclick="addMain(1)"><i class="fa fa-plus"></i>&nbsp;新增主柜</a>
+                        <a class="btn btn-warning btn-rounded btn-sm" onclick="addMain(2)"><i class="fa fa-plus"></i>&nbsp;新增副柜</a>
+                        <a class="btn btn-info btn-rounded btn-sm" onclick="save()"><i class="fa fa-key"></i>&nbsp;保存</a>
+                    </li>
+                </ul>
+            </div>
+        </form>
+    </div>
+    <th:block th:include="include :: footer" />
+    <script th:inline="javascript">
+        var lockerId='[[${lockerId}]]';
+        //生成柜子列表参数
+        var firstrow=0;
+        var secondrow=6;
+        var thirdrow=12;
+        var fourthrow=18;
+        var boxnum=1;
+        var prefix = ctx + "basicInfo/box"
+        $("#form-box-add").validate({
+            focusCleanup: true
+        });
+        $(function(){
+            //setPosition();
+        })
+
+        function save() {
+            var boxIds=[];
+            var types=[];
+            var boxCounts=[];
+            var isPass=false;
+                $("[name=boxId]").each(function(){
+                    boxIds.push($(this).val());
+                });
+                $("[name=type]").each(function(){
+                    types.push($(this).val());
+                    if($(this).val()=="1"){
+                        isPass=true;
+                    }
+                });
+                if(!isPass)
+                {
+                    $.modal.msg("柜子必须存在主箱体",modal_status.FAIL);
+                    return false;
+                }
+                $("[name=boxCount]").each(function(){
+                    boxCounts.push($(this).val());
+                });
+                if(boxCounts.length==0)
+                {
+                    $.modal.msg("请设置柜子列表",modal_status.FAIL);
+                    return false;
+                }
+                var entityArray=[];
+                for(var i=0;i<boxCounts.length;i++)
+                {
+                    var entity= {
+                        boxId:boxIds[i],
+                        type:types[i],
+                        sort:i+1,
+                        lockerId:lockerId,
+                        boxCount:boxCounts[i]
+                    };
+                    entityArray.push(entity);
+                }
+                $.operate.save("/basicInfo/box/setBox",{"json":JSON.stringify(entityArray)});
+        }
+        //添加主柜
+        function addMain(type)
+        {
+            debugger
+            var boxhtml="";
+            boxhtml+='<div class="box" name="box'+boxnum+'">';
+            boxhtml+='<div class="title">';
+            boxhtml+='<input name="type" value="'+type+'" style="display: none">';
+            boxhtml+='<input name="boxId" value="" style="display: none">';
+            boxhtml+='<input name="boxCount" value="24" style="display: none">';
+            boxhtml+=(type=="1"?"主柜":"副柜");
+            boxhtml+='</div>';
+            boxhtml+='<div class="boxbody" id="box'+boxnum+'">';
+            boxhtml+='</div>';
+            boxhtml+='<div class="delete">';
+            boxhtml+='<a class="btn" style="width: 100%" onclick="remove(\''+boxnum+'\')">';
+            boxhtml+='<i class="fa fa-remove"></i> 删除';
+            boxhtml+='</a>';
+            boxhtml+='</div>';
+            boxhtml+=' </div>';
+            $("#boxList").append(boxhtml);
+            if(firstrow!=0) {
+                firstrow = fourthrow;
+                secondrow = 6 + fourthrow;
+                thirdrow = 12 + fourthrow;
+                fourthrow = 18 + fourthrow;
+            }
+            debugger
+            var html="";
+            for(var j=0;j<6;j++)
+            {
+                html+='<div class="position">';
+                html+=(firstrow+=1)+'号门';
+                html+='</div>';
+                html+='<div class="position">';
+                html+=(secondrow+=1)+'号门';
+                html+='</div>';
+                html+='<div class="position">';
+                html+=(thirdrow+=1)+'号门';
+                html+='</div>';
+                html+='<div class="position">';
+                html+=(fourthrow+=1)+'号门';
+                html+='</div>';
+            }
+            $("#box"+boxnum+"").append(html);
+            boxnum++;
+        }
+        //初始化获取
+        function setPosition(){
+
+            debugger
+            for(var i=0;i<3;i++)
+            {
+                var boxhtml="";
+                boxhtml+='<div class="box">';
+                boxhtml+='<div class="title">';
+                boxhtml+='<input name="type" value="" style="display: none">';
+                boxhtml+='主柜';
+                boxhtml+='</div>';
+                boxhtml+='<div class="boxbody" id="box'+boxnum+'">';
+                boxhtml+='</div>';
+                boxhtml+='<div class="delete">';
+                boxhtml+='<a class="btn" style="width: 100%" onclick="$.operate.removeAll()">';
+                boxhtml+='<i class="fa fa-remove"></i> 删除';
+                boxhtml+='</a>';
+                boxhtml+='</div>';
+                boxhtml+=' </div>';
+                $("#boxList").append(boxhtml);
+                if(i!=0)
+                {
+                    firstrow=fourthrow;
+                    secondrow=6+fourthrow;
+                    thirdrow=12+fourthrow;
+                    fourthrow=18+fourthrow;
+                }
+                debugger
+                var html="";
+                for(var j=0;j<6;j++)
+                {
+                    html+='<div class="position">';
+                    html+=(firstrow+=1)+'号门';
+                    html+='</div>';
+                    html+='<div class="position">';
+                    html+=(secondrow+=1)+'号门';
+                    html+='</div>';
+                    html+='<div class="position">';
+                    html+=(thirdrow+=1)+'号门';
+                    html+='</div>';
+                    html+='<div class="position">';
+                    html+=(fourthrow+=1)+'号门';
+                    html+='</div>';
+                }
+                $("#box"+boxnum+"").append(html);
+                boxnum++;
+            }
+        }
+        //删除柜子列表
+        function remove(number) {
+            $('[name=box'+number+']').remove();
+        }
+        //保存
+        function submitHandler() {
+            if ($.validate.form()) {
+                $.operate.save(prefix + "/add", $('#form-card-add').serialize());
+            }
+        }
+    </script>
+</body>
+</html>

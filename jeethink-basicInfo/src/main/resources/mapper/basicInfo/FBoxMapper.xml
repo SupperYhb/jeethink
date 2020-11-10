@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeethink.basicInfo.mapper.FBoxMapper">
+    
+    <resultMap type="FBox" id="FBoxResult">
+        <result property="fBoxid"    column="f_boxid"    />
+        <result property="fBoxcode"    column="f_boxcode"    />
+        <result property="fLockerid"    column="f_lockerid"    />
+        <result property="fCount"    column="f_count"    />
+        <result property="fSort"    column="f_sort"    />
+    </resultMap>
+
+    <sql id="selectFBoxVo">
+        select f_boxid, f_boxcode, f_lockerid, f_count, f_sort from f_box
+    </sql>
+
+    <select id="selectFBoxList" parameterType="FBox" resultMap="FBoxResult">
+        <include refid="selectFBoxVo"/>
+        <where>  
+            <if test="fBoxcode != null  and fBoxcode != ''"> and f_boxcode = #{fBoxcode}</if>
+            <if test="fLockerid != null  and fLockerid != ''"> and f_lockerid = #{fLockerid}</if>
+            <if test="fCount != null "> and f_count = #{fCount}</if>
+            <if test="fSort != null "> and f_sort = #{fSort}</if>
+        </where>
+    </select>
+    
+    <select id="selectFBoxById" parameterType="String" resultMap="FBoxResult">
+        <include refid="selectFBoxVo"/>
+        where f_boxid = #{fBoxid}
+    </select>
+        
+    <insert id="insertFBox" parameterType="FBox">
+        insert into f_box
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="fBoxid != null">f_boxid,</if>
+            <if test="fBoxcode != null">f_boxcode,</if>
+            <if test="fLockerid != null">f_lockerid,</if>
+            <if test="fCount != null">f_count,</if>
+            <if test="fSort != null">f_sort,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="fBoxid != null">#{fBoxid},</if>
+            <if test="fBoxcode != null">#{fBoxcode},</if>
+            <if test="fLockerid != null">#{fLockerid},</if>
+            <if test="fCount != null">#{fCount},</if>
+            <if test="fSort != null">#{fSort},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFBox" parameterType="FBox">
+        update f_box
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="fBoxcode != null">f_boxcode = #{fBoxcode},</if>
+            <if test="fLockerid != null">f_lockerid = #{fLockerid},</if>
+            <if test="fCount != null">f_count = #{fCount},</if>
+            <if test="fSort != null">f_sort = #{fSort},</if>
+        </trim>
+        where f_boxid = #{fBoxid}
+    </update>
+
+    <delete id="deleteFBoxById" parameterType="String">
+        delete from f_box where f_boxid = #{fBoxid}
+    </delete>
+
+    <delete id="deleteFBoxByIds" parameterType="String">
+        delete from f_box where f_boxid in 
+        <foreach item="fBoxid" collection="array" open="(" separator="," close=")">
+            #{fBoxid}
+        </foreach>
+    </delete>
+
+</mapper>

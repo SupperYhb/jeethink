@@ -15,5 +15,6 @@
     <orderEntry type="module" module-name="jeethink-framework" />
     <orderEntry type="module" module-name="jeethink-system" />
     <orderEntry type="module" module-name="jeethink-requestutil" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-tx:5.1.3.RELEASE" level="project" />
   </component>
 </module>

@@ -11,9 +11,7 @@ import com.jeethink.basicInfo.domain.FPosition;
 import com.jeethink.basicInfo.service.IFCardService;
 import com.jeethink.basicInfo.service.IFLockerService;
 import com.jeethink.basicInfo.service.IFPositionService;
-import com.jeethink.business.domain.FDeposit;
-import com.jeethink.business.domain.FDepositdetail;
-import com.jeethink.business.domain.FTrack;
+import com.jeethink.business.domain.*;
 import com.jeethink.business.service.IFDepositService;
 import com.jeethink.business.service.IFDepositdetailService;
 import com.jeethink.common.extend.codeType;
@@ -29,7 +27,6 @@ import org.apache.shiro.crypto.hash.Md5Hash;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.jeethink.business.mapper.FCasesMapper;
-import com.jeethink.business.domain.FCases;
 import com.jeethink.business.service.IFCasesService;
 import com.jeethink.common.core.text.Convert;
 import org.springframework.transaction.annotation.Transactional;
@@ -147,6 +144,15 @@ public class FCasesServiceImpl implements IFCasesService
     public List<FCases> selectByCheckAndState(String checkId) {
         return fCasesMapper.selectByCheckAndState(checkId);
     }
+
+    /**
+     * 查询超期借阅列表
+     * */
+    @Override
+    public List<FCases> selectOverdueList() {
+        return fCasesMapper.selectOverdueList("10");
+    }
+
 
     /**
      * 新增案卷
