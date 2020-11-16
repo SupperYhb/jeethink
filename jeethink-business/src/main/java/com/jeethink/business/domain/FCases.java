@@ -96,6 +96,9 @@ public class FCases extends BaseEntity
     private String fCrimeaddress;
     /** 状态（0登记，1存入，2取出） */
     private Integer fState;
+    /** 案卷借阅后是否归还（0归还，1不归还） */
+    private Integer fIsBack;
+
     /** 保存业务字段Begin */
     /**
      * 民警类型（0未录入，1已录入，2平台拉取）
@@ -319,6 +322,14 @@ public class FCases extends BaseEntity
 
     public Integer getfState() {
         return fState;
+    }
+
+    public void setfIsBack(Integer fIsBack) {
+        this.fIsBack = fIsBack;
+    }
+
+    public Integer getfIsBack() {
+        return fIsBack;
     }
 
     public void setCardCode(String cardCode) {

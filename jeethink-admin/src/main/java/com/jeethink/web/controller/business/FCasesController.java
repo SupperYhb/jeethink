@@ -1,6 +1,8 @@
 package com.jeethink.web.controller.business;
 
 import java.util.List;
+
+import com.jeethink.business.domain.FBorrow;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -41,6 +43,7 @@ public class FCasesController extends BaseController
         return prefix + "/cases";
     }
 
+
     /**
      * 查询案卷列表
      */
@@ -53,6 +56,7 @@ public class FCasesController extends BaseController
         List<FCases> list = fCasesService.selectFCasesList(fCases);
         return getDataTable(list);
     }
+
     /**
      * 查询入库申请的案卷
      */
@@ -86,8 +90,8 @@ public class FCasesController extends BaseController
      */
     @PostMapping("/selectByCheckId")
     @ResponseBody
-    public TableDataInfo selectByCheckId(String checkId){
-        List<FCases> list=fCasesService.selectByCheckId(checkId);
+    public TableDataInfo selectByCheckId(String checkId,String unChecked){
+        List<FCases> list=fCasesService.selectByCheckId(checkId,unChecked);
         return getDataTable(list);
     }
 
@@ -115,8 +119,8 @@ public class FCasesController extends BaseController
      */
     @PostMapping("/selectOverdueList")
     @ResponseBody
-    public TableDataInfo selectOverdueList(){
-        List<FCases> list=fCasesService.selectOverdueList();
+    public TableDataInfo selectOverdueList(String caseName,String caseCode){
+        List<FCases> list=fCasesService.selectOverdueList(caseName,caseCode);
         return getDataTable(list);
     }
 
@@ -128,7 +132,7 @@ public class FCasesController extends BaseController
     @ResponseBody
     public AjaxResult export(FCases fCases)
     {
-        List<FCases> list = fCasesService.selectFCasesList(fCases);
+        List<FCases> list = fCasesService.selectOverdueList("","");
         ExcelUtil<FCases> util = new ExcelUtil<FCases>(FCases.class);
         return util.exportExcel(list, "cases");
     }
@@ -155,11 +159,12 @@ public class FCasesController extends BaseController
     @Log(title = "案卷", businessType = BusinessType.INSERT)
     @PostMapping("/add")
     @ResponseBody
-    public AjaxResult addSave(FCases fCases,String peopleType)
+    public AjaxResult addSave(FCases fCases,String peopleType,String mainPolicePic,String auxiliaryPolicePic,String openDoorType)
     {
+        System.out.print(auxiliaryPolicePic);
         peopleType=peopleType.length()>2?peopleType.substring(0,1):peopleType;
-        String msg=fCasesService.insertFCases(fCases,peopleType);
-        return msg.isEmpty()? success(""):error(msg);
+        String msg=fCasesService.insertFCases(fCases,peopleType,mainPolicePic,auxiliaryPolicePic,openDoorType);
+        return success("保存成功");
     }
 
     /**

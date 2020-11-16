@@ -1104,6 +1104,8 @@ var table = {
 			},
             // 保存信息 刷新表格
             save: function(url, data, callback) {
+        		debugger
+				console.log(data);
             	var config = {
         	        url: url,
         	        type: "post",

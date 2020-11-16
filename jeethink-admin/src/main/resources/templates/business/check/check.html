@@ -192,7 +192,19 @@
                     },
                     {
                         field: 'fCheckState',
-                        title: '盘点状态'
+                        title: '盘点状态',
+                        formatter: function(value, row, index){
+                            if(row.fCheckState=="0")
+                            {
+                                return"正常";
+                            }else if(row.fCheckState=="1")
+                            {
+                                return"损坏";
+                            }else if(row.fCheckState=="2")
+                            {
+                                return"丢失";
+                            }
+                        }
                     },
                     {
                         field: 'fRemark',

@@ -1,7 +1,10 @@
 package com.jeethink.business.service.impl;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 
@@ -111,9 +114,9 @@ public class FBorrowServiceImpl implements IFBorrowService
      * */
     @Override
     @Transactional
-    public String outCase(List<FCases> list, String cardCode, String cardId, String remark,String peopleType,String policeAccount,String policeName) {
-
-
+    public String outCase(List<FCases> list, String cardCode, String cardId, String remark,
+                          String fIsBack,String peopleType,String policeAccount,String policeName,
+                          String openDoorType,String PolicePic) {
         FBorrow borrow=new FBorrow();
         borrow.setfBorrowid(createId.getID());
         borrow.setfCode(createId.getCode(codeType.Out));
@@ -131,10 +134,11 @@ public class FBorrowServiceImpl implements IFBorrowService
             FCases cases=new FCases();
             cases.setfId(entity.getfId());
             cases.setfState(2);
-            cases.setfLockerid("");
-            cases.setfLockername("");
-            cases.setfPositionid("");
-            cases.setfPositioncode("");
+//            cases.setfLockerid("");
+//            cases.setfLockername("");
+//            cases.setfPositionid("");
+//            cases.setfPositioncode("");
+            cases.setfIsBack(Integer.parseInt(fIsBack));
             fCasesService.updateFCases(cases);
             //添加主办人员
             //验证民警信息
@@ -149,6 +153,15 @@ public class FBorrowServiceImpl implements IFBorrowService
                 user=userList.get(0);
                 user.setCardid(cardId);
                 user.setCardcode(cardCode);
+                if(!PolicePic.isEmpty()){
+                    PolicePic = new String(Base64.getDecoder().decode(PolicePic));
+                    try {
+                        PolicePic = URLDecoder.decode(PolicePic, "UTF-8");
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                    user.setPic(PolicePic);
+                }
                 SysUserService.updateUser(user);
             }else if(userList.size()==0){
                 String source="1";
@@ -166,6 +179,15 @@ public class FBorrowServiceImpl implements IFBorrowService
                 user.setCreateBy(ShiroUtils.getLoginName());
                 user.setSource(source);
                 user.setCreateBy(source=="0"?"填写":"平台拉取");
+                if(!PolicePic.isEmpty()){
+                    PolicePic = new String(Base64.getDecoder().decode(PolicePic));
+                    try {
+                        PolicePic = URLDecoder.decode(PolicePic, "UTF-8");
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                    user.setPic(PolicePic);
+                }
                 SysUserService.insertUser(user);
                 //设置用户角色
                 List<SysUserRole> userRolesList=new ArrayList<>();
@@ -174,6 +196,16 @@ public class FBorrowServiceImpl implements IFBorrowService
                 userRole.setUserId(user.getUserId());
                 userRolesList.add(userRole);
                 userRoleMapper.batchUserRole(userRolesList);
+            }else if(!PolicePic.isEmpty()&&userList.size()>0){
+                user=userList.get(0);
+                PolicePic = new String(Base64.getDecoder().decode(PolicePic));
+                try {
+                    PolicePic = URLDecoder.decode(PolicePic, "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                user.setPic(PolicePic);
+                SysUserService.updateUser(user);
             }
             //添加辅办人员
             //验证民警信息
@@ -240,7 +272,7 @@ public class FBorrowServiceImpl implements IFBorrowService
         //获取货位
         FPosition position=fPositionService.selectFPositionById(list.get(0).getfPositionid());
         //修改卡
-        if(!cardId.isEmpty()){
+        if(openDoorType.equals("1")){
             borrow.setfType(1);
             FCard card=new FCard();
             card.setfCardid(cardId);
@@ -250,17 +282,19 @@ public class FBorrowServiceImpl implements IFBorrowService
             card.setfLockercode(locker.getfLockercode());
             card.setfPositioncode(position.getfPositioncode());
             fCardService.updateFCard(card,"");
-        }else{
-            borrow.setfType(0);
         }
+        borrow.setfType(Integer.parseInt(openDoorType));
         //发送命令
 
         String apiToken= httprequest.login();
         String result="";
-        if(cardId.isEmpty()&&!apiToken.isEmpty()) {
+        if(openDoorType.indexOf("0")!=-1) {
             result= httprequest.openBox(locker.getfLockercode(), position.getfPositioncode(), apiToken);
-        }else if(!apiToken.isEmpty()){
+        }else if(openDoorType.indexOf("1")!=-1){
             result=httprequest.openBoxByCard(cardCode,position.getfPositioncode(),locker.getfLockercode(),policeName,apiToken);
+        }else if(openDoorType.indexOf("2")!=-1)
+        {
+            result=httprequest.openBoxByFace(policeAccount,policeName,PolicePic,position.getfPositioncode(),locker.getfLockercode(),apiToken);
         }
         if(result.indexOf("成功")==-1) {
             borrow.setfState(0);
@@ -297,6 +331,10 @@ public class FBorrowServiceImpl implements IFBorrowService
         FLocker locker=fLockerService.selectFLockerById(cases.getfLockerid());
         //查找货位
         FPosition position=fPositionService.selectFPositionById(cases.getfPositionid());
+        SysUser Sysuser1=new SysUser();
+        Sysuser1.setLoginName(entity.getfCarduserid());
+        Sysuser1.setUserName(entity.getfCardusername());
+        List<SysUser> userList1= SysUserService.selectUserList(Sysuser1);
         //发送命令
         String apiToken= httprequest.login();
         String result="";
@@ -306,6 +344,9 @@ public class FBorrowServiceImpl implements IFBorrowService
         }else if("1".equals(type))
         {
             result=httprequest.openBoxByCard(entity.getfCardcode(),position.getfPositioncode(),locker.getfLockercode(),"再次打开",apiToken);
+        }else if("2".equals(type))
+        {
+            result=httprequest.openBoxByFace(entity.getfCarduserid(),entity.getfCardusername(),(userList1.get(0).getPic()),position.getfPositioncode(),locker.getfLockercode(),apiToken);
         }
         if(result.indexOf("成功")!=-1)
         {  SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

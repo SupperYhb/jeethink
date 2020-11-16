@@ -101,19 +101,24 @@ public class FDepositController extends BaseController
     @Log(title = "存放案卷（平台获取）", businessType = BusinessType.INSERT)
     @PostMapping("/addCaseIn")
     @ResponseBody
-    public AjaxResult addCaseIn(String list,String lockerId,String positionId,String cardCode,String cardId,String remark,String peopleType,String policeAccount,String policeName)
+    public AjaxResult addCaseIn(String list,String lockerId,String positionId,String cardCode,String cardId,
+                                String remark,String peopleType,String policeAccount,String policeName,
+                                String openDoorType,String PolicePic)
     {
         List<kdcaseentity> kdList= JSON.parseArray(list, kdcaseentity.class);
-        String msg= fDepositService.addCaseIn(kdList,lockerId,positionId,cardCode,cardId,remark,peopleType,policeAccount,policeName);
+        String msg= fDepositService.addCaseIn(kdList,lockerId,positionId,cardCode,cardId,
+                remark,peopleType,policeAccount,policeName,openDoorType,PolicePic);
         return success("");
     }
 
     @Log(title = "归还案卷", businessType = BusinessType.INSERT)
     @PostMapping("/addCaseReturn")
     @ResponseBody
-    public AjaxResult addCaseReturn(String list, String lockerId, String positionId, String cardCode, String cardId, String remark,String peopleType,String policeAccount,String policeName){
+    public AjaxResult addCaseReturn(String list, String lockerId, String positionId, String cardCode, String cardId, String remark,
+                                    String peopleType,String policeAccount,String policeName,
+                                    String openDoorType,String PolicePic){
         List<FCases> List= JSON.parseArray(list, FCases.class);
-        fDepositService.addCaseReturn(List,lockerId,positionId,cardCode,cardId,remark,peopleType,policeAccount,policeName);
+        fDepositService.addCaseReturn(List,lockerId,positionId,cardCode,cardId,remark,peopleType,policeAccount,policeName,openDoorType,PolicePic);
         return success("");
     }
 

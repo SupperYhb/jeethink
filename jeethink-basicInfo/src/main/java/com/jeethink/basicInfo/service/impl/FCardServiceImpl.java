@@ -102,8 +102,11 @@ public class FCardServiceImpl implements IFCardService
             fCard.setfUsername("");
             fCard.setfUserid("");
         }
-        if(!reset.isEmpty()) {
-            FCard card = fCardMapper.selectFCardById(fCard.getfCardid());
+        FCard card = fCardMapper.selectFCardById(fCard.getfCardid());
+
+        if((reset!=null&&!reset.isEmpty())||(card.getfState().equals("1")&&fCard.getfState().equals("0"))) {
+
+//            FCard card = fCardMapper.selectFCardById(fCard.getfCardid());
             String apiToken= httprequest.login();
             Result= httprequest.deleteBind(card.getfCardcode(),card.getfLockercode(),card.getfPositioncode(),apiToken);
             SysUser finduserparam = new SysUser();

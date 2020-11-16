@@ -118,8 +118,6 @@
                             <input name="fPolice1id" class="form-control" type="text" required>
                         </div>
                     </div>
-                </div>
-                <div class="col-sm-6">
                     <div class="form-group">
                         <label class="col-sm-3 control-label is-required">主办民警名称：</label>
                         <div class="col-sm-8">
@@ -127,6 +125,15 @@
                         </div>
                     </div>
                 </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">主办民警图片：</label>
+                        <div class="col-sm-8">
+                           <img id="mainPolicePic" th:src="@{/img/cardimg.png}" style="width: 150px;" onclick="setPic('main')">
+                        </div>
+                    </div>
+                </div>
+
             </div>
             <div class="row">
                 <div class="col-sm-6">
@@ -136,12 +143,18 @@
                             <input name="fPolice2id" class="form-control" type="text" required>
                         </div>
                     </div>
-                </div>
-                <div class="col-sm-6">
                     <div class="form-group">
                         <label class="col-sm-3 control-label is-required">辅办民警名称：</label>
                         <div class="col-sm-8">
                             <input name="fPolice2name" class="form-control" type="text" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">辅办民警图片：</label>
+                        <div class="col-sm-8">
+                            <img id="auxiliaryPolicePic" th:src="@{/img/cardimg.png}" style="width: 150px;" onclick="setPic('auxiliary')">
                         </div>
                     </div>
                 </div>
@@ -166,16 +179,30 @@
                     </div>
                 </div>
             </div>
+<!--            <div class="row" id="element">-->
+<!--                <div class="col-sm-6">-->
+<!--                    <div class="form-group">-->
+<!--                        <label class="col-sm-3 control-label">案发地址：</label>-->
+<!--                        <div class="col-sm-8">-->
+<!--                            <input name="fCrimeaddress" style="width:770px;" class="form-control" type="text">-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+
+<!--            </div>-->
             <div class="row" id="element">
                 <div class="col-sm-6">
                     <div class="form-group">
-                        <label class="col-sm-3 control-label">案发地址：</label>
+                        <label class="col-sm-3 control-label">开门方式：</label>
                         <div class="col-sm-8">
-                            <input name="fCrimeaddress" style="width:770px;" class="form-control" type="text">
+                            <select name="openDoorType" class="form-control m-b">
+                                <option value="0">立即打开</option>
+                                <option value="1">刷卡打开</option>
+                                <option value="2">刷脸打开</option>
+                            </select>
                         </div>
                     </div>
                 </div>
-
             </div>
         </form>
     </div>
@@ -183,8 +210,11 @@
     <th:block th:include="include :: datetimepicker-js" />
     <th:block th:include="include :: jquery-cxselect-js" />
     <script th:inline="javascript">
+        //主办民警图片
+        var mainPolicePic="";
+        //辅办民警图片
+        var auxiliaryPolicePic="";
         var data = [[${data}]];
-debugger
         $('#element').cxSelect({
             selects: ['locker', 'position'],
             jsonValue: 'v',
@@ -198,8 +228,22 @@ debugger
 
         function submitHandler() {
             debugger
+            var openDoorType= $("[name=openDoorType]").val();
+            if(openDoorType=="1"&&($("#cardId").val()==""||$("#cardId").val()==undefined))
+            {
+                $.modal.msg("刷卡打开必须需要进行发卡",modal_status.FAIL);
+                return;
+            }else if(openDoorType=="2"&&($("[name=peopleType]:checked ").val()=="0"&&mainPolicePic=="")){
+                $.modal.msg("主办民警需要提供人脸照片，否则无法通过刷人脸的方式打开",modal_status.FAIL);
+            }else if(openDoorType=="2"&&($("[name=peopleType]:checked ").val()=="1"&&auxiliaryPolicePic=="")){
+                $.modal.msg("辅办民警需要提供人脸照片，否则无法通过刷人脸的方式打开",modal_status.FAIL);
+            }
             var data=$('#form-cases-add').serialize();
             data+="&peopleType="+$("[name=peopleType]:checked ").val();
+            data+="&mainPolicePic="+ window.btoa(encodeURIComponent(mainPolicePic));
+            data+="&auxiliaryPolicePic="+window.btoa(encodeURIComponent(auxiliaryPolicePic));
+            data+="&openDoorType="+openDoorType;
+            console.log(data);
             if ($.validate.form()) {
                 $.operate.save(prefix + "/add", data);
             }
@@ -286,12 +330,21 @@ debugger
                           debugger
                         var iframeWin = layero.find('iframe')[0];
                         var data= iframeWin.contentWindow.submitHandler(index, layero);
+                        debugger
                         if(peopletype=="1") {
                             $("[name=fPolice1id]").val(data[0].loginName);
                             $("[name=fPolice1name]").val(data[0].userName);
+                            if(data[0].pic!=""&&data[0].pic!=null&&data[0].pic!=undefined) {
+                                $("#mainPolicePic").attr("src", data[0].pic);
+                                mainPolicePic= data[0].pic;
+                            }
                         }else{
                             $("[name=fPolice2id]").val(data[0].loginName);
                             $("[name=fPolice2name]").val(data[0].userName);
+                            if(data[0].pic!=""&&data[0].pic!=null&&data[0].pic!=undefined) {
+                                $("#auxiliaryPolicePic").attr("src", data[0].pic);
+                                 auxiliaryPolicePic=data[0].pic;
+                            }
                         }
                         layer.close(index);
                     },
@@ -301,6 +354,37 @@ debugger
                 });
         }
 
+        function setPic(type){
+            layer.open({
+                type: 2,
+                area: ['700px', '600px'],
+                fix: false,
+                //不固定
+                maxmin: true,
+                shade: 0.3,
+                title: '拍照/上传',
+                content: "/basicInfo/camera/picture",
+                btn: ['确定', '关闭'],
+                // 弹层外区域关闭
+                shadeClose: true,
+                yes: function(index,layero){
+                     debugger
+                    var iframeWin = layero.find('iframe')[0];
+                    var str= iframeWin.contentWindow.submitHandler(index, layero);
+                    if(type=="main") {
+                        $("#mainPolicePic").attr("src", str);
+                        mainPolicePic=str;
+                    }else if(type=="auxiliary"){
+                        $("#auxiliaryPolicePic").attr("src", str);
+                        auxiliaryPolicePic=str;
+                    }
+                    layer.close(index);
+                },
+                cancel: function(index) {
+                    return true;
+                }
+            });
+        }
         $("[name=peopleType]").change(function()
         {
             debugger

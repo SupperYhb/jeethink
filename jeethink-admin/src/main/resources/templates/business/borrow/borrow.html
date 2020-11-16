@@ -89,11 +89,14 @@
                     field: 'fType',
                     title: '业务方式',
                     formatter:function (value,row,index) {
+                        debugger
                         if(row.fType=="0")
                         {
                             return "直接打开";
-                        }else{
+                        }else if(row.fType=="1"){
                             return "刷卡打开";
+                        }else{
+                            return "刷脸打开";
                         }
                     }
                 },
@@ -208,7 +211,21 @@
                     {
                         field: 'fCrimeaddress',
                         title: '案发地址'
-                    }]
+                    },
+                    {
+                        field: 'fIsBack',
+                        title: '是否归还',
+                        formatter:function(value, row, index){
+                            debugger
+                            if(row.fIsBack=="1")
+                            {
+                                return "<span class=\"btn btn-danger\">不归还</span>";
+                            }else{
+                                return "<span class=\"btn btn-info\">归还</span>";
+                            }
+                        }
+                    }
+                ]
             });
         };
         function openBigForm()

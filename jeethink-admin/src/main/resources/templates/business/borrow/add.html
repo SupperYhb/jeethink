@@ -73,12 +73,18 @@
                                     <input name="policeAccount" class="form-control" type="text">
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="form-group">
+                            <div class="form-group" style="margin-top: 50px;">
                                 <label class="col-sm-3 control-label">民警名称：</label>
                                 <div class="col-sm-8">
                                     <input name="policeName" class="form-control" type="text">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">民警图片：</label>
+                                <div class="col-sm-8">
+                                    <img id="PolicePic" th:src="@{/img/cardimg.png}" style="width: 150px;" onclick="setPic()">
                                 </div>
                             </div>
                         </div>
@@ -86,13 +92,38 @@
                     <div class="row" style="margin-top: 15px;">
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label class="col-sm-3 control-label">备注：</label>
+                                    <label class="col-sm-3 control-label">开门方式：</label>
                                     <div class="col-sm-8">
-                                        <input name="fRemark" class="form-control" type="text">
+                                        <select name="openDoorType" class="form-control m-b">
+                                            <option value="0">立即打开</option>
+                                            <option value="1">刷卡打开</option>
+                                            <option value="2">刷脸打开</option>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">是否归还：</label>
+                                <div class="col-sm-8">
+                                    <select name="fIsBack" class="form-control m-b">
+                                        <option value="0">归还</option>
+                                        <option value="1">不归还</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
                      </div>
+                    <div class="row" style="margin-top: 15px;">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">备注：</label>
+                                <div class="col-sm-8">
+                                    <input name="fRemark" class="form-control" type="text">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </fieldset>
                     </div>
             </div>
@@ -113,7 +144,7 @@
 </style>
 <script>
     var prefix = ctx + "business/cases";
-
+    var PolicePic="";
     $(document).ready(function () {
         $("#wizard").steps({
             bodyTag:"fieldset", onStepChanging: function (event, currentIndex, newIndex){
@@ -146,14 +177,19 @@
                 debugger
                 var policeAccount=$("[name=policeAccount]").val();
                 var policeName=$("[name=policeName]").val();
+                var openDoorType= $("[name=openDoorType]").val();
                 if($("[name=peopleType]").val()!="99"&&(policeAccount==""||policeName==""))
                 {
                     $.modal.msg("请输入民警信息",modal_status.FAIL);
                     return false;
                 }
-                if($("[name=peopleType]").val()!="99"&&cardId=="")
+                if(openDoorType=="1"&&cardId=="")
                 {
-                    $.modal.msg("请给民警发卡",modal_status.FAIL);
+                    $.modal.msg("刷卡开门需要分配卡片",modal_status.FAIL);
+                    return false;
+                }else if(openDoorType=="2"&&PolicePic=="")
+                {
+                    $.modal.msg("刷脸开门需要设置人脸信息",modal_status.FAIL);
                     return false;
                 }
                 var Data={
@@ -162,8 +198,11 @@
                     cardId:cardId,
                     remark:fRemark,
                     peopleType:$("[name=peopleType]").val(),
+                    fIsBack:$("[name=fIsBack]").val(),
                     policeAccount,
-                    policeName
+                    policeName,
+                    openDoorType,
+                    PolicePic:window.btoa(encodeURIComponent(PolicePic))
                 };
                 $.operate.save("/business/borrow/outCase", Data);
             }
@@ -176,6 +215,37 @@
 
         loadTable();
     });
+    //拍照/上传照片
+    function setPic(){
+        if($("[name=peopleType]").val()=="99"){
+            $.modal.msg("请选择登记的民警",modal_status.FAIL);
+            return false;
+        }
+        layer.open({
+            type: 2,
+            area: ['700px', '600px'],
+            fix: false,
+            //不固定
+            maxmin: true,
+            shade: 0.3,
+            title: '拍照/上传',
+            content: "/basicInfo/camera/picture",
+            btn: ['确定', '关闭'],
+            // 弹层外区域关闭
+            shadeClose: true,
+            yes: function(index,layero){
+                debugger
+                var iframeWin = layero.find('iframe')[0];
+                var str= iframeWin.contentWindow.submitHandler(index, layero);
+                $("#PolicePic").attr("src", str);
+                PolicePic=str;
+                layer.close(index);
+            },
+            cancel: function(index) {
+                return true;
+            }
+        });
+    }
     function openSwipingForm(){
         debugger
         var data=$("#" + table.options.id).bootstrapTable('getSelections');
@@ -342,6 +412,28 @@
         var policeName=(peopleType=="0"? data[0].fPolice1name:data[0].fPolice2name);
         $("[name=policeAccount]").val(policeAccount);
         $("[name=policeName]").val(policeName);
+        if(policeAccount!=""&&policeAccount!=null&&policeAccount!=undefined&&peopleType!="99")
+        {
+            $.ajax({
+                cache : true,
+                type : "POST",
+                url : ctx + "system/user/selectUserByNoAndName",
+                data : {
+                    "loginName":policeAccount,
+                },
+                async : false,
+                error : function(request) {
+                    $.modal.alertError("系统错误");
+                },
+                success : function(data) {
+                    debugger
+                    if(data.rows.length>0)
+                    {
+                        $("#PolicePic").attr("src",data.rows[0].pic);
+                        PolicePic=data.rows[0].pic;
+                    }
+                }});
+        }
     }
 </script>
 <script th:inline="javascript">

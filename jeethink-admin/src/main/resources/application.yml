@@ -20,7 +20,7 @@ jeethink:
   # 案卷获取Url
   caseUrl: http://26.91.22.212:19224
   # 案卷柜Url
-  lockerUrl: http://26.91.22.214:19210
+  lockerUrl: http://180.169.73.197:19210
   # 视频平台Ip
   cameraIp: 139.196.182.143
   # 视频平台端口

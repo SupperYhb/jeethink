@@ -85,6 +85,14 @@ public class FCameraController extends BaseController
     {
         return prefix + "/add";
     }
+    /**
+     * 拍照/上传图片
+     */
+    @GetMapping("/picture")
+    public String picture()
+    {
+        return prefix + "/picture";
+    }
 
     /**
      * 新增保存摄像头

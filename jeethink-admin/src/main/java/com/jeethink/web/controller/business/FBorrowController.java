@@ -81,9 +81,11 @@ public class FBorrowController extends BaseController
      */
     @PostMapping("/outCase")
     @ResponseBody
-    public AjaxResult outCase(String list,String cardCode,String cardId,String remark,String peopleType,String policeAccount,String policeName){
+    public AjaxResult outCase(String list,String cardCode,String cardId,String remark,
+                              String peopleType,String fIsBack,String policeAccount,String policeName,
+                              String openDoorType,String PolicePic){
         List<FCases> casesList= JSON.parseArray(list, FCases.class);
-        fBorrowService.outCase(casesList,cardCode,cardId,remark,peopleType,policeAccount,policeName);
+        fBorrowService.outCase(casesList,cardCode,cardId,remark,fIsBack,peopleType,policeAccount,policeName,openDoorType,PolicePic);
         return success("");
     }
     /**

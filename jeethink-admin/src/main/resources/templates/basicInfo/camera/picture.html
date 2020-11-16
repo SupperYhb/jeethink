@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" >
+<head>
+    <th:block th:include="include :: header('采集照片')" />
+    <th:block th:include="include :: jquery-js" />
+    <th:block th:include="include :: datetimepicker-css" />
+</head>
+<body class="white-bg">
+<table>
+    <tr>
+        <td>
+            <div style="margin-left: 10px;">
+                <div>
+                    <img style="width: 300px;" id="pic" th:src="@{/img/cardimg.png}">
+                </div>
+                <div style="margin-left: 39px;margin-top: 10px;">
+                    <a id="clickPic" class="btn btn-success btn-xs" >拍照</a>
+                    <a id="uploadPic" class="btn btn-success btn-xs">上传</a>
+                    <input id="upload" name="file" accept="image/*" type="file" style="display: none"/>
+                </div>
+            </div>
+        </td>
+        <td>
+            <video id="video" autoplay style="width: 400px;height: 300px;margin-left: 35px;"></video>
+            <canvas id="canvas" width="450" height="320" style="position:absolute;top:10000px"></canvas>
+        </td>
+    </tr>
+</table>
+
+<script>
+    var video = document.getElementById('video');
+    var canvas = document.getElementById('canvas');
+    var context = canvas.getContext('2d');
+    var base64Path="";
+    function getUserMediaToPhoto(constraints, success, error) {
+        if (navigator.mediaDevices.getUserMedia) {
+            //最新标准API
+            navigator.mediaDevices.getUserMedia(constraints).then(success).catch(error);
+        } else if (navigator.webkitGetUserMedia) {
+            //webkit核心浏览器
+            navigator.webkitGetUserMedia(constraints, success, error);
+        } else if (navigator.mozGetUserMedia) {
+            //firefox浏览器
+            navigator.mozGetUserMedia(constraints, success, error);
+        } else if (navigator.getUserMedia) {
+            //旧版API
+            navigator.getUserMedia(constraints, success, error);
+        }
+    }
+    //成功回调函数
+    function success(stream) {
+        //兼容webkit核心浏览器
+        var CompatibleURL = window.URL || window.webkitURL;
+        //将视频流转化为video的源
+        try {
+            video.srcObject = stream;
+        } catch (error) {
+            video.src = CompatibleURL.createObjectURL(stream);
+        }
+        video.play();//播放视频
+    }
+    function error(error) {
+        console.log('访问用户媒体失败：', error.name, error.message);
+    }
+    if (navigator.mediaDevices.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.getUserMedia) {
+        getUserMediaToPhoto({ video: { width: 450, height: 320 } }, success, error);
+    } else {
+        alert('你的浏览器不支持访问用户媒体设备');
+    }
+    $("#clickPic").click(function(){
+        convertCanvasToImage(canvas);
+    });
+    $("#uploadPic").click(function(){
+        $("#upload").click();
+    });
+    $("#upload").on("change",function(){
+        debugger
+        run(this, function (data) {
+            base64Path=data;
+            document.getElementById("pic").src=data;
+            console.log(data);
+        });
+    });
+    function run(input_file, get_data) {
+        /*input_file：文件按钮对象*/
+        /*get_data: 转换成功后执行的方法*/
+        if (typeof (FileReader) === 'undefined') {
+            alert("抱歉，你的浏览器不支持 FileReader，不能将图片转换为Base64，请使用现代浏览器操作！");
+        } else {
+            try {
+                debugger
+                /*图片转Base64 核心代码*/
+                var file = input_file.files[0];
+                //这里我们判断下类型如果不是图片就返回 去掉就可以上传任意文件
+                if (!/image\/\w+/.test(file.type)) {
+                    alert("请确保文件为图像类型");
+                    return false;
+                }
+                debugger
+                var fileSize = 0;
+                fileSize = (input_file.files[0].size/1024);
+                var reader = new FileReader();
+                reader.onload = function () {
+                    get_data(this.result);
+                }
+                reader.readAsDataURL(file);
+            } catch (e) {
+                alert('图片转Base64出错啦！' + e.toString())
+            }
+        }
+    }
+    function convertCanvasToImage(canvas){
+        context.drawImage(video, 0, 0, 450, 320);
+        base64Path=canvas.toDataURL("image/jpeg");
+        console.log(base64Path);
+        document.getElementById("pic").src=canvas.toDataURL("image/jpeg");
+    }
+    function submitHandler() {
+        debugger
+        if(base64Path!=""&&base64Path!=null&&base64Path!=undefined) {
+            return base64Path;
+        }else{
+            alert("请拍摄或上传图片");
+        }
+        // if ($.validate.form()) {
+        //     $.operate.save(prefix + "/add", $('#form-card-add').serialize());
+        // }
+    }
+</script>
+</body>
+</html>

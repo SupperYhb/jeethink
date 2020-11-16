@@ -1,6 +1,8 @@
 package com.jeethink.requestutil.function;
 
+
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.databind.MappingIterator;
 import com.jeethink.common.config.Global;
 import com.jeethink.common.utils.AddressUtils;
@@ -8,6 +10,9 @@ import com.jeethink.common.utils.http.HttpUtils;
 import com.jeethink.requestutil.entity.casetotalentity;
 import com.jeethink.requestutil.entity.kdcaseentity;
 import com.jeethink.requestutil.entity.loginresult;
+import com.jeethink.requestutil.entity.useface.faceParam;
+import com.jeethink.requestutil.entity.useface.voucher;
+import com.jeethink.requestutil.entity.useface.voucherLink;
 
 
 import java.util.ArrayList;
@@ -40,6 +45,11 @@ public class httprequest {
      * 删除绑定
      * */
     private static String deleteBind="/udms/device/voucher";
+
+    /**
+     * 人脸路径
+     * */
+    private static String facePath="/udms/device/voucher/general";
     /**
      * 登录平台
      * */
@@ -58,14 +68,21 @@ public class httprequest {
      * */
     public static List<kdcaseentity> getCase(String ApiToken,String caseName,String caseNumber,String policeCode){
 
-       String obj= HttpUtils.sendGet(Global.getCaseUrl()+"/dams/casePolices/page","currentPage=0&pageSize=10&caseName="+caseName+"&caseNumber="+caseNumber+"&policeCode="+policeCode,"",ApiToken);
-       if(!obj.isEmpty()) {
-           casetotalentity entity = JSON.parseObject(obj, casetotalentity.class);
-           return entity.getList();
-       }else{
-           return new ArrayList<kdcaseentity>();
-       }
-
+//       String obj= HttpUtils.sendGet(Global.getCaseUrl()+"/dams/casePolices/page","currentPage=0&pageSize=10&caseName="+caseName+"&caseNumber="+caseNumber+"&policeCode="+policeCode,"",ApiToken);
+//       if(!obj.isEmpty()) {
+//           casetotalentity entity = JSON.parseObject(obj, casetotalentity.class);
+//           return entity.getList();
+//       }else{
+//           return new ArrayList<kdcaseentity>();
+//       }
+        List<kdcaseentity> list= new ArrayList<kdcaseentity>();
+        kdcaseentity data=new kdcaseentity();
+        data.setNo("1");
+        data.setName("测试");
+        data.setAssistPoliceCode("092451");
+        data.setAssistPoliceName("测试");
+        list.add(data);
+        return list;
     }
 
 
@@ -94,6 +111,34 @@ public class httprequest {
     String Result=HttpUtils.sendDeletes(Global.getLockerUrl()+deleteBind+"/"+cardCode+"/"+lockerCode+"/"+positionCode,ApiToken);
     return Result;
     }
+
+    /**
+     * 刷脸开门
+     * */
+    public static String openBoxByFace(String account,String useName,String faceImag,String boxCode,String lockerCode,String ApiToken)
+    {
+        faceImag=faceImag.split(",")[1];
+        voucherLink voucherLink=new voucherLink();
+        voucherLink.setBoxCode(boxCode);
+        voucherLink.setBoxUuid("");
+        voucherLink.setLockerUuid("");
+        voucher voucher=new voucher();
+        voucher.setCode(account);
+        voucher.setVoucherType("1");
+        voucher.setUseName(useName);
+        voucher.setFaceImage(faceImag);
+        voucher.setType("1");
+        List<voucherLink> list=new ArrayList<>();
+        list.add(voucherLink);
+        voucher.setVoucherLinkList(list);
+        faceParam faceParam=new faceParam();
+        faceParam.setUuid(lockerCode);
+        faceParam.setVoucherDTO(voucher);
+        String json = JSONObject.toJSONString(faceParam);
+        String result=HttpUtils.sendPosts(Global.getLockerUrl()+facePath,json,ApiToken,2);
+        return result;
+    }
+
 
 }
 

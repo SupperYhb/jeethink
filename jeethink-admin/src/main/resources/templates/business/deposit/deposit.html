@@ -33,9 +33,6 @@
                 <a class="btn btn-success" onclick="openReturnForm()">
                     <i class="fa fa-plus"></i> 案卷归还
                 </a>
-                <a class="btn btn-success" onclick="getList()">
-                    <i class="fa fa-plus"></i> 测试
-                </a>
             </div>
             <div class="col-sm-12 select-table table-striped">
                 <table id="bootstrap-table"></table>
@@ -97,8 +94,10 @@
                         if(row.fType=="0")
                         {
                             return "直接打开";
-                        }else{
+                        }else if(row.fType=="1"){
                             return "刷卡打开";
+                        }else{
+                            return "刷脸打开";
                         }
                     }
                 },
@@ -251,7 +250,7 @@
         };
         function addCase()
         {
-            $.modal.open("添加案卷","/business/cases/add",1000,600);
+            $.modal.open("添加案卷","/business/cases/add",1000,700);
             // $.modal.openTab("添加案卷","/business/cases/add");
         }
         function openBigForm()
@@ -287,24 +286,6 @@
             });
         }
 
-        function getList(){
-            $.ajax({
-                cache : true,
-                type : "POST",
-                url : ctx + "business/cases/selectOverdueList",
-                data : {
-                },
-                async : false,
-                error : function(request) {
-                    $.modal.alertError("系统错误");
-                },
-                success : function(data) {
-                   debugger
-                }
-            });
-
-        }
-        
         function openVideo(Id) {
             layer.open({
                 type: 2,
@@ -337,7 +318,7 @@
                 //不固定
                 maxmin: true,
                 shade: 0.3,
-                title: '查看视频',
+                title: '打印',
                 content: "/system/config/print?code="+fCasecode,
                 btn: ['确定', '关闭'],
                 // 弹层外区域关闭

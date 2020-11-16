@@ -1,7 +1,10 @@
 package com.jeethink.business.service.impl;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -19,6 +22,7 @@ import com.jeethink.business.domain.FTrack;
 import com.jeethink.business.mapper.FCasesMapper;
 import com.jeethink.business.service.IFCasesService;
 import com.jeethink.business.service.IFDepositdetailService;
+import com.jeethink.common.annotation.Log;
 import com.jeethink.common.config.Global;
 import com.jeethink.common.extend.codeType;
 import com.jeethink.common.extend.createId;
@@ -116,7 +120,9 @@ public class FDepositServiceImpl implements IFDepositService
      * */
     @Override
     @Transactional
-    public String addCaseIn(List<kdcaseentity> list, String lockerId, String positionId, String cardCode, String cardId, String remark,String peopleType,String policeAccount,String policeName) {
+    public String addCaseIn(List<kdcaseentity> list, String lockerId, String positionId, String cardCode, String cardId,
+                            String remark,String peopleType,String policeAccount,String policeName,
+                            String openDoorType,String PolicePic) {
 
         //获取卷宗柜
         FLocker locker=fLockerService.selectFLockerById(lockerId);
@@ -182,6 +188,15 @@ public class FDepositServiceImpl implements IFDepositService
                 user=userList.get(0);
                 user.setCardid(cardId);
                 user.setCardcode(cardCode);
+                if(!PolicePic.isEmpty()){
+                    PolicePic = new String(Base64.getDecoder().decode(PolicePic));
+                    try {
+                        PolicePic = URLDecoder.decode(PolicePic, "UTF-8");
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                    user.setPic(PolicePic);
+                }
                 sysUserService.updateUser(user);
             }else if(userList.size()==0){
                 String source="1";
@@ -199,6 +214,15 @@ public class FDepositServiceImpl implements IFDepositService
                 user.setCreateBy(ShiroUtils.getLoginName());
                 user.setSource(source);
                 user.setCreateBy(source=="0"?"填写":"平台拉取");
+                if(!PolicePic.isEmpty()){
+                    PolicePic = new String(Base64.getDecoder().decode(PolicePic));
+                    try {
+                        PolicePic = URLDecoder.decode(PolicePic, "UTF-8");
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                    user.setPic(PolicePic);
+                }
                 sysUserService.insertUser(user);
                 //设置用户角色
                 List<SysUserRole> userRolesList=new ArrayList<>();
@@ -207,6 +231,17 @@ public class FDepositServiceImpl implements IFDepositService
                 userRole.setUserId(user.getUserId());
                 userRolesList.add(userRole);
                 userRoleMapper.batchUserRole(userRolesList);
+            }else if(!PolicePic.isEmpty()&&userList.size()>0)
+            {
+                user=userList.get(0);
+                PolicePic = new String(Base64.getDecoder().decode(PolicePic));
+                try {
+                    PolicePic = URLDecoder.decode(PolicePic, "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                user.setPic(PolicePic);
+                sysUserService.updateUser(user);
             }
             //判断辅办民警是不是空
 //            if(entity.getAssistPoliceCode()!=null){
@@ -282,11 +317,19 @@ public class FDepositServiceImpl implements IFDepositService
         //发送命令
         String apiToken= httprequest.login();
         String result="";
-        if(cardId.isEmpty()&&!apiToken.isEmpty()) {
+        //直接打开
+        if(openDoorType=="0") {
             result= httprequest.openBox(locker.getfLockercode(), position.getfPositioncode(), apiToken);
-        }else if(!apiToken.isEmpty()){
+        }
+        //刷卡打开
+        else if(openDoorType=="1"){
             result=httprequest.openBoxByCard(cardCode,position.getfPositioncode(),locker.getfLockercode(),userName,apiToken);
         }
+        //刷脸打开
+        else if(openDoorType=="2"){
+            result=httprequest.openBoxByFace(policeAccount,policeName,PolicePic,position.getfPositioncode(),locker.getfLockercode(),apiToken);
+        }
+
         if(result.indexOf("成功")==-1) {
             fDeposit.setfState(0);
         }else{
@@ -309,7 +352,9 @@ public class FDepositServiceImpl implements IFDepositService
 
     @Override
     @Transactional
-    public String addCaseReturn(List<FCases> list, String lockerId, String positionId, String cardCode, String cardId, String remark,String peopleType,String policeAccount,String policeName) {
+    public String addCaseReturn(List<FCases> list, String lockerId, String positionId, String cardCode, String cardId, String remark
+            ,String peopleType,String policeAccount,String policeName,
+                                String openDoorType,String PolicePic) {
 
         //获取卷宗柜
         FLocker locker=fLockerService.selectFLockerById(lockerId);
@@ -385,6 +430,16 @@ public class FDepositServiceImpl implements IFDepositService
                 userRole.setUserId(user.getUserId());
                 userRolesList.add(userRole);
                 userRoleMapper.batchUserRole(userRolesList);
+            }else if(!PolicePic.isEmpty()&&userList.size()>0){
+                user=userList.get(0);
+                PolicePic = new String(Base64.getDecoder().decode(PolicePic));
+                try {
+                    PolicePic = URLDecoder.decode(PolicePic, "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                user.setPic(PolicePic);
+                sysUserService.updateUser(user);
             }
             //添加辅主办人员
             //验证民警信息
@@ -438,7 +493,7 @@ public class FDepositServiceImpl implements IFDepositService
             fTrackService.insertFTrack(fTrack);
         }
         //修改卡
-        if(!cardId.isEmpty())
+        if(openDoorType.equals("1"))
         {
             fDeposit.setfType(1);
             fDeposit.setfCardcode(cardCode);
@@ -448,16 +503,18 @@ public class FDepositServiceImpl implements IFDepositService
             card.setfUsername(policeName);
             card.setfState("1");
             fCardService.updateFCard(card,"");
-        }else{
-            fDeposit.setfType(0);
         }
+        fDeposit.setfType(Integer.parseInt(openDoorType));
         //发送命令
         String apiToken= httprequest.login();
         String result="";
-        if(cardId.isEmpty()&&!apiToken.isEmpty()) {
+        if(openDoorType.equals("0")) {
             result= httprequest.openBox(locker.getfLockercode(), position.getfPositioncode(), apiToken);
-        }else if(!apiToken.isEmpty()){
+        }else if(openDoorType.equals("1")){
             result=httprequest.openBoxByCard(cardCode,position.getfPositioncode(),locker.getfLockercode(),policeName,apiToken);
+        }else if(openDoorType.equals("2"))
+        {
+            result=httprequest.openBoxByFace(policeAccount,policeName,PolicePic,position.getfPositioncode(),locker.getfLockercode(),apiToken);
         }
         if(result.indexOf("成功")==-1) {
             fDeposit.setfState(0);
@@ -489,6 +546,10 @@ public class FDepositServiceImpl implements IFDepositService
         FLocker locker=fLockerService.selectFLockerById(detail.getfLockerid());
         //查找货位
         FPosition position=fPositionService.selectFPositionById(detail.getfPositionid());
+        SysUser Sysuser1=new SysUser();
+        Sysuser1.setLoginName(entity.getfCarduserid());
+        Sysuser1.setUserName(entity.getfCardusername());
+        List<SysUser> userList1= sysUserService.selectUserList(Sysuser1);
         //发送命令
         String apiToken= httprequest.login();
         String result="";
@@ -498,6 +559,9 @@ public class FDepositServiceImpl implements IFDepositService
         }else if("1".equals(type))
         {
             result=httprequest.openBoxByCard(entity.getfCardcode(),position.getfPositioncode(),locker.getfLockercode(),"再次打开",apiToken);
+        }else if("2".equals(type))
+        {
+            result=httprequest.openBoxByFace(entity.getfCarduserid(),entity.getfCardusername(),userList1.get(0).getPic(),position.getfPositioncode(),locker.getfLockercode(),apiToken);
         }
         if(result.indexOf("成功")!=-1)
         {

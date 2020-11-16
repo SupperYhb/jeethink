@@ -51,7 +51,7 @@ public interface IFCasesService
     /**
      * 查询盘点明细
      * */
-    public List<FCases> selectByCheckId(String checkId);
+    public List<FCases> selectByCheckId(String checkId,String unChecked);
     /**
      * 查询可盘点信息
      * */
@@ -60,14 +60,14 @@ public interface IFCasesService
     /**
      * 查询超期借阅列表
      * */
-    public List<FCases> selectOverdueList();
+    public List<FCases> selectOverdueList(String caseName,String caseCode);
     /**
      * 新增案卷
      *
      * @param fCases 案卷
      * @return 结果
      */
-    public String insertFCases(FCases fCases,String peopleType);
+    public String insertFCases(FCases fCases,String peopleType,String mainPolicePic,String auxiliaryPolicePic,String openDoorType);
 
     /**
      * 修改案卷

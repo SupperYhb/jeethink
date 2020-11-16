@@ -13,6 +13,17 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+
+import com.jeethink.common.utils.StringUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicHeader;
+import org.apache.http.protocol.HTTP;
+import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -323,7 +334,48 @@ public class HttpUtils
         }
         return result.toString();
     }
+    public static String sendPosts(String url, String param, String key, Integer type) {
+        String body = "";
+        try {
+            CloseableHttpClient client = HttpClients.createDefault();
+            HttpPost httpPost = new HttpPost(url);
 
+            //装填参数
+            StringEntity s = new StringEntity(param, "utf-8");
+            s.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE, "application/json"));
+
+            //设置参数到请求对象中
+            httpPost.setEntity(s);
+            httpPost.setHeader("Content-type", "application/x-www-form-urlencoded");
+            httpPost.setHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
+            if (StringUtils.isNotEmpty(key)) {
+                if (type == 1) {
+                    httpPost.setHeader("key", key);
+                } else if (type == 2) {
+                    httpPost.setHeader("Content-type", "application/json");
+                    httpPost.setHeader("apiToken", key);
+                }
+            }
+
+            //执行请求操作，并拿到结果（同步阻塞）
+            CloseableHttpResponse response = client.execute(httpPost);
+            //获取结果实体
+            HttpEntity entity = response.getEntity();
+            if (entity != null) {
+                //按指定编码转换结果实体为String类型
+                body = EntityUtils.toString(entity, "UTF-8");
+            }
+
+            EntityUtils.consume(entity);
+            //释放链接
+            response.close();
+
+        } catch (Exception e) {
+            log.error("调用HttpUtils.sendPost ConnectException, url=" + url + ",param=" + param, e);
+        }
+
+        return body;
+    }
     private static class TrustAnyTrustManager implements X509TrustManager
     {
         @Override
