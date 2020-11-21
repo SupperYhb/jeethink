@@ -235,8 +235,10 @@
                 return;
             }else if(openDoorType=="2"&&($("[name=peopleType]:checked ").val()=="0"&&mainPolicePic=="")){
                 $.modal.msg("主办民警需要提供人脸照片，否则无法通过刷人脸的方式打开",modal_status.FAIL);
+                return;
             }else if(openDoorType=="2"&&($("[name=peopleType]:checked ").val()=="1"&&auxiliaryPolicePic=="")){
-                $.modal.msg("辅办民警需要提供人脸照片，否则无法通过刷人脸的方式打开",modal_status.FAIL);
+                $.modal.msg("辅办民警需要提供人脸照片，否则无法通过刷人脸的方式打开",modal_status.FAIL)
+                return;
             }
             var data=$('#form-cases-add').serialize();
             data+="&peopleType="+$("[name=peopleType]:checked ").val();
@@ -355,35 +357,44 @@
         }
 
         function setPic(type){
-            layer.open({
-                type: 2,
-                area: ['700px', '600px'],
-                fix: false,
-                //不固定
-                maxmin: true,
-                shade: 0.3,
-                title: '拍照/上传',
-                content: "/basicInfo/camera/picture",
-                btn: ['确定', '关闭'],
-                // 弹层外区域关闭
-                shadeClose: true,
-                yes: function(index,layero){
-                     debugger
-                    var iframeWin = layero.find('iframe')[0];
-                    var str= iframeWin.contentWindow.submitHandler(index, layero);
-                    if(type=="main") {
-                        $("#mainPolicePic").attr("src", str);
-                        mainPolicePic=str;
-                    }else if(type=="auxiliary"){
-                        $("#auxiliaryPolicePic").attr("src", str);
-                        auxiliaryPolicePic=str;
+            var fLockerid=$("[name=fLockerid]").val();
+            if(fLockerid!=""&&fLockerid!=undefined&&fLockerid!=null) {
+                layer.open({
+                    type: 2,
+                    area: ['700px', '600px'],
+                    fix: false,
+                    //不固定
+                    maxmin: true,
+                    shade: 0.3,
+                    title: '拍照/上传',
+                    content: "/basicInfo/camera/picture?fLockerid=" + fLockerid,
+                    btn: ['确定', '关闭'],
+                    // 弹层外区域关闭
+                    shadeClose: true,
+                    yes: function (index, layero) {
+                        debugger
+                        var iframeWin = layero.find('iframe')[0];
+                        debugger
+                        var str = iframeWin.contentWindow.submitHandler(index, layero);
+                        if (str != "" && str != undefined && str != null) {
+                            if (type == "main") {
+                                $("#mainPolicePic").attr("src", str);
+                                mainPolicePic = str;
+                            } else if (type == "auxiliary") {
+                                $("#auxiliaryPolicePic").attr("src", str);
+                                auxiliaryPolicePic = str;
+                            }
+                            layer.close(index);
+                        }
+                    },
+                    cancel: function (index) {
+                        return true;
                     }
-                    layer.close(index);
-                },
-                cancel: function(index) {
-                    return true;
-                }
-            });
+                });
+            }else{
+                $.modal.msg("请选择存放位置",modal_status.FAIL);
+                return;
+            }
         }
         $("[name=peopleType]").change(function()
         {

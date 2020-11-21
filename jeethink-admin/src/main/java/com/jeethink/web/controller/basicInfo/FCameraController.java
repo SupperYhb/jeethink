@@ -1,6 +1,9 @@
 package com.jeethink.web.controller.basicInfo;
 
 import java.util.List;
+
+import com.jeethink.basicInfo.domain.FLocker;
+import com.jeethink.basicInfo.service.IFLockerService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -33,6 +36,8 @@ public class FCameraController extends BaseController
 
     @Autowired
     private IFCameraService fCameraService;
+    @Autowired
+    private IFLockerService fLockerService;
 
     @RequiresPermissions("basicInfo:camera:view")
     @GetMapping()
@@ -89,8 +94,12 @@ public class FCameraController extends BaseController
      * 拍照/上传图片
      */
     @GetMapping("/picture")
-    public String picture()
+    public String picture(String fLockerid, ModelMap mmap)
     {
+        FLocker fLocker=fLockerService.selectFLockerById(fLockerid);
+        if(fLocker!=null){
+            mmap.put("uuid",fLocker.getfLockercode());
+        }
         return prefix + "/picture";
     }
 
@@ -127,6 +136,19 @@ public class FCameraController extends BaseController
     public AjaxResult editSave(FCamera fCamera)
     {
         return toAjax(fCameraService.updateFCamera(fCamera));
+    }
+
+    /**
+     * 修改保存摄像头
+     */
+    @RequiresPermissions("basicInfo:camera:verificationFace")
+    @Log(title = "人脸核验", businessType = BusinessType.UPDATE)
+    @PostMapping("/verificationFace")
+    @ResponseBody
+    public AjaxResult verificationFace(String faceImg,String uuId)
+    {
+        String result=fCameraService.verificationFace(faceImg,uuId);
+        return result.isEmpty()?success("验证通过"):error(result.split(":")[1]);
     }
 
     /**

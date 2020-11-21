@@ -52,7 +52,7 @@ public class FCasesController extends BaseController
     public TableDataInfo list(FCases fCases)
     {
         startPage();
-        fCases.setfState(1);
+        //fCases.setfState(1);
         List<FCases> list = fCasesService.selectFCasesList(fCases);
         return getDataTable(list);
     }

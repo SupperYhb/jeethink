@@ -399,6 +399,9 @@ public class FCasesServiceImpl implements IFCasesService
             else if(openDoorType.indexOf("2")!=-1)
             {
                 result=httprequest.openBoxByFace(account,userName,(peopleType.equals("0")?mainPolicePic:auxiliaryPolicePic),position.getfPositioncode(),locker.getfLockercode(),apiToken);
+                if(result.indexOf("绑定失败")!=-1){
+                    throw new RuntimeException(result.split(":")[1]);
+                }
             }
         }else{
             result="登录失败";

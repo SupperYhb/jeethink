@@ -325,30 +325,39 @@
             $.modal.msg("请选择登记的民警",modal_status.FAIL);
             return false;
         }
-        layer.open({
-            type: 2,
-            area: ['700px', '600px'],
-            fix: false,
-            //不固定
-            maxmin: true,
-            shade: 0.3,
-            title: '拍照/上传',
-            content: "/basicInfo/camera/picture",
-            btn: ['确定', '关闭'],
-            // 弹层外区域关闭
-            shadeClose: true,
-            yes: function(index,layero){
-                debugger
-                var iframeWin = layero.find('iframe')[0];
-                var str= iframeWin.contentWindow.submitHandler(index, layero);
-                $("#PolicePic").attr("src", str);
-                PolicePic=str;
-                layer.close(index);
-            },
-            cancel: function(index) {
-                return true;
-            }
-        });
+        debugger
+        var fLockerid=$("[name=fLockerid]").val();
+        if(fLockerid!=""&&fLockerid!=null&&fLockerid!=undefined) {
+            layer.open({
+                type: 2,
+                area: ['700px', '600px'],
+                fix: false,
+                //不固定
+                maxmin: true,
+                shade: 0.3,
+                title: '拍照/上传',
+                content: "/basicInfo/camera/picture?fLockerid="+fLockerid,
+                btn: ['确定', '关闭'],
+                // 弹层外区域关闭
+                shadeClose: true,
+                yes: function (index, layero) {
+                    debugger
+                    var iframeWin = layero.find('iframe')[0];
+                    var str = iframeWin.contentWindow.submitHandler(index, layero);
+                    if (str != "" && str != undefined && str != null) {
+                        $("#PolicePic").attr("src", str);
+                        PolicePic = str;
+                        layer.close(index);
+                    }
+                },
+                cancel: function (index) {
+                    return true;
+                }
+            });
+        }else{
+            $.modal.msg("请分配存放位置",modal_status.FAIL);
+            return ;
+        }
     }
     function loadTable()
     {

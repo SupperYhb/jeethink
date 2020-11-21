@@ -299,7 +299,7 @@ public class FDepositServiceImpl implements IFDepositService
         }
         String userName=policeName;
         //修改卡
-        if(!cardId.isEmpty())
+        if(openDoorType.equals("1"))
         {
             fDeposit.setfType(1);
             fDeposit.setfCardcode(cardCode);
@@ -311,9 +311,8 @@ public class FDepositServiceImpl implements IFDepositService
             card.setfLockercode(locker.getfLockercode());
             card.setfPositioncode(position.getfPositioncode());
             fCardService.updateFCard(card,"");
-        }else{
-            fDeposit.setfType(0);
         }
+        fDeposit.setfType(Integer.parseInt(openDoorType));
         //发送命令
         String apiToken= httprequest.login();
         String result="";

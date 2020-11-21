@@ -31,6 +31,9 @@ jeethink:
   cameraPassword: kedacom123
   #摄像头Puid
   puid: 56c5b53243014df8be1c52749e766b55@kedacom
+  #是否有人脸功能 0否，1是
+  isFace: 1
+
 
 # 开发环境配置
 server:

@@ -11,6 +11,7 @@ import com.jeethink.requestutil.entity.casetotalentity;
 import com.jeethink.requestutil.entity.kdcaseentity;
 import com.jeethink.requestutil.entity.loginresult;
 import com.jeethink.requestutil.entity.useface.faceParam;
+import com.jeethink.requestutil.entity.useface.verificationFace;
 import com.jeethink.requestutil.entity.useface.voucher;
 import com.jeethink.requestutil.entity.useface.voucherLink;
 
@@ -50,6 +51,11 @@ public class httprequest {
      * 人脸路径
      * */
     private static String facePath="/udms/device/voucher/general";
+
+    /**
+     * 人脸核验
+     * */
+    private static String versionFace="/udms/device/faceVoucher/check";
     /**
      * 登录平台
      * */
@@ -112,6 +118,19 @@ public class httprequest {
     return Result;
     }
 
+    /**
+     * 人脸验证
+     * */
+    public static String verificationFace(String uuId,String faceImg,String ApiToken)
+    {
+        faceImg=faceImg.split(",")[1];
+        verificationFace  verificationFace=new verificationFace();
+        verificationFace.setFaceImageBase64(faceImg);
+        verificationFace.setLokerUuid(uuId);
+        String json = JSONObject.toJSONString(verificationFace);
+        String result=HttpUtils.sendPosts(Global.getLockerUrl()+versionFace,json,ApiToken,2);
+        return result;
+    }
     /**
      * 刷脸开门
      * */

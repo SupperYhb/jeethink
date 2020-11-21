@@ -221,6 +221,9 @@
             $.modal.msg("请选择登记的民警",modal_status.FAIL);
             return false;
         }
+        debugger
+        var data=$("#" + table.options.id).bootstrapTable('getSelections');
+        var lockerId=data[0].fLockerid;
         layer.open({
             type: 2,
             area: ['700px', '600px'],
@@ -229,7 +232,7 @@
             maxmin: true,
             shade: 0.3,
             title: '拍照/上传',
-            content: "/basicInfo/camera/picture",
+            content: "/basicInfo/camera/picture?fLockerid="+lockerId,
             btn: ['确定', '关闭'],
             // 弹层外区域关闭
             shadeClose: true,
@@ -237,9 +240,11 @@
                 debugger
                 var iframeWin = layero.find('iframe')[0];
                 var str= iframeWin.contentWindow.submitHandler(index, layero);
-                $("#PolicePic").attr("src", str);
-                PolicePic=str;
-                layer.close(index);
+                if (str != "" && str != undefined && str != null) {
+                    $("#PolicePic").attr("src", str);
+                    PolicePic = str;
+                    layer.close(index);
+                }
             },
             cancel: function(index) {
                 return true;
@@ -342,7 +347,7 @@
     function loadTable()
     {
         var options = {
-            url: prefix + "/list",
+            url: prefix + "/list?fState=1",
             modalName: "存放案卷",
             pagination:false,
             columns: [{

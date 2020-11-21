@@ -58,4 +58,9 @@ public interface IFCameraService
      * @return 结果
      */
     public int deleteFCameraById(String fCameraid);
+
+    /**
+     * 验证人脸
+     * */
+    public String verificationFace(String faceImg,String uuId);
 }

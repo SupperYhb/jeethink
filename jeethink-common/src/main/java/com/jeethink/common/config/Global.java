@@ -46,6 +46,8 @@ public class Global
     private static String cameraPassword;
     /** 摄像头puid */
     private static String puid;
+    /** 是否有人脸 0否，1是 */
+    private static String isFace;
 
     public static String getName()
     {
@@ -161,6 +163,14 @@ public class Global
 
     public static String getPuid() {
         return puid;
+    }
+
+    public static String getIsFace() {
+        return isFace;
+    }
+
+    public static void setIsFace(String isFace) {
+        Global.isFace = isFace;
     }
 
     /**

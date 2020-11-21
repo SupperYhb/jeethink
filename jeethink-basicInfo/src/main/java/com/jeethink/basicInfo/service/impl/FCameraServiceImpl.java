@@ -1,6 +1,11 @@
 package com.jeethink.basicInfo.service.impl;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.Base64;
 import java.util.List;
+
+import com.jeethink.requestutil.function.httprequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.jeethink.basicInfo.mapper.FCameraMapper;
@@ -90,5 +95,25 @@ public class FCameraServiceImpl implements IFCameraService
     public int deleteFCameraById(String fCameraid)
     {
         return fCameraMapper.deleteFCameraById(fCameraid);
+    }
+
+    /**
+     * 验证人脸
+     * */
+    @Override
+    public String verificationFace(String faceImg, String uuId) {
+        String apiToken= httprequest.login();
+        faceImg = new String(Base64.getDecoder().decode(faceImg));
+        try {
+            faceImg = URLDecoder.decode(faceImg, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        String result=httprequest.verificationFace(uuId,faceImg,apiToken);
+        if(result.indexOf("成功")!=-1) {
+            return "";
+        }else {
+            return result;
+        }
     }
 }
