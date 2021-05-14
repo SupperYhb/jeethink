@@ -5,7 +5,9 @@ import java.util.List;
 import com.jeethink.basicInfo.domain.FCamera;
 import com.jeethink.business.domain.FCases;
 import com.jeethink.business.domain.FDeposit;
+import com.jeethink.business.domain.TdwyCase;
 import com.jeethink.requestutil.entity.kdcaseentity;
+import com.jeethink.requestutil.entity.tdwyCase;
 
 /**
  * 存放案卷Service接口
@@ -37,7 +39,7 @@ public interface IFDepositService
     /**
      * 添加入库信息（平台拉取）
      * */
-    public String addCaseIn(List<kdcaseentity> list,String lockerId,String positionId,String cardCode,String cardId,String remark,String peopleType,String policeAccount,String policeName, String openDoorType,String PolicePic);
+    public String addCaseIn(List<TdwyCase> list, String lockerId, String positionId, String cardCode, String cardId, String remark, String peopleType, String policeAccount, String policeName, String openDoorType, String PolicePic);
     /**
      * 添加归还信息
      * */

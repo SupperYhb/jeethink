@@ -40,6 +40,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fRemark != null  and fRemark != ''"> and f_remark = #{fRemark}</if>
             <if test="fPeopletype != null  and fRemark != ''"> and f_peopletype = #{fPeopletype}</if>
         </where>
+        ORDER BY
+        f_createdate DESC
     </select>
 
     <select id="selectFBorrowById" parameterType="String" resultMap="FBorrowResult">

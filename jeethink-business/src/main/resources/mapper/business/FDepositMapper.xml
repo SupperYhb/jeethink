@@ -42,6 +42,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="fBusinesstype != null  and fBusinesstype != ''"> and f_businesstype = #{fBusinesstype}</if>
             <if test="fPeopletype != null  and fPeopletype != ''"> and f_peopletype = #{fPeopletype}</if>
         </where>
+        order by f_createdate desc
     </select>
     
     <select id="selectFDepositById" parameterType="String" resultMap="FDepositResult">

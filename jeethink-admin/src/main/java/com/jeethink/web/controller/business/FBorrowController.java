@@ -7,6 +7,7 @@ import com.jeethink.basicInfo.service.IFCardService;
 import com.jeethink.business.domain.FCases;
 import com.jeethink.business.service.IFBorrowdetailService;
 import com.jeethink.business.service.IFCasesService;
+import com.jeethink.common.config.Global;
 import com.jeethink.requestutil.entity.kdcaseentity;
 import com.jeethink.system.service.ISysUserService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -92,8 +93,10 @@ public class FBorrowController extends BaseController
      * 新增借阅
      */
     @GetMapping("/add")
-    public String add()
+    public String add(ModelMap mmap)
     {
+        String isFace= Global.getIsFace();
+        mmap.put("isFace",isFace);
         return prefix + "/add";
     }
 

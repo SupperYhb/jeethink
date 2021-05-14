@@ -22,6 +22,7 @@ import com.jeethink.common.config.Global;
 import com.jeethink.common.extend.codeType;
 import com.jeethink.common.extend.createId;
 import com.jeethink.framework.util.ShiroUtils;
+import com.jeethink.requestutil.entity.tdwyCase;
 import com.jeethink.requestutil.function.httprequest;
 import com.jeethink.system.domain.SysUser;
 import com.jeethink.system.domain.SysUserRole;
@@ -128,6 +129,7 @@ public class FBorrowServiceImpl implements IFBorrowService
         borrow.setfPeopletype(peopleType);
         borrow.setfCarduserid(policeAccount);
         borrow.setfCardusername(policeName);
+        borrow.setfRemark(remark);
         for (FCases entity:list
              ) {
             //修改案卷状态
@@ -266,6 +268,11 @@ public class FBorrowServiceImpl implements IFBorrowService
             fTrack.setfCreateusername(ShiroUtils.getSysUser().getUserName());
             fTrack.setfCreatedate(new Date());
             fTrackService.insertFTrack(fTrack);
+
+            tdwyCase tdwyCase=httprequest.sendCase(2,entity.getfCasecode(),ShiroUtils.getLoginName(),ShiroUtils.getLoginName(),2);
+
+            String results=httprequest.upDatetdwy(tdwyCase);
+            System.out.println(results);
         }
         //获取卷宗柜
         FLocker locker=fLockerService.selectFLockerById(list.get(0).getfLockerid());

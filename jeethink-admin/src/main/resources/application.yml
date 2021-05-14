@@ -32,8 +32,15 @@ jeethink:
   #摄像头Puid
   puid: 56c5b53243014df8be1c52749e766b55@kedacom
   #是否有人脸功能 0否，1是
-  isFace: 1
-
+  isFace: 0
+  # 天地伟业地址 #
+  tdwyUrl: http://26.84.1.87:7000
+  # 保管单位 #
+  bgdw: 测试
+  # 保管地点 #
+  bgdd: A哈
+  # 保管单位编号 #
+  bgdwbh: 150700030000
 
 # 开发环境配置
 server:

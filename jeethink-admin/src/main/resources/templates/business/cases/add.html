@@ -125,17 +125,18 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-sm-6">
-                    <div class="form-group">
+                <div class="col-sm-6" id="mainBlock">
+                    <div class="form-group" id="mainPolice">
                         <label class="col-sm-3 control-label">主办民警图片：</label>
                         <div class="col-sm-8">
                            <img id="mainPolicePic" th:src="@{/img/cardimg.png}" style="width: 150px;" onclick="setPic('main')">
                         </div>
                     </div>
+
                 </div>
 
             </div>
-            <div class="row">
+            <div class="row" id="auxiliaryPolice">
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label class="col-sm-3 control-label is-required">辅办民警编号：</label>
@@ -151,7 +152,7 @@
                     </div>
                 </div>
                 <div class="col-sm-6">
-                    <div class="form-group">
+                    <div class="form-group" >
                         <label class="col-sm-3 control-label">辅办民警图片：</label>
                         <div class="col-sm-8">
                             <img id="auxiliaryPolicePic" th:src="@{/img/cardimg.png}" style="width: 150px;" onclick="setPic('auxiliary')">
@@ -210,11 +211,34 @@
     <th:block th:include="include :: datetimepicker-js" />
     <th:block th:include="include :: jquery-cxselect-js" />
     <script th:inline="javascript">
+        var isFace='[[${isFace}]]';
         //主办民警图片
         var mainPolicePic="";
         //辅办民警图片
         var auxiliaryPolicePic="";
         var data = [[${data}]];
+        $(function(){
+            debugger
+            if(isFace.indexOf("0")!=-1) {
+                $("#mainPolice").hide();
+                $("#auxiliaryPolice").hide();
+                $("[name=openDoorType] option:last").remove();
+                var html = "";
+                html += '<div class="form-group">';
+                html += '<label class="col-sm-3 control-label is-required">辅办民警编号：</label>';
+                html += '<div class="col-sm-8">';
+                html += '<input name="fPolice2id" class="form-control" type="text" required>';
+                html += '</div>';
+                html += '</div>';
+                html += '<div class="form-group">';
+                html += '<label class="col-sm-3 control-label is-required">辅办民警名称：</label>';
+                html += '<div class="col-sm-8">';
+                html += '<input name="fPolice2name" class="form-control" type="text" required>';
+                html += '</div>';
+                html += '</div>';
+                $("#mainBlock").append(html);
+            }
+        });
         $('#element').cxSelect({
             selects: ['locker', 'position'],
             jsonValue: 'v',
@@ -229,7 +253,7 @@
         function submitHandler() {
             debugger
             var openDoorType= $("[name=openDoorType]").val();
-            if(openDoorType=="1"&&($("#cardId").val()==""||$("#cardId").val()==undefined))
+            if(openDoorType=="1"&&($("[name=cardId]").val()==""||$("[name=cardId]").val()==undefined))
             {
                 $.modal.msg("刷卡打开必须需要进行发卡",modal_status.FAIL);
                 return;
@@ -300,7 +324,7 @@
                     // 弹层外区域关闭
                     shadeClose: true,
                     yes: function(index,layero){
-                        //  debugger
+                       debugger
                         var iframeWin = layero.find('iframe')[0];
                         var str= iframeWin.contentWindow.submitHandler(index, layero);
                         var cardCode=str.split(';')[0];

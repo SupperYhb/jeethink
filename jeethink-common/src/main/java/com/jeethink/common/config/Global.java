@@ -48,7 +48,14 @@ public class Global
     private static String puid;
     /** 是否有人脸 0否，1是 */
     private static String isFace;
-
+    /** 天地伟业地址 */
+    private static String tdwyUrl;
+    /** 保管单位 */
+    private static String bgdw;
+    /** 保管地点 */
+    private static String bgdd;
+    /** 保管单位编号 */
+    private static String bgdwbh;
     public static String getName()
     {
         return name;
@@ -169,8 +176,40 @@ public class Global
         return isFace;
     }
 
-    public static void setIsFace(String isFace) {
+    public void setIsFace(String isFace) {
         Global.isFace = isFace;
+    }
+
+    public static String getTdwyUrl() {
+        return tdwyUrl;
+    }
+
+    public void setTdwyUrl(String tdwyUrl) {
+        Global.tdwyUrl = tdwyUrl;
+    }
+
+    public static String getBgdw() {
+        return bgdw;
+    }
+
+    public void setBgdw(String bgdw) {
+        Global.bgdw = bgdw;
+    }
+
+    public static String getBgdd() {
+        return bgdd;
+    }
+
+    public void setBgdd(String bgdd) {
+        Global.bgdd = bgdd;
+    }
+
+    public static String getBgdwbh() {
+        return bgdwbh;
+    }
+
+    public void setBgdwbh(String bgdwbh) {
+        Global.bgdwbh = bgdwbh;
     }
 
     /**

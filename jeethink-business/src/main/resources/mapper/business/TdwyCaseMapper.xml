@@ -1,0 +1,367 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.jeethink.business.mapper.TdwyCaseMapper">
+    
+    <resultMap type="TdwyCase" id="TdwyCaseResult">
+        <result property="sId"    column="s_id"    />
+        <result property="ajbh"    column="ajbh"    />
+        <result property="ajmc"    column="ajmc"    />
+        <result property="ajlb"    column="ajlb"    />
+        <result property="ajlx"    column="ajlx"    />
+        <result property="ajly"    column="ajly"    />
+        <result property="ajzt"    column="ajzt"    />
+        <result property="gaah"    column="gaah"    />
+        <result property="aqms"    column="aqms"    />
+        <result property="aymc"    column="aymc"    />
+        <result property="barxm"    column="barxm"    />
+        <result property="basj"    column="basj"    />
+        <result property="afcs"    column="afcs"    />
+        <result property="afsj"    column="afsj"    />
+        <result property="afcsmc"    column="afcsmc"    />
+        <result property="afdgxjg"    column="afdgxjg"    />
+        <result property="afdgxjglxdh"    column="afdgxjglxdh"    />
+        <result property="afdq"    column="afdq"    />
+        <result property="afdqmc"    column="afdqmc"    />
+        <result property="ajbhZc"    column="ajbh_zc"    />
+        <result property="ajbhZr"    column="ajbh_zr"    />
+        <result property="bczcsj"    column="bczcsj"    />
+        <result property="bylasj"    column="bylasj"    />
+        <result property="cbdw"    column="cbdw"    />
+        <result property="cbdwmc"    column="cbdwmc"    />
+        <result property="cbr"    column="cbr"    />
+        <result property="cbrxm"    column="cbrxm"    />
+        <result property="cfkyws"    column="cfkyws"    />
+        <result property="cxajsj"    column="cxajsj"    />
+        <result property="djsj"    column="djsj"    />
+        <result property="fadxz"    column="fadxz"    />
+        <result property="sfsacw"    column="sfsacw"    />
+        <result property="sfsw"    column="sfsw"    />
+        <result property="ladwdm"    column="ladwdm"    />
+        <result property="ladwxc"    column="ladwxc"    />
+        <result property="lasj"    column="lasj"    />
+        <result property="zhgxsj"    column="zhgxsj"    />
+        <result property="lazcjl"    column="lazcjl"    />
+        <result property="lazcy"    column="lazcy"    />
+        <result property="lazcyxm"    column="lazcyxm"    />
+        <result property="pasj"    column="pasj"    />
+        <result property="jasj"    column="jasj"    />
+        <result property="jd"    column="jd"    />
+        <result property="jjdjid"    column="jjdjid"    />
+        <result property="jqbh"    column="jqbh"    />
+        <result property="pzbh"    column="pzbh"    />
+        <result property="sfcx"    column="sfcx"    />
+        <result property="sfzyzfjgjbaj"    column="sfzyzfjgjbaj"    />
+        <result property="shrxm"    column="shrxm"    />
+        <result property="sldw"    column="sldw"    />
+        <result property="sldwmc"    column="sldwmc"    />
+        <result property="slr"    column="slr"    />
+        <result property="slrxm"    column="slrxm"    />
+        <result property="slsj"    column="slsj"    />
+        <result property="tfdw"    column="tfdw"    />
+        <result property="tfdwmc"    column="tfdwmc"    />
+        <result property="tfr"    column="tfr"    />
+        <result property="xbr"    column="xbr"    />
+        <result property="cbrmx"    column="cbrmx"    />
+        <result property="xbrxm"    column="xbrxm"    />
+        <result property="qc"    column="qc"    />
+        <result property="cbrjh"    column="cbrjh"    />
+        <result property="xbrjh"    column="xbrjh"    />
+    </resultMap>
+
+    <sql id="selectTdwyCaseVo">
+        select s_id, ajbh, ajmc, ajlb, ajlx, ajly, ajzt, gaah, aqms, aymc, barxm, basj, afcs, afsj, afcsmc, afdgxjg, afdgxjglxdh, afdq, afdqmc, ajbh_zc, ajbh_zr, bczcsj, bylasj, cbdw, cbdwmc, cbr, cbrxm, cfkyws, cxajsj, djsj, fadxz, sfsacw, sfsw, ladwdm, ladwxc, lasj, zhgxsj, lazcjl, lazcy, lazcyxm, pasj, jasj, jd, jjdjid, jqbh, pzbh, sfcx, sfzyzfjgjbaj, shrxm, sldw, sldwmc, slr, slrxm, slsj, tfdw, tfdwmc, tfr, xbr, xbdw from tdwy_case
+    </sql>
+
+    <select id="selectTdwyCaseList" parameterType="TdwyCase" resultMap="TdwyCaseResult">
+        <include refid="selectTdwyCaseVo"/>
+        <where>  
+            <if test="ajbh != null  and ajbh != ''"> and ajbh = #{ajbh}</if>
+            <if test="ajmc != null  and ajmc != ''"> and ajmc = #{ajmc}</if>
+            <if test="ajlb != null  and ajlb != ''"> and ajlb = #{ajlb}</if>
+            <if test="ajlx != null  and ajlx != ''"> and ajlx = #{ajlx}</if>
+            <if test="ajly != null  and ajly != ''"> and ajly = #{ajly}</if>
+            <if test="ajzt != null  and ajzt != ''"> and ajzt = #{ajzt}</if>
+            <if test="gaah != null  and gaah != ''"> and gaah = #{gaah}</if>
+            <if test="aqms != null  and aqms != ''"> and aqms = #{aqms}</if>
+            <if test="aymc != null  and aymc != ''"> and aymc = #{aymc}</if>
+            <if test="barxm != null  and barxm != ''"> and barxm = #{barxm}</if>
+            <if test="basj != null  and basj != ''"> and basj = #{basj}</if>
+            <if test="afcs != null  and afcs != ''"> and afcs = #{afcs}</if>
+            <if test="afsj != null  and afsj != ''"> and afsj = #{afsj}</if>
+            <if test="afcsmc != null  and afcsmc != ''"> and afcsmc = #{afcsmc}</if>
+            <if test="afdgxjg != null  and afdgxjg != ''"> and afdgxjg = #{afdgxjg}</if>
+            <if test="afdgxjglxdh != null  and afdgxjglxdh != ''"> and afdgxjglxdh = #{afdgxjglxdh}</if>
+            <if test="afdq != null  and afdq != ''"> and afdq = #{afdq}</if>
+            <if test="afdqmc != null  and afdqmc != ''"> and afdqmc = #{afdqmc}</if>
+            <if test="ajbhZc != null  and ajbhZc != ''"> and ajbh_zc = #{ajbhZc}</if>
+            <if test="ajbhZr != null  and ajbhZr != ''"> and ajbh_zr = #{ajbhZr}</if>
+            <if test="bczcsj != null  and bczcsj != ''"> and bczcsj = #{bczcsj}</if>
+            <if test="bylasj != null  and bylasj != ''"> and bylasj = #{bylasj}</if>
+            <if test="cbdw != null  and cbdw != ''"> and cbdw = #{cbdw}</if>
+            <if test="cbdwmc != null  and cbdwmc != ''"> and cbdwmc = #{cbdwmc}</if>
+            <if test="cbr != null  and cbr != ''"> and cbr = #{cbr}</if>
+            <if test="cbrxm != null  and cbrxm != ''"> and cbrxm = #{cbrxm}</if>
+            <if test="cfkyws != null  and cfkyws != ''"> and cfkyws = #{cfkyws}</if>
+            <if test="cxajsj != null  and cxajsj != ''"> and cxajsj = #{cxajsj}</if>
+            <if test="djsj != null  and djsj != ''"> and djsj = #{djsj}</if>
+            <if test="fadxz != null  and fadxz != ''"> and fadxz = #{fadxz}</if>
+            <if test="sfsacw != null  and sfsacw != ''"> and sfsacw = #{sfsacw}</if>
+            <if test="sfsw != null  and sfsw != ''"> and sfsw = #{sfsw}</if>
+            <if test="ladwdm != null  and ladwdm != ''"> and ladwdm = #{ladwdm}</if>
+            <if test="ladwxc != null  and ladwxc != ''"> and ladwxc = #{ladwxc}</if>
+            <if test="lasj != null  and lasj != ''"> and lasj = #{lasj}</if>
+            <if test="zhgxsj != null  and zhgxsj != ''"> and zhgxsj = #{zhgxsj}</if>
+            <if test="lazcjl != null  and lazcjl != ''"> and lazcjl = #{lazcjl}</if>
+            <if test="lazcy != null  and lazcy != ''"> and lazcy = #{lazcy}</if>
+            <if test="lazcyxm != null  and lazcyxm != ''"> and lazcyxm = #{lazcyxm}</if>
+            <if test="pasj != null  and pasj != ''"> and pasj = #{pasj}</if>
+            <if test="jasj != null  and jasj != ''"> and jasj = #{jasj}</if>
+            <if test="jd != null  and jd != ''"> and jd = #{jd}</if>
+            <if test="jjdjid != null  and jjdjid != ''"> and jjdjid = #{jjdjid}</if>
+            <if test="jqbh != null  and jqbh != ''"> and jqbh = #{jqbh}</if>
+            <if test="pzbh != null  and pzbh != ''"> and pzbh = #{pzbh}</if>
+            <if test="sfcx != null  and sfcx != ''"> and sfcx = #{sfcx}</if>
+            <if test="sfzyzfjgjbaj != null  and sfzyzfjgjbaj != ''"> and sfzyzfjgjbaj = #{sfzyzfjgjbaj}</if>
+            <if test="shrxm != null  and shrxm != ''"> and shrxm = #{shrxm}</if>
+            <if test="sldw != null  and sldw != ''"> and sldw = #{sldw}</if>
+            <if test="sldwmc != null  and sldwmc != ''"> and sldwmc = #{sldwmc}</if>
+            <if test="slr != null  and slr != ''"> and slr = #{slr}</if>
+            <if test="slrxm != null  and slrxm != ''"> and slrxm = #{slrxm}</if>
+            <if test="slsj != null  and slsj != ''"> and slsj = #{slsj}</if>
+            <if test="tfdw != null  and tfdw != ''"> and tfdw = #{tfdw}</if>
+            <if test="tfdwmc != null  and tfdwmc != ''"> and tfdwmc = #{tfdwmc}</if>
+            <if test="tfr != null  and tfr != ''"> and tfr = #{tfr}</if>
+            <if test="xbr != null  and xbr != ''"> and xbr = #{xbr}</if>
+            <if test="xbdw != null  and xbdw != ''"> and xbdw = #{xbdw}</if>
+        </where>
+    </select>
+    
+    <select id="selectTdwyCaseById" parameterType="String" resultMap="TdwyCaseResult">
+        <include refid="selectTdwyCaseVo"/>
+        where s_id = #{sId}
+    </select>
+        
+    <insert id="insertTdwyCase" parameterType="TdwyCase">
+        insert into tdwy_case
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sId != null">s_id,</if>
+            <if test="ajbh != null">ajbh,</if>
+            <if test="ajmc != null">ajmc,</if>
+            <if test="ajlb != null">ajlb,</if>
+            <if test="ajlx != null">ajlx,</if>
+            <if test="ajly != null">ajly,</if>
+            <if test="ajzt != null">ajzt,</if>
+            <if test="gaah != null">gaah,</if>
+            <if test="aqms != null">aqms,</if>
+            <if test="aymc != null">aymc,</if>
+            <if test="barxm != null">barxm,</if>
+            <if test="basj != null">basj,</if>
+            <if test="afcs != null">afcs,</if>
+            <if test="afsj != null">afsj,</if>
+            <if test="afcsmc != null">afcsmc,</if>
+            <if test="afdgxjg != null">afdgxjg,</if>
+            <if test="afdgxjglxdh != null">afdgxjglxdh,</if>
+            <if test="afdq != null">afdq,</if>
+            <if test="afdqmc != null">afdqmc,</if>
+            <if test="ajbhZc != null">ajbh_zc,</if>
+            <if test="ajbhZr != null">ajbh_zr,</if>
+            <if test="bczcsj != null">bczcsj,</if>
+            <if test="bylasj != null">bylasj,</if>
+            <if test="cbdw != null">cbdw,</if>
+            <if test="cbdwmc != null">cbdwmc,</if>
+            <if test="cbr != null">cbr,</if>
+            <if test="cbrxm != null">cbrxm,</if>
+            <if test="cfkyws != null">cfkyws,</if>
+            <if test="cxajsj != null">cxajsj,</if>
+            <if test="djsj != null">djsj,</if>
+            <if test="fadxz != null">fadxz,</if>
+            <if test="sfsacw != null">sfsacw,</if>
+            <if test="sfsw != null">sfsw,</if>
+            <if test="ladwdm != null">ladwdm,</if>
+            <if test="ladwxc != null">ladwxc,</if>
+            <if test="lasj != null">lasj,</if>
+            <if test="zhgxsj != null">zhgxsj,</if>
+            <if test="lazcjl != null">lazcjl,</if>
+            <if test="lazcy != null">lazcy,</if>
+            <if test="lazcyxm != null">lazcyxm,</if>
+            <if test="pasj != null">pasj,</if>
+            <if test="jasj != null">jasj,</if>
+            <if test="jd != null">jd,</if>
+            <if test="jjdjid != null">jjdjid,</if>
+            <if test="jqbh != null">jqbh,</if>
+            <if test="pzbh != null">pzbh,</if>
+            <if test="sfcx != null">sfcx,</if>
+            <if test="sfzyzfjgjbaj != null">sfzyzfjgjbaj,</if>
+            <if test="shrxm != null">shrxm,</if>
+            <if test="sldw != null">sldw,</if>
+            <if test="sldwmc != null">sldwmc,</if>
+            <if test="slr != null">slr,</if>
+            <if test="slrxm != null">slrxm,</if>
+            <if test="slsj != null">slsj,</if>
+            <if test="tfdw != null">tfdw,</if>
+            <if test="tfdwmc != null">tfdwmc,</if>
+            <if test="tfr != null">tfr,</if>
+            <if test="xbr != null">xbr,</if>
+            <if test="xbdw != null">xbdw,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sId != null">#{sId},</if>
+            <if test="ajbh != null">#{ajbh},</if>
+            <if test="ajmc != null">#{ajmc},</if>
+            <if test="ajlb != null">#{ajlb},</if>
+            <if test="ajlx != null">#{ajlx},</if>
+            <if test="ajly != null">#{ajly},</if>
+            <if test="ajzt != null">#{ajzt},</if>
+            <if test="gaah != null">#{gaah},</if>
+            <if test="aqms != null">#{aqms},</if>
+            <if test="aymc != null">#{aymc},</if>
+            <if test="barxm != null">#{barxm},</if>
+            <if test="basj != null">#{basj},</if>
+            <if test="afcs != null">#{afcs},</if>
+            <if test="afsj != null">#{afsj},</if>
+            <if test="afcsmc != null">#{afcsmc},</if>
+            <if test="afdgxjg != null">#{afdgxjg},</if>
+            <if test="afdgxjglxdh != null">#{afdgxjglxdh},</if>
+            <if test="afdq != null">#{afdq},</if>
+            <if test="afdqmc != null">#{afdqmc},</if>
+            <if test="ajbhZc != null">#{ajbhZc},</if>
+            <if test="ajbhZr != null">#{ajbhZr},</if>
+            <if test="bczcsj != null">#{bczcsj},</if>
+            <if test="bylasj != null">#{bylasj},</if>
+            <if test="cbdw != null">#{cbdw},</if>
+            <if test="cbdwmc != null">#{cbdwmc},</if>
+            <if test="cbr != null">#{cbr},</if>
+            <if test="cbrxm != null">#{cbrxm},</if>
+            <if test="cfkyws != null">#{cfkyws},</if>
+            <if test="cxajsj != null">#{cxajsj},</if>
+            <if test="djsj != null">#{djsj},</if>
+            <if test="fadxz != null">#{fadxz},</if>
+            <if test="sfsacw != null">#{sfsacw},</if>
+            <if test="sfsw != null">#{sfsw},</if>
+            <if test="ladwdm != null">#{ladwdm},</if>
+            <if test="ladwxc != null">#{ladwxc},</if>
+            <if test="lasj != null">#{lasj},</if>
+            <if test="zhgxsj != null">#{zhgxsj},</if>
+            <if test="lazcjl != null">#{lazcjl},</if>
+            <if test="lazcy != null">#{lazcy},</if>
+            <if test="lazcyxm != null">#{lazcyxm},</if>
+            <if test="pasj != null">#{pasj},</if>
+            <if test="jasj != null">#{jasj},</if>
+            <if test="jd != null">#{jd},</if>
+            <if test="jjdjid != null">#{jjdjid},</if>
+            <if test="jqbh != null">#{jqbh},</if>
+            <if test="pzbh != null">#{pzbh},</if>
+            <if test="sfcx != null">#{sfcx},</if>
+            <if test="sfzyzfjgjbaj != null">#{sfzyzfjgjbaj},</if>
+            <if test="shrxm != null">#{shrxm},</if>
+            <if test="sldw != null">#{sldw},</if>
+            <if test="sldwmc != null">#{sldwmc},</if>
+            <if test="slr != null">#{slr},</if>
+            <if test="slrxm != null">#{slrxm},</if>
+            <if test="slsj != null">#{slsj},</if>
+            <if test="tfdw != null">#{tfdw},</if>
+            <if test="tfdwmc != null">#{tfdwmc},</if>
+            <if test="tfr != null">#{tfr},</if>
+            <if test="xbr != null">#{xbr},</if>
+            <if test="xbdw != null">#{xbdw},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTdwyCase" parameterType="TdwyCase">
+        update tdwy_case
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="ajbh != null">ajbh = #{ajbh},</if>
+            <if test="ajmc != null">ajmc = #{ajmc},</if>
+            <if test="ajlb != null">ajlb = #{ajlb},</if>
+            <if test="ajlx != null">ajlx = #{ajlx},</if>
+            <if test="ajly != null">ajly = #{ajly},</if>
+            <if test="ajzt != null">ajzt = #{ajzt},</if>
+            <if test="gaah != null">gaah = #{gaah},</if>
+            <if test="aqms != null">aqms = #{aqms},</if>
+            <if test="aymc != null">aymc = #{aymc},</if>
+            <if test="barxm != null">barxm = #{barxm},</if>
+            <if test="basj != null">basj = #{basj},</if>
+            <if test="afcs != null">afcs = #{afcs},</if>
+            <if test="afsj != null">afsj = #{afsj},</if>
+            <if test="afcsmc != null">afcsmc = #{afcsmc},</if>
+            <if test="afdgxjg != null">afdgxjg = #{afdgxjg},</if>
+            <if test="afdgxjglxdh != null">afdgxjglxdh = #{afdgxjglxdh},</if>
+            <if test="afdq != null">afdq = #{afdq},</if>
+            <if test="afdqmc != null">afdqmc = #{afdqmc},</if>
+            <if test="ajbhZc != null">ajbh_zc = #{ajbhZc},</if>
+            <if test="ajbhZr != null">ajbh_zr = #{ajbhZr},</if>
+            <if test="bczcsj != null">bczcsj = #{bczcsj},</if>
+            <if test="bylasj != null">bylasj = #{bylasj},</if>
+            <if test="cbdw != null">cbdw = #{cbdw},</if>
+            <if test="cbdwmc != null">cbdwmc = #{cbdwmc},</if>
+            <if test="cbr != null">cbr = #{cbr},</if>
+            <if test="cbrxm != null">cbrxm = #{cbrxm},</if>
+            <if test="cfkyws != null">cfkyws = #{cfkyws},</if>
+            <if test="cxajsj != null">cxajsj = #{cxajsj},</if>
+            <if test="djsj != null">djsj = #{djsj},</if>
+            <if test="fadxz != null">fadxz = #{fadxz},</if>
+            <if test="sfsacw != null">sfsacw = #{sfsacw},</if>
+            <if test="sfsw != null">sfsw = #{sfsw},</if>
+            <if test="ladwdm != null">ladwdm = #{ladwdm},</if>
+            <if test="ladwxc != null">ladwxc = #{ladwxc},</if>
+            <if test="lasj != null">lasj = #{lasj},</if>
+            <if test="zhgxsj != null">zhgxsj = #{zhgxsj},</if>
+            <if test="lazcjl != null">lazcjl = #{lazcjl},</if>
+            <if test="lazcy != null">lazcy = #{lazcy},</if>
+            <if test="lazcyxm != null">lazcyxm = #{lazcyxm},</if>
+            <if test="pasj != null">pasj = #{pasj},</if>
+            <if test="jasj != null">jasj = #{jasj},</if>
+            <if test="jd != null">jd = #{jd},</if>
+            <if test="jjdjid != null">jjdjid = #{jjdjid},</if>
+            <if test="jqbh != null">jqbh = #{jqbh},</if>
+            <if test="pzbh != null">pzbh = #{pzbh},</if>
+            <if test="sfcx != null">sfcx = #{sfcx},</if>
+            <if test="sfzyzfjgjbaj != null">sfzyzfjgjbaj = #{sfzyzfjgjbaj},</if>
+            <if test="shrxm != null">shrxm = #{shrxm},</if>
+            <if test="sldw != null">sldw = #{sldw},</if>
+            <if test="sldwmc != null">sldwmc = #{sldwmc},</if>
+            <if test="slr != null">slr = #{slr},</if>
+            <if test="slrxm != null">slrxm = #{slrxm},</if>
+            <if test="slsj != null">slsj = #{slsj},</if>
+            <if test="tfdw != null">tfdw = #{tfdw},</if>
+            <if test="tfdwmc != null">tfdwmc = #{tfdwmc},</if>
+            <if test="tfr != null">tfr = #{tfr},</if>
+            <if test="xbr != null">xbr = #{xbr},</if>
+            <if test="xbdw != null">xbdw = #{xbdw},</if>
+        </trim>
+        where s_id = #{sId}
+    </update>
+
+    <delete id="deleteTdwyCaseById" parameterType="String">
+        delete from tdwy_case where s_id = #{sId}
+    </delete>
+
+    <delete id="deleteTdwyCaseByIds" parameterType="String">
+        delete from tdwy_case where s_id in 
+        <foreach item="sId" collection="array" open="(" separator="," close=")">
+            #{sId}
+        </foreach>
+    </delete>
+
+    <select id="selectTdwyCaseLists" parameterType="java.util.Map" resultMap="TdwyCaseResult">
+        SELECT
+            A.*,
+            B.xm cbrmx,
+            B.yhbh cbrjh,
+            C.xm xbrxm,
+            C.yhbh xbrjh,
+            D.qc
+        FROM
+            tdwy_case A
+        LEFT JOIN tdwy_user B ON A.cbr = B.s_id
+        LEFT JOIN tdwy_user C ON A.xbr = C.s_id
+        LEFT JOIN tdwy_organize D ON A.cbdw = D.s_id
+        where 1=1
+        <if test="ajmc != null  and ajmc != ''"> and A.ajmc like concat('%', #{ajmc}, '%')</if>
+        <if test="mc != null  and mc != ''"> and (B.xm like concat('%', #{mc}, '%') or C.xm like concat('%', #{mc}, '%'))</if>
+        <if test="ajbh != null  and ajbh != ''"> and A.ajbh like concat('%', #{ajbh}, '%')</if>
+        limit 0,30
+    </select>
+</mapper>

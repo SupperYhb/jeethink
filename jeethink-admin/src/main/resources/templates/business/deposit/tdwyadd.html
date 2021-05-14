@@ -16,17 +16,17 @@
                                     <div class="select-list">
                                         <ul>
                                             <li id="police">
-                                                <label>警号：</label>
-                                                <input type="text" name="policeCode" />
+                                                <label>警员名称：</label>
+                                                <input type="text" name="mc" />
                                                 <input id="peopleType" th:value="${peopleType}" style="display: none" >
                                             </li>
                                             <li>
                                                 <label>案卷名称：</label>
-                                                <input type="text" name="caseName"/>
+                                                <input type="text" name="ajmc"/>
                                             </li>
                                             <li>
                                                 <label>案卷编号：</label>
-                                                <input type="text" name="caseNumber"/>
+                                                <input type="text" name="ajbh"/>
                                             </li>
                                             <li>
                                                 <a class="btn btn-primary btn-rounded btn-sm" onclick="$.table.search()"><i class="fa fa-search"></i>&nbsp;搜索</a>
@@ -390,67 +390,55 @@
     function loadTable()
     {
         var options = {
-            url: prefix + "/getkdCaselist",
+            url: prefix + "/selectTdwyCaseList",
             modalName: "存放案卷",
             pagination:false,
+            // pagination:true,
+            // pageSize:10,
             columns: [{
                 checkbox: true
             },
 
                 {
-                    field: 'no',
-                    title: '案卷编号'
+                    field: 'ajbh',
+                    title: '案卷编号',
+                    width:300
                 },
                 {
-                    field: 'name',
+                    field: 'ajmc',
                     title: '案卷名称'
                 },
                 {
-                    field: 'crimeAddress',
-                    title: '案发地址'
+                    field: 'cbrjh',
+                    title: '承办人警号'
                 },
                 {
-                    field: 'acceptanceTime',
-                    title: '受理时间'
+                    field: 'cbrmx',
+                    title: '承办人'
                 },
                 {
-                    field: 'briefCase',
-                    title: '简要案情'
-                },
-                // {
-                //     field: 'suspectName',
-                //     title: '涉案人员名称'
-                // },
-                // {
-                //     field: 'suspectCode',
-                //     title: '涉案人员编号'
-                // },
-                {
-                    field: 'mainPoliceCode',
-                    title: '主办民警编号'
+                    field: 'xbrjh',
+                    title: '协办人警号'
                 },
                 {
-                    field: 'mainPoliceName',
-                    title: '主办民警名称'
+                    field: 'xbrxm',
+                    title: '协办人'
                 },
                 {
-                    field: 'assistPoliceCode',
-                    title: '辅办民警编号'
-                },
-                {
-                    field: 'assistPoliceName',
-                    title: '辅办民警名称'
-                },
+                    field: 'qc',
+                    title: '办案单位'
+                }
             ]
         };
         $.table.init(options);
     }
 
     function getPolice() {
+        debugger
         var peopleType=$("[name=peopleType]").val();
         var data=$("#" + table.options.id).bootstrapTable('getSelections');
-        var policeAccount=(peopleType=="0"? data[0].mainPoliceCode:data[0].assistPoliceCode);
-        var policeName=(peopleType=="0"? data[0].mainPoliceName:data[0].assistPoliceName);
+        var policeAccount=(peopleType=="0"? data[0].cbrjh:data[0].xbrjh);
+        var policeName=(peopleType=="0"? data[0].cbrmx:data[0].xbrxm);
         $("[name=policeAccount]").val(policeAccount);
         $("[name=policeName]").val(policeName);
         if(policeAccount!=""&&policeAccount!=null&&policeAccount!=undefined&&peopleType!="99")

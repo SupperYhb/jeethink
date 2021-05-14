@@ -10,13 +10,17 @@ import com.jeethink.common.utils.http.HttpUtils;
 import com.jeethink.requestutil.entity.casetotalentity;
 import com.jeethink.requestutil.entity.kdcaseentity;
 import com.jeethink.requestutil.entity.loginresult;
+import com.jeethink.requestutil.entity.tdwyCase;
 import com.jeethink.requestutil.entity.useface.faceParam;
 import com.jeethink.requestutil.entity.useface.verificationFace;
 import com.jeethink.requestutil.entity.useface.voucher;
 import com.jeethink.requestutil.entity.useface.voucherLink;
 
 
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 public class httprequest {
     /**
@@ -73,22 +77,22 @@ public class httprequest {
      * 获取案卷信息
      * */
     public static List<kdcaseentity> getCase(String ApiToken,String caseName,String caseNumber,String policeCode){
-
-//       String obj= HttpUtils.sendGet(Global.getCaseUrl()+"/dams/casePolices/page","currentPage=0&pageSize=10&caseName="+caseName+"&caseNumber="+caseNumber+"&policeCode="+policeCode,"",ApiToken);
-//       if(!obj.isEmpty()) {
-//           casetotalentity entity = JSON.parseObject(obj, casetotalentity.class);
-//           return entity.getList();
-//       }else{
-//           return new ArrayList<kdcaseentity>();
-//       }
-        List<kdcaseentity> list= new ArrayList<kdcaseentity>();
-        kdcaseentity data=new kdcaseentity();
-        data.setNo("1");
-        data.setName("测试");
-        data.setAssistPoliceCode("092451");
-        data.setAssistPoliceName("测试");
-        list.add(data);
-        return list;
+        String url=Global.getCaseUrl();
+       String obj= HttpUtils.sendGet(Global.getCaseUrl()+"/dams/casePolices/page","currentPage=0&pageSize=10&caseName="+caseName+"&caseNumber="+caseNumber+"&policeCode="+policeCode,"",ApiToken);
+       if(!obj.isEmpty()) {
+           casetotalentity entity = JSON.parseObject(obj, casetotalentity.class);
+           return entity.getList();
+       }else{
+           return new ArrayList<kdcaseentity>();
+       }
+//        List<kdcaseentity> list= new ArrayList<kdcaseentity>();
+//        kdcaseentity data=new kdcaseentity();
+//        data.setNo("1");0
+//        data.setName("测试");
+//        data.setAssistPoliceCode("092451");
+//        data.setAssistPoliceName("测试");
+//        list.add(data);
+//        return list;
     }
 
 
@@ -155,6 +159,52 @@ public class httprequest {
         faceParam.setVoucherDTO(voucher);
         String json = JSONObject.toJSONString(faceParam);
         String result=HttpUtils.sendPosts(Global.getLockerUrl()+facePath,json,ApiToken,2);
+        return result;
+    }
+
+    public static tdwyCase sendCase(Integer ajzt,String ajbh,String bgr,String lrr,Integer zgzt)
+    {
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//设置日期格式
+        String badd=Global.getBgdd();
+        String badw=Global.getBgdw();
+        String bgdwbh=Global.getBgdwbh();
+        tdwyCase tdwyCase=new tdwyCase();
+        tdwyCase.setAjbazt(ajzt);
+        tdwyCase.setAjbh(ajbh);
+        tdwyCase.setBgdd(badd);
+        tdwyCase.setBgdw(badw);
+        tdwyCase.setBgr(bgr);
+        tdwyCase.setLrr(lrr);
+        tdwyCase.setZgzt(zgzt);
+        tdwyCase.setLybid(ajbh);
+        tdwyCase.setBgdwbh(bgdwbh);
+        tdwyCase.setLrsj(df.format(new Date()));
+        return tdwyCase;
+    }
+    /**
+     * 发送案卷信息
+     * */
+    public static String sendtdwy(List<tdwyCase> list){
+        String json=JSONObject.toJSONString(list);
+        String result= null;
+        try {
+            result = HttpUtils.jsonPost(Global.getTdwyUrl()+"/pangu/checkToken/zfjdArchiveFile/saveBatch",json);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+    /**
+     * 更新案卷状态
+     * */
+    public static String upDatetdwy(tdwyCase tdwyCase){
+        String json=JSONObject.toJSONString(tdwyCase);
+        String result= null;
+        try {
+            result = HttpUtils.jsonPost(Global.getTdwyUrl()+"/pangu/checkToken/zfjdArchiveFile/update",json);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return result;
     }
 

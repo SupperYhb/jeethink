@@ -30,6 +30,7 @@ function login() {
             "rememberMe": rememberMe
         },
         success: function(r) {
+            debugger
             if (r.code == 0) {
                 location.href = ctx + 'index';
             } else {

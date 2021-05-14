@@ -33,6 +33,7 @@
         <result property="fCheckDetailId"    column="f_checkdetailid"    />
         <result property="borrowDate"    column="borrowDate"    />
         <result property="fState"    column="f_state"    />
+        <result property="fRemarks"    column="remarks"    />
     </resultMap>
 
     <sql id="selectFCasesVo">
@@ -40,13 +41,42 @@
     </sql>
 
     <select id="selectFCasesList" parameterType="FCases" resultMap="FCasesResult">
-        <include refid="selectFCasesVo"/>
+        SELECT
+        f_Id,
+        f_casecode,
+        f_casename,
+        f_casebriefdetail,
+        f_putdate,
+        f_createdate,
+        f_police1id,
+        f_police2id,
+        f_police1name,
+        f_police2name,
+        f_departmentid,
+        f_casetype,
+        f_casebrief,
+        f_lockerid,
+        f_lockername,
+        f_positionid,
+        f_positioncode,
+        f_criminalcode,
+        f_criminalname,
+        f_crimeaddress,
+        f_state,
+        case f_state
+        WHEN 2
+        then (select C.f_remark from f_borrowdetail B left join f_borrow C on B.f_borrowid=C.f_borrowid where B.f_casecode=A.f_casecode ORDER BY createdate desc LIMIT 1)
+        else ''
+        end
+        remarks
+        FROM
+        f_cases A
         <where>
-            <if test="fCasecode != null  and fCasecode != ''"> and f_casecode = #{fCasecode}</if>
-            <if test="fState != null  and fState != ''"> and f_state = #{fState}</if>
-            <if test="fIsBack != null"> and f_isback = #{fIsBack}</if>
+            <if test="fCasecode != null  and fCasecode != ''"> and A.f_casecode = #{fCasecode}</if>
+            <if test="fState != null  and fState != ''"> and A.f_state = #{fState}</if>
+            <if test="fIsBack != null"> and A.f_isback = #{fIsBack}</if>
             <if test="fPolice1id != null  and fPolice1id != '' and fPolice2id != null  and fPolice2id != ''"> and (f_police1id = #{fPolice1id} or f_police2id=#{fPolice2id})</if>
-            <if test="fCasename != null  and fCasename != ''"> and f_casename like concat('%', #{fCasename}, '%')</if>
+            <if test="fCasename != null  and fCasename != ''"> and A.f_casename like concat('%', #{fCasename}, '%')</if>
         </where>
     </select>
 
@@ -74,6 +104,7 @@
             LEFT JOIN f_cases B ON A.f_casecode = B.f_casecode
         WHERE
             A.f_borrowid = #{borrowId}
+            order by f_createdate desc
     </select>
 
     <select id="selectByLockerId" parameterType="String" resultMap="FCasesResult">

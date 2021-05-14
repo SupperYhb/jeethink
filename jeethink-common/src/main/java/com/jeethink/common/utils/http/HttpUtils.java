@@ -335,6 +335,8 @@ public class HttpUtils
         return result.toString();
     }
     public static String sendPosts(String url, String param, String key, Integer type) {
+        System.out.println("访问地址："+url);
+        System.out.println("访问参数"+param);
         String body = "";
         try {
             CloseableHttpClient client = HttpClients.createDefault();
@@ -374,6 +376,45 @@ public class HttpUtils
             log.error("调用HttpUtils.sendPost ConnectException, url=" + url + ",param=" + param, e);
         }
 
+        return body;
+    }
+
+    public static String jsonPost(String url,String param) throws IOException {
+        System.out.println("请求路径:"+url);
+        System.out.println("请求参数:"+param);
+        String body = "";
+
+        //创建httpclient对象
+        CloseableHttpClient client = HttpClients.createDefault();
+        //创建post方式请求对象
+        URL urls = new URL(url);
+        HttpPost httpPost = new HttpPost(url);
+
+        //装填参数
+        StringEntity s = new StringEntity(param, "utf-8");
+//        s.setContentEncoding(new BasicHeader(HTTP.CONTENT_TYPE,
+//                "application/json"));
+        //设置参数到请求对象中
+        httpPost.setEntity(s);
+//        System.out.println("请求地址：" + url);
+
+        //设置header信息
+        //指定报文头【Content-type】、【User-Agent】
+        //httpPost.setHeader("Content-type", "application/x-www-form-urlencoded");
+        httpPost.setHeader("Content-type", "application/json");
+        //httpPost.setHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
+
+        //执行请求操作，并拿到结果（同步阻塞）
+        CloseableHttpResponse response = client.execute(httpPost);
+        //获取结果实体
+        HttpEntity entity = response.getEntity();
+        if (entity != null) {
+            //按指定编码转换结果实体为String类型
+            body = EntityUtils.toString(entity, "UTF-8");
+        }
+        EntityUtils.consume(entity);
+        //释放链接
+        response.close();
         return body;
     }
     private static class TrustAnyTrustManager implements X509TrustManager

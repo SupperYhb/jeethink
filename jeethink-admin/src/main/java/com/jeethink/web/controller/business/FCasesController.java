@@ -3,6 +3,7 @@ package com.jeethink.web.controller.business;
 import java.util.List;
 
 import com.jeethink.business.domain.FBorrow;
+import com.jeethink.common.config.Global;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -141,8 +142,10 @@ public class FCasesController extends BaseController
      * 新增案卷
      */
     @GetMapping("/add")
-    public String add()
+    public String add(ModelMap mmap)
     {
+        String isFace= Global.getIsFace();
+        mmap.put("isFace",isFace);
         return prefix + "/add";
     }
 

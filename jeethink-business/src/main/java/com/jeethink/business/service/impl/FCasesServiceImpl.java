@@ -18,6 +18,7 @@ import com.jeethink.common.extend.codeType;
 import com.jeethink.common.extend.createId;
 import com.jeethink.framework.util.ShiroUtils;
 import com.jeethink.framework.web.service.ConfigService;
+import com.jeethink.requestutil.entity.tdwyCase;
 import com.jeethink.requestutil.function.httprequest;
 import com.jeethink.system.domain.SysUser;
 import com.jeethink.system.domain.SysUserRole;
@@ -417,6 +418,11 @@ public class FCasesServiceImpl implements IFCasesService
         }
         //保存入库主表信息
         fDepositService.insertFDeposit(fDeposit);
+        tdwyCase tdwyCase= httprequest.sendCase(1,fCases.getfCasecode(),ShiroUtils.getLoginName(),ShiroUtils.getLoginName(),1);
+        List<tdwyCase> list=new ArrayList<>();
+        list.add(tdwyCase);
+        String results=httprequest.sendtdwy(list);
+        System.out.println(result);
         if(result.indexOf("成功")!=-1)
         {
             return "";

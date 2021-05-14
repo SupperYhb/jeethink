@@ -80,8 +80,8 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-sm-6">
-                            <div class="form-group">
+                        <div class="col-sm-6" id="mainBlock">
+                            <div class="form-group" id="Pic">
                                 <label class="col-sm-3 control-label">民警图片：</label>
                                 <div class="col-sm-8">
                                     <img id="PolicePic" th:src="@{/img/cardimg.png}" style="width: 150px;" onclick="setPic()">
@@ -89,7 +89,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row" style="margin-top: 15px;">
+                    <div class="row" style="margin-top: 15px;" id="openType">
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label class="col-sm-3 control-label">开门方式：</label>
@@ -143,6 +143,7 @@
     }
 </style>
 <script>
+    var isFace='[[${isFace}]]';
     var prefix = ctx + "business/cases";
     var PolicePic="";
     $(document).ready(function () {
@@ -214,6 +215,33 @@
         })
 
         loadTable();
+
+        if(isFace=="0")
+        {
+            debugger
+            $("#Pic").hide();
+            $("#openType").remove();
+            var html='';
+            html+='<div class="form-group">';
+            html+='<label class="col-sm-3 control-label">开门方式：</label>';
+            html+='<div class="col-sm-8">';
+            html+='<select name="openDoorType" class="form-control m-b">';
+            html+='<option value="0">立即打开</option>';
+            html+='<option value="1">刷卡打开</option>';
+            html+='</select>';
+            html+='</div>';
+            html+='</div>';
+            html+='<div class="form-group">';
+            html+='<label class="col-sm-3 control-label">是否归还：</label>';
+            html+='<div class="col-sm-8">';
+            html+='<select name="fIsBack" class="form-control m-b">';
+            html+='<option value="0">归还</option>';
+            html+='<option value="1">不归还</option>';
+            html+='</select>';
+            html+='</div>';
+            html+='</div>';
+            $("#mainBlock").append(html);
+        }
     });
     //拍照/上传照片
     function setPic(){
@@ -360,7 +388,8 @@
                 },
                 {
                     field: 'fCasecode',
-                    title: '案件编号'
+                    title: '案件编号',
+                    width:300
                 },
                 {
                     field: 'fCasename',

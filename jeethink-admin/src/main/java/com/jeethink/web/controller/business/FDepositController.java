@@ -1,15 +1,21 @@
 package com.jeethink.web.controller.business;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.jeethink.basicInfo.domain.FCamera;
 import com.jeethink.business.domain.FCases;
+import com.jeethink.business.domain.TdwyCase;
 import com.jeethink.business.service.IFBorrowService;
+import com.jeethink.business.service.ITdwyCaseService;
+import com.jeethink.common.config.Global;
 import com.jeethink.framework.util.ShiroUtils;
 import com.jeethink.requestutil.entity.kdcaseentity;
+import com.jeethink.requestutil.entity.tdwyCase;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -45,6 +51,8 @@ public class FDepositController extends BaseController
     private IFDepositService fDepositService;
     @Autowired
     private IFBorrowService fBorrowService;
+    @Autowired
+    private ITdwyCaseService tdwyCaseService;
 
     @RequiresPermissions("business:deposit:view")
     @GetMapping()
@@ -75,6 +83,18 @@ public class FDepositController extends BaseController
         List<kdcaseentity> list = fDepositService.getkdCase(caseName,caseNumber,policeCode);
         return getDataTable(list);
     }
+
+    @PostMapping("/selectTdwyCaseList")
+    @ResponseBody
+    public TableDataInfo selectTdwyCaseList(String ajmc,String mc,String ajbh){
+        Map findMap=new HashMap();
+        findMap.put("ajmc",ajmc);
+        findMap.put("mc",mc);
+        findMap.put("ajbh",ajbh);
+        startPage();
+        List<TdwyCase> list = tdwyCaseService.selectTdwyCaseList(findMap);
+        return getDataTable(list);
+    }
     /**
      * 导出存放案卷列表
      */
@@ -94,8 +114,20 @@ public class FDepositController extends BaseController
     @GetMapping("/add")
     public String add( ModelMap mmap)
     {
+        String isFace=Global.getIsFace();
         mmap.put("peopleType", ShiroUtils.getType());
+        mmap.put("isFace",isFace);
         return prefix + "/add";
+    }
+    /**
+     * 天地伟业数据拉取
+     */
+    @GetMapping("/tdwyadd")
+    public String tdwyadd(ModelMap mmap)
+    {
+        String isFace= Global.getIsFace();
+        mmap.put("isFace",isFace);
+        return prefix+"/tdwyadd";
     }
 
     @Log(title = "存放案卷（平台获取）", businessType = BusinessType.INSERT)
@@ -105,7 +137,7 @@ public class FDepositController extends BaseController
                                 String remark,String peopleType,String policeAccount,String policeName,
                                 String openDoorType,String PolicePic)
     {
-        List<kdcaseentity> kdList= JSON.parseArray(list, kdcaseentity.class);
+        List<TdwyCase> kdList= JSON.parseArray(list, TdwyCase.class);
         String msg= fDepositService.addCaseIn(kdList,lockerId,positionId,cardCode,cardId,
                 remark,peopleType,policeAccount,policeName,openDoorType,PolicePic);
         return success("");
@@ -143,8 +175,10 @@ public class FDepositController extends BaseController
      * 案卷归还
      */
     @GetMapping("/returnadd")
-    public String returnadd()
+    public String returnadd(ModelMap mmap)
     {
+        String isFace= Global.getIsFace();
+        mmap.put("isFace",isFace);
         return prefix+"/returnadd";
     }
     /**

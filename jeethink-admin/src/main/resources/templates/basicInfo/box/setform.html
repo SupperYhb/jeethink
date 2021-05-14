@@ -190,8 +190,9 @@ white-space: nowrap;background-color: #0e9aef;width: 1720px; height: 90%;padding
             }
             debugger
             var html="";
-            for(var j=0;j<6;j++)
+            for(var j=0;j<3;j++)
             {
+                debugger
                 html+='<div class="position">';
                 html+=(firstrow+=1)+'号门';
                 html+='</div>';
@@ -200,9 +201,6 @@ white-space: nowrap;background-color: #0e9aef;width: 1720px; height: 90%;padding
                 html+='</div>';
                 html+='<div class="position">';
                 html+=(thirdrow+=1)+'号门';
-                html+='</div>';
-                html+='<div class="position">';
-                html+=(fourthrow+=1)+'号门';
                 html+='</div>';
             }
             $("#box"+boxnum+"").append(html);

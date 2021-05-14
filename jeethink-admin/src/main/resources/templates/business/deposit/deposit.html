@@ -105,6 +105,7 @@
                     field: 'fState',
                     title: '状态',
                     formatter:function (value,row,index) {
+                        debugger
                         if(row.fState=="0")
                         {
                             return "<span class=\"btn btn-danger\">未存放</span>";
@@ -189,7 +190,8 @@
                 columns: [
                     {
                         field: 'fCasecode',
-                        title: '案件编号'
+                        title: '案件编号',
+                        width:300
                     },
                     {
                         field: 'fCasename',
@@ -197,7 +199,8 @@
                     },
                     {
                         field: 'fCasebriefdetail',
-                        title: '简要案情'
+                        title: '简要案情',
+                        width:200
                     },
                     {
                         field: 'fPutdate',
@@ -250,12 +253,12 @@
         };
         function addCase()
         {
-            $.modal.open("添加案卷","/business/cases/add",1000,700);
+            $.modal.open("添加案卷","/business/cases/add",1000,600);
             // $.modal.openTab("添加案卷","/business/cases/add");
         }
         function openBigForm()
         {
-            $.modal.openTab("添加案卷","/business/deposit/add");
+            $.modal.openTab("添加案卷","/business/deposit/tdwyadd");
         }
         function openReturnForm()
         {
